@@ -2,44 +2,71 @@
 
 import { motion } from 'framer-motion';
 
+/*
+ * Hero section
+ * - Background image zooms subtly from 1.05→1.0 on load (Framer Motion)
+ * - Negative margin-top (-92px) overlaps the sticky nav so the image fills
+ *   the full viewport from the top; matching padding-top pushes content clear
+ * - rounded-3xl matches the border-radius on the ServicesSection below
+ */
 const HeroSection = () => {
   return (
     <section
       id="hero"
-      className="relative z-[1] w-full flex flex-col items-center justify-center"
+      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-3xl"
       style={{
-        backgroundImage: "url('/images/hero-bg.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        minHeight: '85vh',
+        marginTop: '-92px',
+        minHeight: '92vh',
       }}
     >
-      {/* Dark overlay for text readability */}
+      {/* Animated background image — slow zoom-in on load */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ scale: 1.05 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 1.8, ease: 'easeOut' }}
+        style={{
+          backgroundImage: "url('/images/hero-bg.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 
-      <div className="relative z-10 w-full flex flex-col items-center justify-center px-4 py-24 gap-8">
+      {/* Content — top padding accounts for sticky nav overlap */}
+      <div
+        className="relative z-10 w-full flex flex-col items-center px-4 gap-8"
+        style={{ paddingTop: '148px', paddingBottom: '80px' }}
+      >
 
-        {/* Heading — single line, full width, centered */}
+        {/* Heading — two lines, #014aad on 'Smoked & Roasted' and 'Fresh.' */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="font-extrabold text-white text-center tracking-tight leading-none"
-          style={{
-            fontSize: 'clamp(0.85rem, 3.6vw, 3.2rem)',
-            whiteSpace: 'nowrap',
-            width: '100%',
-          }}
+          transition={{ delay: 0.25, duration: 0.7 }}
+          className="font-extrabold text-center tracking-tight leading-tight"
+          style={{ fontSize: 'clamp(0.9rem, 3.6vw, 3.5rem)' }}
         >
-          Africa&apos;s Nutritious Smoked Tilapia, Delivered Fresh.
+          <span className="block text-white whitespace-nowrap">
+            Africa&apos;s{' '}
+            <span style={{ color: '#014aad' }}>Smoked &amp; Roasted</span>
+            {' '}Tilapia,
+          </span>
+          <span className="block text-white whitespace-nowrap">
+            Delivered{' '}
+            <span style={{ color: '#014aad' }}>Fresh.</span>
+          </span>
         </motion.h1>
 
-        {/* Paragraph — centered below heading */}
+        {/* Paragraph */}
         <motion.p
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
+          transition={{ delay: 0.45, duration: 0.6 }}
           className="text-white/85 text-center leading-relaxed max-w-xl"
           style={{ fontSize: 'clamp(0.9rem, 1.5vw, 1.1rem)' }}
         >
@@ -51,7 +78,7 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.48 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
           className="flex items-center rounded-full bg-white/10 border border-white/30 backdrop-blur-sm px-2 py-1 gap-2"
         >
           <button
