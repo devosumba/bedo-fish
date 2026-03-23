@@ -1,5 +1,10 @@
 import Image from 'next/image';
 
+/*
+ * Next.js App Router Suspense fallback — shown during route transitions and
+ * Suspense boundaries. For initial page load the 2-second minimum is
+ * enforced by PageLoader (components/PageLoader.tsx) in the root layout.
+ */
 export default function Loading() {
   return (
     <div
