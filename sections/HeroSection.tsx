@@ -1,22 +1,73 @@
 "use client";
 
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+
+/*
+ * Typewriter cycling through two phrases on a fixed template:
+ *   "Africa's [TYPED] Tilapia,"
+ * Phrases: "Smoked & Roasted" → "& Roasted"
+ */
+const PHRASES = ['Smoked & Roasted', '& Roasted'];
+const TYPE_MS = 80;
+const DELETE_MS = 50;
+const PAUSE_MS = 800;
+
+function useTypewriter(phrases: string[]) {
+  const [displayed, setDisplayed] = useState('');
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const [typing, setTyping] = useState(true);
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const phrase = phrases[phraseIdx];
+
+    if (typing) {
+      if (displayed.length < phrase.length) {
+        timeout.current = setTimeout(
+          () => setDisplayed(phrase.slice(0, displayed.length + 1)),
+          TYPE_MS
+        );
+      } else {
+        timeout.current = setTimeout(() => setTyping(false), PAUSE_MS);
+      }
+    } else {
+      if (displayed.length > 0) {
+        timeout.current = setTimeout(
+          () => setDisplayed(displayed.slice(0, -1)),
+          DELETE_MS
+        );
+      } else {
+        setPhraseIdx((i) => (i + 1) % phrases.length);
+        setTyping(true);
+      }
+    }
+
+    return () => { if (timeout.current) clearTimeout(timeout.current); };
+  }, [displayed, typing, phraseIdx, phrases]);
+
+  return displayed;
+}
 
 /*
  * Hero section
  * - Background image zooms subtly from 1.05→1.0 on load (Framer Motion)
  * - Negative margin-top (-92px) overlaps the sticky nav so the image fills
  *   the full viewport from the top; matching padding-top pushes content clear
- * - rounded-3xl matches the border-radius on the ServicesSection below
+ * - rounded-t-3xl rounds only top corners (bottom is flush with ServicesSection)
  */
 const HeroSection = () => {
+  const typed = useTypewriter(PHRASES);
+
   return (
     <section
       id="hero"
-      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-3xl"
+      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-t-3xl"
       style={{
         marginTop: '-92px',
-        minHeight: '92vh',
+        minHeight: '95vh',
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
       }}
     >
       {/* Animated background image — slow zoom-in on load */}
@@ -43,7 +94,7 @@ const HeroSection = () => {
         style={{ paddingTop: '148px', paddingBottom: '80px' }}
       >
 
-        {/* Heading — two lines, #014aad on 'Smoked & Roasted' and 'Fresh.' */}
+        {/* Heading — two lines */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,12 +104,15 @@ const HeroSection = () => {
         >
           <span className="block text-white whitespace-nowrap">
             Africa&apos;s{' '}
-            <span style={{ color: '#014aad' }}>Smoked &amp; Roasted</span>
+            <span style={{ color: '#014aad' }}>
+              {typed}
+              <span className="typewriter-cursor" aria-hidden="true" />
+            </span>
             {' '}Tilapia,
           </span>
           <span className="block text-white whitespace-nowrap">
             Delivered{' '}
-            <span style={{ color: '#014aad' }}>Fresh.</span>
+            <span style={{ color: '#014aad' }}>Fresh!</span>
           </span>
         </motion.h1>
 
