@@ -14,11 +14,16 @@
  * Page          : app/page.tsx    →  Hero → Services → Experience → Portfolio → Contact
  * ─────────────────────────────────────────────────────────────────────────────
  * ─── THEME QUICK REFERENCE ───────────────────────────────────────────────────
- * Primary brand color   : #014aad  (--accent)
- * Favicon asset         : /favicon.png
+ * Primary brand color   : #014aad  (--accent in :root)
+ * Favicon asset         : /favicon.png             ← app/favicon.png copied here
  * Navbar logo asset     : /assets/bedo-nav-logo.png
- * Hero background image : /images/hero-bg.jpg
- * Page loader GIF       : /images/bedo-loader.gif
+ * Hero background image : /images/hero-bg.jpg      ← source: "hero 3 (1).jpg"
+ * Page loader GIF       : /images/bedo-loader.gif  ← source: "Loaderr_.gif"
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ─── COMPONENT HIERARCHY ─────────────────────────────────────────────────────
+ * layout.tsx → <PageLoader> <Navbar>
+ * page.tsx   → <HeroSection> <ServicesSection> <ExperienceSection>
+ *               <PortfolioSection> <ContactSection> <ScrollToTop>
  * ─────────────────────────────────────────────────────────────────────────────
  */
 :root {
