@@ -5,6 +5,7 @@ import PageLoader from "../components/PageLoader";
 
 export const metadata: Metadata = {
   title: "Bedo Fish - Smoked & Roasted Tilapia Delivered Fresh",
+  description: "Africa's finest smoked and roasted tilapia, delivered fresh from Lake Victoria to your table. Fueling healthier diets and empowering communities.",
   icons: {
     icon: "/favicon.png",
   },
