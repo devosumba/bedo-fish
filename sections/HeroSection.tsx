@@ -4,70 +4,79 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 /*
- * Typewriter cycling through two phrases on a fixed template:
- *   "Africa's [TYPED] Tilapia,"
- * Phrases: "Smoked & Roasted" → "& Roasted"
+ * Hero section
+ * ─── Layout ───────────────────────────────────────────────────────────────────
+ * Negative margin-top pulls the hero behind the sticky navbar so the
+ * background image fills the full viewport including the nav area.
+ * Content padding-top pushes text below the navbar visually.
+ *
+ * Rounded-corner effect at the hero ↔ ServicesSection junction is achieved
+ * by giving ServicesSection a higher z-index and border-top-left/right-radius,
+ * NOT by rounding the hero container itself.
+ *
+ * Nav height (67px pill + 8px bottom pad) + top-3 sticky offset (12px) = 87px
+ * → marginTop: -87px  |  paddingTop: 87 + 56px breathing room = 143px
  */
-const PHRASES = ['Smoked & Roasted', '& Roasted'];
-const TYPE_MS = 80;
-const DELETE_MS = 50;
-const PAUSE_MS = 800;
 
-function useTypewriter(phrases: string[]) {
+// ─── Typewriter hook ──────────────────────────────────────────────────────────
+
+const WORDS   = ['Smoked', 'Roasted'] as const;
+const TYPE_MS   =  80;   // ms per character typed
+const DELETE_MS =  50;   // ms per character deleted
+const PAUSE_MS  = 800;   // ms pause at full word
+
+function useTypewriter(words: readonly string[]) {
   const [displayed, setDisplayed] = useState('');
-  const [phraseIdx, setPhraseIdx] = useState(0);
-  const [typing, setTyping] = useState(true);
-  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [wordIdx, setWordIdx]     = useState(0);
+  const [typing, setTyping]       = useState(true);
+  const timeout                   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const phrase = phrases[phraseIdx];
+    const word = words[wordIdx];
 
     if (typing) {
-      if (displayed.length < phrase.length) {
+      if (displayed.length < word.length) {
         timeout.current = setTimeout(
-          () => setDisplayed(phrase.slice(0, displayed.length + 1)),
-          TYPE_MS
+          () => setDisplayed(word.slice(0, displayed.length + 1)),
+          TYPE_MS,
         );
       } else {
+        // Full word visible — pause before deleting
         timeout.current = setTimeout(() => setTyping(false), PAUSE_MS);
       }
     } else {
       if (displayed.length > 0) {
         timeout.current = setTimeout(
           () => setDisplayed(displayed.slice(0, -1)),
-          DELETE_MS
+          DELETE_MS,
         );
       } else {
-        setPhraseIdx((i) => (i + 1) % phrases.length);
+        // Word fully deleted — move to next word and start typing
+        setWordIdx((i) => (i + 1) % words.length);
         setTyping(true);
       }
     }
 
     return () => { if (timeout.current) clearTimeout(timeout.current); };
-  }, [displayed, typing, phraseIdx, phrases]);
+  }, [displayed, typing, wordIdx, words]);
 
   return displayed;
 }
 
-/*
- * Hero section
- * - Background image zooms subtly from 1.05→1.0 on load (Framer Motion)
- * - Negative margin-top (-92px) overlaps the sticky nav so the image fills
- *   the full viewport from the top; matching padding-top pushes content clear
- * - rounded-t-3xl rounds only top corners (bottom is flush with ServicesSection)
- */
+// ─── Component ───────────────────────────────────────────────────────────────
+
 const HeroSection = () => {
-  const typed = useTypewriter(PHRASES);
+  const typed = useTypewriter(WORDS);
 
   return (
     <section
       id="hero"
-      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-t-3xl"
+      className="relative w-full flex flex-col items-center justify-center"
       style={{
-        marginTop: '-92px',
+        marginTop: '-87px',
         minHeight: '95vh',
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
+        position: 'relative',
+        zIndex: 1,
       }}
     >
       {/* Animated background image — slow zoom-in on load */}
@@ -88,28 +97,38 @@ const HeroSection = () => {
       {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 
-      {/* Content — top padding accounts for sticky nav overlap */}
+      {/* Content */}
       <div
         className="relative z-10 w-full flex flex-col items-center px-4 gap-8"
-        style={{ paddingTop: '148px', paddingBottom: '80px' }}
+        style={{ paddingTop: '143px', paddingBottom: '80px' }}
       >
 
-        {/* Heading — two lines */}
+        {/* Heading */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.7 }}
           className="font-extrabold text-center tracking-tight leading-tight"
-          style={{ fontSize: 'clamp(0.9rem, 3.6vw, 3.5rem)' }}
+          style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.5rem)' }}
         >
+          {/* Line 1 — fixed layout; animated word in a reserved-width slot */}
           <span className="block text-white whitespace-nowrap">
             Africa&apos;s{' '}
-            <span style={{ color: '#014aad' }}>
+            <span
+              style={{
+                color: '#014aad',
+                display: 'inline-block',
+                minWidth: '7.5ch',
+                textAlign: 'left',
+              }}
+            >
               {typed}
               <span className="typewriter-cursor" aria-hidden="true" />
             </span>
             {' '}Tilapia,
           </span>
+
+          {/* Line 2 */}
           <span className="block text-white whitespace-nowrap">
             Delivered{' '}
             <span style={{ color: '#014aad' }}>Fresh!</span>

@@ -366,7 +366,7 @@ const ServicesSection = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-  <section ref={sectionRef} id="about" className="relative z-[2] bg-[#0e0e0e] md:w-full py-16 md:py-24 overflow-hidden rounded-3xl mx-3 md:mx-0 -mt-0.5 md:mt-0">
+  <section ref={sectionRef} id="about" className="relative z-[2] bg-[#0e0e0e] md:w-full py-16 md:py-24 overflow-hidden rounded-t-3xl -mt-6">
 
     {/* Decorative blobs */}
     <div className="absolute -top-24 left-[20%] w-96 h-96 bg-[#014aad] opacity-[0.07] rounded-full blur-[80px] pointer-events-none" />
