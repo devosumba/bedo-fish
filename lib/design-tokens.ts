@@ -1,4 +1,4 @@
-// Design tokens and constants for portfolio site
+// Design tokens — primary brand color: #014aad (all orange references removed)
 export const NAV_ITEMS = [
   { label: 'Home', href: '#home' },
   { label: 'About', href: '#about' },
