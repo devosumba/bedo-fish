@@ -50,7 +50,7 @@ export default function Navbar() {
     >
       {/* ── Desktop pill ─────────────────────────────────────────────── */}
       <div
-        className="hidden md:grid w-full max-w-6xl bg-white rounded-full h-[72px] px-4 overflow-visible"
+        className="hidden md:grid w-full max-w-6xl bg-white rounded-full h-[67px] px-4 overflow-visible"
         style={{
           gridTemplateColumns: 'auto 1fr auto',
           alignItems: 'center',
@@ -128,7 +128,7 @@ export default function Navbar() {
       {/* ── Mobile pill ───────────────────────────────────────────────── */}
       <div className="md:hidden w-full">
         <div
-          className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[60px]"
+          className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[55px]"
           style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
         >
           {/* Logo */}
