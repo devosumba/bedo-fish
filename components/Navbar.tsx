@@ -1,5 +1,11 @@
 "use client";
 
+/*
+ * Navbar — sticky top-3 (12px offset), pill height h-[67px] desktop / h-[55px] mobile
+ * No scroll-conditional background. Pill floats directly over hero via z-[1000].
+ * Icons (right, desktop): Cart | separator | TikTok | Instagram | Phone
+ */
+
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
