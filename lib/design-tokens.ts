@@ -31,9 +31,9 @@ export const RADII = {
 };
 
 export const SHADOWS = {
-  nav: '0 4px 24px 0 rgba(255, 138, 0, 0.08)',
+  nav: '0 4px 24px 0 rgba(1, 74, 173, 0.08)',
   card: '0 2px 8px 0 rgba(35, 35, 35, 0.06)',
-  button: '0 2px 8px 0 rgba(255, 138, 0, 0.12)',
+  button: '0 2px 8px 0 rgba(1, 74, 173, 0.12)',
 };
 
 export const TYPOGRAPHY = {
