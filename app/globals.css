@@ -2,6 +2,17 @@
 @import "tailwindcss";
 
 /*
+ * ─── STACK CONTEXT ────────────────────────────────────────────────────────────
+ * Framework     : Next.js 16 (App Router), React 19, TypeScript
+ * Styling       : Tailwind CSS v4  —  @import "tailwindcss" (no tailwind.config.js)
+ *                 PostCSS plugin   : @tailwindcss/postcss  (postcss.config.mjs)
+ *                 CSS custom props : :root { --accent, --background, --foreground }
+ *                 Token file       : lib/design-tokens.ts  (COLORS, SHADOWS, etc.)
+ * Animation     : Framer Motion v12
+ * Fonts         : Urbanist (Google Fonts), Lufga (self-hosted, optional)
+ * Layout        : app/layout.tsx  →  <Navbar> + {children}
+ * Page          : app/page.tsx    →  Hero → Services → Experience → Portfolio → Contact
+ * ─────────────────────────────────────────────────────────────────────────────
  * ─── THEME QUICK REFERENCE ───────────────────────────────────────────────────
  * Primary brand color   : #014aad  (--accent)
  * Favicon asset         : /favicon.png
