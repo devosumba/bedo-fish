@@ -1,69 +1,60 @@
-
 "use client";
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-const NAV_ITEMS_LEFT: { label: string; href: string; section: string }[] = [];
-
-const NAV_ITEMS_RIGHT = [
-  { label: 'Products', href: '#about', section: 'about' },
-  { label: 'Shop', href: '#portfolio', section: 'portfolio' },
+const NAV_ITEMS = [
+  { label: 'Products',  href: '#about',     section: 'about'     },
+  { label: 'Shop',      href: '#portfolio',  section: 'portfolio' },
+  { label: 'Our Story', href: '#experience', section: 'experience'},
+  { label: 'Impact',    href: '#impact',     section: 'impact'    },
+  { label: 'Invest',    href: '#contact',    section: 'contact'   },
 ];
-
-const ALL_NAV_ITEMS = [...NAV_ITEMS_LEFT, ...NAV_ITEMS_RIGHT];
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
 
+  /* Hide/show nav as hero scrolls out of view */
   useEffect(() => {
     const heroSection = document.getElementById('hero');
     if (!heroSection) return;
-
     const sentinel = document.createElement('div');
-    sentinel.style.height = '1px';
-    sentinel.style.position = 'absolute';
-    sentinel.style.top = '0';
+    sentinel.style.cssText = 'height:1px;position:absolute;top:0;';
     heroSection.prepend(sentinel);
-
     const obs = new IntersectionObserver(
-      ([entry]) => setNavVisible(entry.isIntersecting),
+      ([e]) => setNavVisible(e.isIntersecting),
       { threshold: 0 }
     );
     obs.observe(sentinel);
-
     return () => { obs.disconnect(); sentinel.remove(); };
   }, []);
 
+  /* Active section tracking */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-
-    ['hero', 'about', 'portfolio', 'contact'].forEach((id) => {
+    ['hero', 'about', 'portfolio', 'experience', 'impact', 'contact'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { threshold: 0.4 }
+        ([e]) => { if (e.isIntersecting) setActiveSection(id); },
+        { threshold: 0.3 }
       );
       obs.observe(el);
       observers.push(obs);
     });
-
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   const isActive = (section: string) => section !== '' && activeSection === section;
 
-  const linkClass = (section: string, base: string) =>
-    base +
+  const linkCls = (section: string) =>
+    'px-4 py-2 text-sm rounded-full transition-colors duration-200 focus:outline-none whitespace-nowrap ' +
     (isActive(section)
-      ? ' bg-[#014aad] text-white shadow-sm font-semibold '
-      : ' text-[#014aad] font-normal hover:bg-[#014aad]/10 hover:text-[#014aad] ');
-
-  const activeItem = ALL_NAV_ITEMS.find((item) => isActive(item.section));
+      ? 'bg-[#014aad] text-white font-semibold'
+      : 'text-[#014aad] font-medium hover:bg-[#014aad]/10');
 
   return (
     <motion.nav
@@ -74,96 +65,98 @@ export default function Navbar() {
       className="relative w-full flex justify-center pt-3 pb-2 px-4 z-[1000]"
       aria-label="Main Navigation"
     >
-      {/* ── Desktop pill ─────────────────────────────────────────────────── */}
+      {/* ── Desktop bar ──────────────────────────────────────────────── */}
       <div
-        className="hidden md:flex relative z-50 items-center justify-between w-full max-w-6xl bg-white rounded-full shadow-md px-2 md:px-4 h-[72px] font-lufga overflow-visible"
-        style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.10)', border: '1px solid #e5e7eb' }}
+        className="hidden md:grid w-full max-w-6xl bg-white rounded-full h-[72px] px-4 overflow-visible"
+        style={{
+          gridTemplateColumns: 'auto 1fr auto',
+          alignItems: 'center',
+          boxShadow: '0 4px 30px rgba(0,0,0,0.10)',
+          border: '1px solid #e5e7eb',
+        }}
       >
-        {/* Logo on far left */}
-        <div className="flex items-center">
-          <a href="#hero" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveSection('hero'); }}>
-            <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={120} height={40} className="object-contain" priority />
-          </a>
-        </div>
+        {/* Left — Logo */}
+        <a
+          href="#hero"
+          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveSection('hero'); }}
+          className="flex items-center pl-2"
+        >
+          <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={120} height={40} className="object-contain" priority />
+        </a>
 
-        {/* Social icons */}
-        <div className="flex items-center gap-4">
-          <a href="mailto:johnaustineosumba@gmail.com"
-            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#014aad]" aria-label="Email">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
-          </a>
-          <a href="https://www.linkedin.com/in/john-austine-osumba-689327207/" target="_blank" rel="noopener noreferrer"
-            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#014aad]" aria-label="LinkedIn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-              <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
-            </svg>
-          </a>
-          <a href="https://github.com/devosumba" target="_blank" rel="noopener noreferrer"
-            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#014aad]" aria-label="GitHub">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-            </svg>
-          </a>
-        </div>
-
-        {/* Right nav links */}
-        <ul className="flex items-center gap-2 md:gap-6">
-          {NAV_ITEMS_RIGHT.map((item) => (
+        {/* Center — Nav links */}
+        <ul className="flex items-center justify-center gap-1">
+          {NAV_ITEMS.map((item) => (
             <li key={item.label}>
               <a
                 href={item.href}
                 onClick={() => item.section && setActiveSection(item.section)}
-                className={linkClass(item.section, 'px-7 py-3 text-base rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#014aad] ')}
-                tabIndex={0}
+                className={linkCls(item.section)}
+                aria-current={isActive(item.section) ? 'page' : undefined}
               >
                 {item.label}
               </a>
             </li>
           ))}
         </ul>
+
+        {/* Right — Cart | TikTok | Instagram */}
+        <div className="flex items-center gap-3 pr-2">
+          {/* Cart */}
+          <a href="#portfolio" onClick={() => setActiveSection('portfolio')} aria-label="Cart"
+            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+          </a>
+
+          {/* Separator */}
+          <span className="text-gray-300 select-none font-light text-lg">|</span>
+
+          {/* TikTok */}
+          <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+            </svg>
+          </a>
+
+          {/* Instagram */}
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+        </div>
       </div>
 
-      {/* ── Mobile pill ──────────────────────────────────────────────────── */}
+      {/* ── Mobile bar ───────────────────────────────────────────────── */}
       <div className="md:hidden w-full">
         <div
-          className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[60px] font-lufga"
-          style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.10)', borderRadius: '9999px', border: '1px solid #e5e7eb' }}
+          className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[60px]"
+          style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.10)', border: '1px solid #e5e7eb' }}
         >
           {/* Logo */}
           <a href="#hero" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pl-2">
             <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={90} height={30} className="object-contain" priority />
           </a>
 
-          {/* Social icons + hamburger */}
-          <div className="flex items-center gap-3 pr-4">
-            <a href="mailto:johnaustineosumba@gmail.com"
-              className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300" aria-label="Email">
+          {/* Right: icons + hamburger */}
+          <div className="flex items-center gap-3 pr-2">
+            <a href="#portfolio" aria-label="Cart" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/john-austine-osumba-689327207/" target="_blank" rel="noopener noreferrer"
-              className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300" aria-label="LinkedIn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
-              </svg>
-            </a>
-            <a href="https://github.com/devosumba" target="_blank" rel="noopener noreferrer"
-              className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-300" aria-label="GitHub">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
               </svg>
             </a>
             <button
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              className="text-[#014aad] p-1 ml-1 focus:outline-none"
+              className="text-[#014aad] p-1 focus:outline-none"
             >
               {mobileOpen ? (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
@@ -189,18 +182,11 @@ export default function Navbar() {
               className="mt-2 bg-white rounded-2xl overflow-hidden"
               style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
             >
-              {ALL_NAV_ITEMS.map((item) => (
+              {NAV_ITEMS.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
-                  onClick={(e) => {
-                    if (item.section === 'hero') {
-                      e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                    item.section && setActiveSection(item.section);
-                    setMobileOpen(false);
-                  }}
+                  onClick={() => { item.section && setActiveSection(item.section); setMobileOpen(false); }}
                   className={`flex items-center px-5 py-3.5 text-base transition-colors duration-200 ${
                     isActive(item.section)
                       ? 'bg-[#014aad] text-white font-semibold'
@@ -210,6 +196,23 @@ export default function Navbar() {
                   {item.label}
                 </a>
               ))}
+              {/* Social icons row inside mobile menu */}
+              <div className="flex items-center gap-5 px-5 py-4 border-t border-gray-100">
+                <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+                  className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+                  </svg>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                  className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                  </svg>
+                </a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
