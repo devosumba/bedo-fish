@@ -207,7 +207,7 @@ export default function ContactSection() {
             {/* Icon badge */}
             <div
               className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,138,51,0.12)' }}
+              style={{ background: 'rgba(1,74,173,0.10)' }}
             >
               <AnimatePresence mode="wait">
                 <motion.span

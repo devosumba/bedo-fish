@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({ variant = 'primary', href = '#', childr
       : 'border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white active:scale-95';
   return (
     <motion.a
-      whileHover={{ y: -2, boxShadow: '0 4px 16px 0 rgba(255,138,0,0.10)' }}
+      whileHover={{ y: -2, boxShadow: '0 4px 16px 0 rgba(1,74,173,0.18)' }}
       whileTap={{ scale: 0.97 }}
       href={href}
       className={`${base} ${styles} mx-1`}
