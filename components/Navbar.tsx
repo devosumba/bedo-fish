@@ -5,32 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
 const NAV_ITEMS = [
-  { label: 'Products',  href: '#about',     section: 'about'     },
-  { label: 'Shop',      href: '#portfolio',  section: 'portfolio' },
-  { label: 'Our Story', href: '#experience', section: 'experience'},
-  { label: 'Impact',    href: '#impact',     section: 'impact'    },
-  { label: 'Invest',    href: '#contact',    section: 'contact'   },
+  { label: 'Products',  href: '#about',     section: 'about'      },
+  { label: 'Shop',      href: '#portfolio',  section: 'portfolio'  },
+  { label: 'Our Story', href: '#experience', section: 'experience' },
+  { label: 'Impact',    href: '#impact',     section: 'impact'     },
+  { label: 'Invest',    href: '#contact',    section: 'contact'    },
 ];
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [navVisible, setNavVisible] = useState(true);
-
-  /* Hide/show nav as hero scrolls out of view */
-  useEffect(() => {
-    const heroSection = document.getElementById('hero');
-    if (!heroSection) return;
-    const sentinel = document.createElement('div');
-    sentinel.style.cssText = 'height:1px;position:absolute;top:0;';
-    heroSection.prepend(sentinel);
-    const obs = new IntersectionObserver(
-      ([e]) => setNavVisible(e.isIntersecting),
-      { threshold: 0 }
-    );
-    obs.observe(sentinel);
-    return () => { obs.disconnect(); sentinel.remove(); };
-  }, []);
 
   /* Active section tracking */
   useEffect(() => {
@@ -59,19 +43,18 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={{ y: -28, opacity: 0 }}
-      animate={{ y: 0, opacity: navVisible ? 1 : 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
-      style={{ pointerEvents: navVisible ? 'auto' : 'none' }}
-      className="relative w-full flex justify-center pt-3 pb-2 px-4 z-[1000]"
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.35, ease: 'easeOut', delay: 0.05 }}
+      className="sticky top-0 w-full flex justify-center pt-3 pb-2 px-4 z-[1000]"
       aria-label="Main Navigation"
     >
-      {/* ── Desktop bar ──────────────────────────────────────────────── */}
+      {/* ── Desktop pill ─────────────────────────────────────────────── */}
       <div
         className="hidden md:grid w-full max-w-6xl bg-white rounded-full h-[72px] px-4 overflow-visible"
         style={{
           gridTemplateColumns: 'auto 1fr auto',
           alignItems: 'center',
-          boxShadow: '0 4px 30px rgba(0,0,0,0.10)',
+          boxShadow: '0 4px 30px rgba(0,0,0,0.12)',
           border: '1px solid #e5e7eb',
         }}
       >
@@ -100,8 +83,16 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Right — Cart | TikTok | Instagram */}
+        {/* Right — Phone | Cart | | TikTok | Instagram */}
         <div className="flex items-center gap-3 pr-2">
+          {/* Phone */}
+          <a href="tel:+" aria-label="Call us"
+            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.38a2 2 0 0 1 2-2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </a>
+
           {/* Cart */}
           <a href="#portfolio" onClick={() => setActiveSection('portfolio')} aria-label="Cart"
             className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
@@ -112,7 +103,7 @@ export default function Navbar() {
           </a>
 
           {/* Separator */}
-          <span className="text-gray-300 select-none font-light text-lg">|</span>
+          <span className="text-gray-300 select-none font-light text-lg leading-none">|</span>
 
           {/* TikTok */}
           <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
@@ -134,18 +125,18 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile bar ───────────────────────────────────────────────── */}
+      {/* ── Mobile pill ───────────────────────────────────────────────── */}
       <div className="md:hidden w-full">
         <div
           className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[60px]"
-          style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.10)', border: '1px solid #e5e7eb' }}
+          style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
         >
           {/* Logo */}
           <a href="#hero" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pl-2">
             <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={90} height={30} className="object-contain" priority />
           </a>
 
-          {/* Right: icons + hamburger */}
+          {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
             <a href="#portfolio" aria-label="Cart" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -196,16 +187,19 @@ export default function Navbar() {
                   {item.label}
                 </a>
               ))}
-              {/* Social icons row inside mobile menu */}
+              {/* Icons row */}
               <div className="flex items-center gap-5 px-5 py-4 border-t border-gray-100">
-                <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-                  className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+                <a href="tel:+" aria-label="Call us" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.38a2 2 0 0 1 2-2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </a>
+                <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
                   </svg>
                 </a>
-                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-                  className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+                <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
