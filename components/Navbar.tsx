@@ -189,8 +189,8 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="mt-2 bg-white rounded-2xl overflow-hidden"
-              style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
+              className="mt-2 rounded-2xl overflow-hidden"
+              style={{ border: '1px solid #e5e7eb' }}
             >
               {NAV_ITEMS.map((item) => (
                 <a
