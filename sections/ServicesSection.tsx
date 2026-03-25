@@ -398,7 +398,7 @@ const ServicesSection = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-0"
           >
             {TABS[activeTab].products.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />
