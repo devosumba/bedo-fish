@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 // ─── Product types and data ───────────────────────────────────────────────────
 
@@ -10,6 +11,8 @@ type Product = {
   name: string;
   description: string;
   price: string;
+  image: string;
+  size: string;
   badge?: string;
 };
 
@@ -17,25 +20,25 @@ const TABS: Array<{ label: string; products: Product[] }> = [
   {
     label: 'Customer Favorites',
     products: [
-      { id: 1, name: 'Smoked Tilapia Whole',  description: 'Classic whole smoked tilapia',    price: 'KSh 0.00', badge: 'Best Seller' },
-      { id: 2, name: 'Tilapia Fillet Pack',   description: 'Boneless roasted fillet, 500g',   price: 'KSh 0.00', badge: 'New'         },
-      { id: 3, name: 'Family Value Pack',      description: 'Feeds a family of four',           price: 'KSh 0.00', badge: 'Popular'     },
+      { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/roasted-tilapia.jpg', size: 'Small', badge: 'Best Seller' },
+      { id: 2, name: 'Omena',            description: 'Sun-dried omena from Lake Victoria',  price: 'Ksh 500', image: '/images/omena-prod.jpg',      size: '500ml', badge: 'Popular'     },
+      { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/roasted-tilapia.jpg', size: 'Large', badge: 'Value'       },
     ],
   },
   {
     label: 'Roasted Tilapia',
     products: [
-      { id: 4, name: 'Original Roasted Tilapia', description: 'Slow-roasted to perfection',  price: 'KSh 0.00', badge: 'Featured' },
-      { id: 5, name: 'Spiced Roasted Tilapia',   description: 'Blend of local spices',        price: 'KSh 0.00', badge: 'New'      },
-      { id: 6, name: 'Roasted Tilapia Fillet',   description: 'Boneless, oven-roasted',       price: 'KSh 0.00'                   },
+      { id: 4, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/roasted-tilapia.jpg', size: 'Small', badge: 'Best Seller' },
+      { id: 5, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/roasted-tilapia.jpg', size: 'Medium'                      },
+      { id: 6, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/roasted-tilapia.jpg', size: 'Large'                       },
     ],
   },
   {
     label: 'Omena',
     products: [
-      { id: 7, name: 'Sundried Omena',       description: 'Lake Victoria sun-dried',  price: 'KSh 0.00', badge: 'Best Seller' },
-      { id: 8, name: 'Roasted Omena Pack',   description: 'Crispy roasted omena',     price: 'KSh 0.00', badge: 'New'         },
-      { id: 9, name: 'Omena Family Bundle',  description: 'Bulk pack, 1kg',           price: 'KSh 0.00', badge: 'Value'       },
+      { id: 7, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '250ml', badge: 'Coming Soon' },
+      { id: 8, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '500ml', badge: 'Coming Soon' },
+      { id: 9, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '1kg',   badge: 'Coming Soon' },
     ],
   },
 ];
@@ -50,6 +53,9 @@ const PARAGRAPHS = [
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
+  const [qty,   setQty]   = useState(1);
+  const [liked, setLiked] = useState(false);
+
   return (
     // Outer wrapper: overflow-visible so the ::before rotating ring (inset: -2px)
     // isn't clipped — mirrors the .portfolio-card two-layer pattern exactly.
@@ -62,19 +68,39 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       {/* Inner wrapper: aspect-square + overflow-hidden for content clipping */}
       <div className="aspect-square flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
 
-        {/* Image placeholder — fills top ~54% of the square card */}
-        <div className="relative flex-[0_0_54%] bg-gray-100 flex items-center justify-center overflow-hidden">
+        {/* Image area — fills top ~54% of the square card */}
+        <div className="relative flex-[0_0_54%] bg-gray-100 overflow-hidden">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 768px) 50vw, 33vw"
+            className="object-cover"
+          />
+
+          {/* Badge — top-left */}
           {product.badge && (
             <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
               {product.badge}
             </span>
           )}
-          {/* Neutral image placeholder icon */}
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gray-300">
-            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-            <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+
+          {/* Like button — top-right */}
+          <button
+            aria-label={liked ? 'Unlike' : 'Like'}
+            onClick={(e) => { e.stopPropagation(); setLiked((v) => !v); }}
+            className="absolute top-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
+          >
+            <svg
+              width="14" height="14" viewBox="0 0 24 24"
+              fill={liked ? '#014aad' : 'none'}
+              stroke={liked ? '#014aad' : '#9ca3af'}
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
         </div>
 
         {/* Card content — fills remaining ~46% */}
@@ -82,19 +108,42 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           <div>
             <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
             <p className="text-gray-400 text-xs mt-0.5 truncate">{product.description}</p>
+            {/* Size badge */}
+            <span className="inline-block mt-1 text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+              {product.size}
+            </span>
           </div>
-          <div className="flex items-center justify-between mt-1.5">
-            <span className="font-bold text-gray-900 text-sm">{product.price}</span>
-            <button
-              className="bg-[#014aad] text-white text-[9px] font-semibold px-2 py-1.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1 whitespace-nowrap"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
-              Add to Cart
-            </button>
+
+          <div className="flex items-center justify-between mt-1.5 gap-1.5">
+            {/* Quantity control */}
+            <div className="flex items-center gap-1 bg-gray-100 rounded-full px-1 py-0.5 shrink-0">
+              <button
+                aria-label="Decrease quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold"
+              >−</button>
+              <span className="text-xs font-semibold text-gray-800 w-4 text-center">{qty}</span>
+              <button
+                aria-label="Increase quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold"
+              >+</button>
+            </div>
+
+            {/* Price + Add to Cart */}
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-bold text-gray-900 text-xs shrink-0">{product.price}</span>
+              <button
+                className="bg-[#014aad] text-white text-[9px] font-semibold px-2 py-1.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1 whitespace-nowrap shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                Add
+              </button>
+            </div>
           </div>
         </div>
 
