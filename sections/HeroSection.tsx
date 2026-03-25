@@ -10,6 +10,10 @@ import { motion } from 'framer-motion';
  * image fills the full viewport including the nav area. Content padding-top
  * pushes text below the navbar visually.
  *
+ * Heading: Africa's Finest [animated] Tilapia, / Delivered Fresh!
+ * Animated slot uses a hidden ghost "Roasted" span to hold its exact rendered
+ * width so surrounding text never reflows. No arbitrary min-width used.
+ *
  * Nav height: 67px pill + 8px bottom pad + 12px sticky top offset = 87px
  * → marginTop: -87px  |  paddingTop: 87px + 56px breathing room = 143px
  *
@@ -134,18 +138,30 @@ const HeroSection = () => {
             className="font-extrabold text-center tracking-tight leading-tight"
             style={{ fontSize: 'clamp(1.6rem, 4.5vw, 3.5rem)' }}
           >
-            {/* Line 1 — animated word slot reserved at min-width of 'Roasted' */}
+            {/* Line 1
+                'Finest' is static white text.
+                The animated slot uses a hidden ghost of 'Roasted' to hold its
+                exact rendered width — the browser measures it naturally at the
+                heading font/size. Typed text is overlaid via position:absolute
+                so surrounding words never shift or reflow during the animation. */}
             <span className="block text-white whitespace-nowrap">
-              Africa&apos;s{' '}
-              <span
-                style={{
-                  color: '#014aad',
-                  display: 'inline-block',
-                  minWidth: '7ch',
-                }}
-              >
-                {typed}
-                <span className="typewriter-cursor" aria-hidden="true" />
+              Africa&apos;s Finest{' '}
+              <span style={{ display: 'inline-block', position: 'relative' }}>
+                {/* Ghost — invisible but occupies exact 'Roasted' width */}
+                <span style={{ visibility: 'hidden', userSelect: 'none' }} aria-hidden="true">Roasted</span>
+                {/* Typed text overlaid — does not affect surrounding layout */}
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    color: '#014aad',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {typed}
+                  <span className="typewriter-cursor" aria-hidden="true" />
+                </span>
               </span>
               {' '}Tilapia,
             </span>
