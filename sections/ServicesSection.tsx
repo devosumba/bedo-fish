@@ -22,7 +22,7 @@ const TABS: Array<{ label: string; products: Product[] }> = [
     label: 'Customer Favorites',
     products: [
       { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/roasted-tilapia.jpg', size: 'Small', badge: 'Best Seller' },
-      { id: 2, name: 'Omena',            description: 'Sun-dried omena from Lake Victoria',  price: 'Ksh 500', image: '/images/omena-prod.jpg',      size: '500ml', badge: 'Popular'     },
+      { id: 2, name: 'Omena',            description: 'Crunchy deep fried omena',            price: 'Ksh 500', image: '/images/omena-prod.jpg',      size: '500ml', badge: 'Popular'     },
       { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/roasted-tilapia.jpg', size: 'Large', badge: 'Value'       },
     ],
   },
@@ -82,11 +82,11 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       transition={{ delay: index * 0.08 }}
       className="product-card relative overflow-visible rounded-2xl"
     >
-      {/* Inner wrapper: aspect-[4/5] + overflow-hidden for content clipping */}
-      <div className="aspect-[4/5] flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
+      {/* Inner wrapper: height driven by content, no fixed aspect ratio */}
+      <div className="flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
 
-        {/* Image area — fills top ~54% of the square card */}
-        <div className="relative flex-[0_0_54%] bg-gray-100 overflow-hidden">
+        {/* Image area — 3:2 aspect ratio, self-contained */}
+        <div className="relative w-full aspect-[3/2] bg-gray-100 overflow-hidden">
           <Image
             src={product.image}
             alt={product.name}
@@ -131,49 +131,44 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </motion.button>
         </div>
 
-        {/* Card content — fills remaining ~46% */}
-        <div className="flex-1 flex flex-col p-3">
+        {/* Card content — natural height, ends after last element */}
+        <div className="p-3 flex flex-col gap-2">
 
-          {/* Top row: name + description left, quantity counter right */}
-          <div className="flex items-start gap-2">
-
-            {/* Left: name + description */}
-            <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-              <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
-              <p className="text-gray-400 text-xs truncate">{product.description}</p>
-            </div>
-
-            {/* Right: quantity counter — horizontal row [ − ] [ count ] [ + ] */}
-            <div className="flex flex-row items-center bg-gray-100 rounded-full px-1 py-0.5 shrink-0 gap-0.5">
-              <button
-                aria-label="Decrease quantity"
-                onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
-                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
-              >−</button>
-              <span className="text-[10px] font-semibold text-gray-800 w-4 text-center leading-none">{qty}</span>
-              <button
-                aria-label="Increase quantity"
-                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
-              >+</button>
-            </div>
-
+          {/* Name + description */}
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
+            <p className="text-gray-400 text-xs truncate">{product.description}</p>
           </div>
 
-          {/* Bottom row: price left, Add to Cart right */}
-          <div className="mt-2 flex items-center justify-between">
-            <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
+          {/* Price */}
+          <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
+
+          {/* Quantity counter — w-full, matches Add to Cart width */}
+          <div className="w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
             <button
-              className="bg-[#014aad] text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1.5 whitespace-nowrap"
-              onClick={handleAddToCart}
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
-              Add to Cart
-            </button>
+              aria-label="Decrease quantity"
+              onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
+              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+            >−</button>
+            <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
+            <button
+              aria-label="Increase quantity"
+              onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+            >+</button>
           </div>
+
+          {/* Add to Cart — w-full, same width as counter */}
+          <button
+            className="w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-1.5"
+            onClick={handleAddToCart}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            Add to Cart
+          </button>
 
         </div>
 
