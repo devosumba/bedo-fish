@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, type MotionValue } from 'framer-motion';
 
 // ─── Mission paragraph tokens ──────────────────────────────────────────────────
 // Multi-word blue phrases are kept as single token units so they animate
@@ -60,21 +60,34 @@ const ENTRIES = [
 ];
 
 // ─── Image strip ──────────────────────────────────────────────────────────────
-// Alternating portrait / landscape with staggered vertical offsets.
-// 11 slots in the DOM: base pattern 1-2-3-4-5 repeated twice + first image once more.
+// Strictly alternating portrait / landscape with staggered vertical offsets.
+// BASE_IMAGES[0,2,4] are portraits; [1,3] are landscapes.
 
 type ImageDef = { portrait: boolean; yOffset: number };
 
 const BASE_IMAGES: ImageDef[] = [
-  { portrait: true,  yOffset: -32 }, // 1 — portrait, shifted up
-  { portrait: false, yOffset:  32 }, // 2 — landscape, shifted down
-  { portrait: true,  yOffset:   0 }, // 3 — portrait, centered (visual anchor)
-  { portrait: false, yOffset:  32 }, // 4 — landscape, shifted down
-  { portrait: true,  yOffset: -32 }, // 5 — portrait, shifted up
+  { portrait: true,  yOffset: -32 }, // 0 → Image 1 — portrait, shifted up
+  { portrait: false, yOffset:  32 }, // 1 → Image 2 — landscape, shifted down
+  { portrait: true,  yOffset:   0 }, // 2 → Image 3 — portrait, centered
+  { portrait: false, yOffset:  32 }, // 3 → Image 4 — landscape, shifted down
+  { portrait: true,  yOffset: -32 }, // 4 → Image 5 — portrait, shifted up
 ];
 
-// 11 slots: 0 1 2 3 4  0 1 2 3 4  0
-const IMG_SLOTS = [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0];
+// 4 full sets of [0,1,2,3,4]. Each set ends on portrait (index 4) and the next
+// set starts on portrait (index 0), creating a P→P collision at every boundary.
+// Fix: insert defIndex 1 (landscape) as a bridge between sets.
+// Result: [set1] L [set2] L [set3] L [set4] = 5+1+5+1+5+1+5 = 23 slots.
+// Orientation sequence: P L P L P | L | P L P L P | L | P L P L P | L | P L P L P
+// Every adjacent pair is P-L or L-P — no two consecutive same orientations.
+const IMG_SLOTS = [
+  0, 1, 2, 3, 4,  // set 1
+  1,              // bridge — landscape keeps alternation across boundary
+  0, 1, 2, 3, 4,  // set 2
+  1,              // bridge
+  0, 1, 2, 3, 4,  // set 3
+  1,              // bridge
+  0, 1, 2, 3, 4,  // set 4
+];
 
 // Dot components — filled circle + dashed outline ring via outline-offset
 const OrangeDot = () => (
@@ -115,9 +128,10 @@ function Word({
 const ExperienceSection = () => {
   const sectionRef         = useRef<HTMLElement>(null);
   const imageContainerRef  = useRef<HTMLDivElement>(null);
+  const stickyRef          = useRef<HTMLDivElement>(null);
+  const stripRef           = useRef<HTMLDivElement>(null);
 
   // ── Paragraph scroll-driven word reveal ──────────────────────────────────
-  // Progress 0→1 as section top moves from 80% to 20% of viewport height.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start 0.8', 'start 0.2'],
@@ -125,14 +139,24 @@ const ExperienceSection = () => {
   const N = TOKENS.length;
 
   // ── Image strip horizontal scroll ────────────────────────────────────────
-  // Progress 0→1 as the image container scrolls from entering to leaving viewport.
-  // 11 slots: 7 portraits (180px) + 4 landscapes (290px) + 10 gaps (20px) ≈ 2630px.
-  // Strip starts 5vw right of left edge and translates left ~135vw to expose all slots.
+  // imageProgress goes 0→1 as the container scrolls from entering to leaving viewport.
+  // xVal is updated on every progress tick using actual DOM measurements so the
+  // translation ends precisely when the last image is flush with the container edge.
   const { scrollYProgress: imageProgress } = useScroll({
     target: imageContainerRef,
     offset: ['start end', 'end start'],
   });
-  const x = useTransform(imageProgress, [0, 1], ['5vw', '-135vw']);
+  const xVal = useMotionValue(0);
+
+  useEffect(() => {
+    return imageProgress.on('change', (latest) => {
+      const sticky = stickyRef.current;
+      const strip  = stripRef.current;
+      if (!sticky || !strip) return;
+      const maxTranslate = Math.max(0, strip.scrollWidth - sticky.clientWidth);
+      xVal.set(-latest * maxTranslate);
+    });
+  }, [imageProgress, xVal]);
 
   // ── Timeline reveal observer (unchanged) ─────────────────────────────────
   useEffect(() => {
@@ -175,7 +199,7 @@ const ExperienceSection = () => {
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 mb-10 md:mb-16">
         <p
-          className="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
+          className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
         >
           {TOKENS.map((token, i) => (
             <Word
@@ -192,13 +216,14 @@ const ExperienceSection = () => {
 
       {/* ── Scroll-driven image strip ─────────────────────────────────────
            300vh outer div creates scroll room. Inner sticky div pins to
-           viewport. Strip of 11 slots (1-2-3-4-5 × 2 + 1) translates left
-           as the user scrolls down, alternating portrait/landscape with
-           staggered vertical offsets.                                        */}
+           viewport. 23-slot strip (4 sets × 5 images + 3 landscape bridges)
+           translates left. xVal is computed from actual DOM widths so the
+           last image lands flush with the container edge on scroll end.      */}
       <div ref={imageContainerRef} style={{ height: '300vh' }}>
-        <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+        <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden flex items-center">
           <motion.div
-            style={{ x }}
+            ref={stripRef}
+            style={{ x: xVal }}
             className="flex items-center gap-4 md:gap-5 px-6 md:px-10 will-change-transform"
           >
             {IMG_SLOTS.map((defIndex, slotIndex) => {
