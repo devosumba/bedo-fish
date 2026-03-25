@@ -63,7 +63,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
     e.stopPropagation();
     setLiked((v) => !v);
     setHeartPop(true);
-    setTimeout(() => setHeartPop(false), 300);
+    setTimeout(() => setHeartPop(false), 200);
   }
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -107,22 +107,22 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             {product.size}
           </span>
 
-          {/* Like button — bottom-right, hover scale + click pop via Framer Motion */}
+          {/* Like button — bottom-right: solid #014aad circle, white heart */}
           <motion.button
             aria-label={liked ? 'Unlike' : 'Like'}
             onClick={handleLike}
-            whileHover={{ scale: 1.2 }}
-            animate={heartPop ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            animate={heartPop ? { scale: [1, 0.9, 1] } : { scale: 1 }}
             transition={heartPop
-              ? { duration: 0.3, ease: 'easeOut', times: [0, 0.5, 1] }
+              ? { duration: 0.2, ease: 'easeOut', times: [0, 0.5, 1] }
               : { duration: 0.2, ease: 'easeOut' }
             }
-            className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
+            className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-[#014aad]"
           >
             <svg
               width="14" height="14" viewBox="0 0 24 24"
-              fill={liked ? '#014aad' : 'none'}
-              stroke="#014aad"
+              fill={liked ? 'white' : 'none'}
+              stroke="white"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
               aria-hidden="true"
             >
@@ -143,19 +143,19 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
               <p className="text-gray-400 text-xs truncate">{product.description}</p>
             </div>
 
-            {/* Right: quantity counter — vertical stack */}
-            <div className="flex flex-col items-center bg-gray-100 rounded-full px-1.5 py-1 shrink-0 gap-0.5">
-              <button
-                aria-label="Increase quantity"
-                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-                className="w-4 h-4 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
-              >+</button>
-              <span className="text-[10px] font-semibold text-gray-800 leading-none">{qty}</span>
+            {/* Right: quantity counter — horizontal row [ − ] [ count ] [ + ] */}
+            <div className="flex flex-row items-center bg-gray-100 rounded-full px-1 py-0.5 shrink-0 gap-0.5">
               <button
                 aria-label="Decrease quantity"
                 onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
-                className="w-4 h-4 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
               >−</button>
+              <span className="text-[10px] font-semibold text-gray-800 w-4 text-center leading-none">{qty}</span>
+              <button
+                aria-label="Increase quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+              >+</button>
             </div>
 
           </div>
