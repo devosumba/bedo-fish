@@ -36,9 +36,9 @@ const TABS: Array<{ label: string; products: Product[] }> = [
   {
     label: 'Omena',
     products: [
-      { id: 7, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '250ml', badge: 'Coming Soon' },
-      { id: 8, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '500ml', badge: 'Coming Soon' },
-      { id: 9, name: 'Omena', description: 'Sun-dried omena from Lake Victoria', price: 'Ksh 0.00', image: '/images/omena-prod.jpg', size: '1kg',   badge: 'Coming Soon' },
+      { id: 7, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 180', image: '/images/omena-prod.jpg', size: '250ml' },
+      { id: 8, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 300', image: '/images/omena-prod.jpg', size: '500ml' },
+      { id: 9, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 580', image: '/images/omena-prod.jpg', size: '1000ml' },
     ],
   },
 ];
