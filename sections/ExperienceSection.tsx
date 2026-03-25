@@ -59,6 +59,23 @@ const ENTRIES = [
   { company: 'D.Light',              dates: '2021 – 2022',    title: 'UX Designer',        orange: false },
 ];
 
+// ─── Image strip ──────────────────────────────────────────────────────────────
+// Alternating portrait / landscape with staggered vertical offsets.
+// 11 slots in the DOM: base pattern 1-2-3-4-5 repeated twice + first image once more.
+
+type ImageDef = { portrait: boolean; yOffset: number };
+
+const BASE_IMAGES: ImageDef[] = [
+  { portrait: true,  yOffset: -32 }, // 1 — portrait, shifted up
+  { portrait: false, yOffset:  32 }, // 2 — landscape, shifted down
+  { portrait: true,  yOffset:   0 }, // 3 — portrait, centered (visual anchor)
+  { portrait: false, yOffset:  32 }, // 4 — landscape, shifted down
+  { portrait: true,  yOffset: -32 }, // 5 — portrait, shifted up
+];
+
+// 11 slots: 0 1 2 3 4  0 1 2 3 4  0
+const IMG_SLOTS = [0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0];
+
 // Dot components — filled circle + dashed outline ring via outline-offset
 const OrangeDot = () => (
   <div
@@ -109,13 +126,13 @@ const ExperienceSection = () => {
 
   // ── Image strip horizontal scroll ────────────────────────────────────────
   // Progress 0→1 as the image container scrolls from entering to leaving viewport.
+  // 11 slots: 7 portraits (180px) + 4 landscapes (290px) + 10 gaps (20px) ≈ 2630px.
+  // Strip starts 5vw right of left edge and translates left ~135vw to expose all slots.
   const { scrollYProgress: imageProgress } = useScroll({
     target: imageContainerRef,
     offset: ['start end', 'end start'],
   });
-  // Strip translates from first image visible → last image visible.
-  // 5 images × ~38vw + gaps ≈ 200vw total. Move ~110vw across the scroll range.
-  const x = useTransform(imageProgress, [0, 1], ['5vw', '-115vw']);
+  const x = useTransform(imageProgress, [0, 1], ['5vw', '-135vw']);
 
   // ── Timeline reveal observer (unchanged) ─────────────────────────────────
   useEffect(() => {
@@ -158,7 +175,7 @@ const ExperienceSection = () => {
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 mb-10 md:mb-16">
         <p
-          className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
+          className="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
         >
           {TOKENS.map((token, i) => (
             <Word
@@ -173,26 +190,35 @@ const ExperienceSection = () => {
         </p>
       </div>
 
-      {/* ── Scroll-driven image strip (Solidroad pattern) ──────────────────
-           Tall outer div creates scroll distance. Inner sticky div pins to
-           the viewport while the strip translates horizontally with scroll.  */}
-      <div ref={imageContainerRef} style={{ height: '250vh' }}>
+      {/* ── Scroll-driven image strip ─────────────────────────────────────
+           300vh outer div creates scroll room. Inner sticky div pins to
+           viewport. Strip of 11 slots (1-2-3-4-5 × 2 + 1) translates left
+           as the user scrolls down, alternating portrait/landscape with
+           staggered vertical offsets.                                        */}
+      <div ref={imageContainerRef} style={{ height: '300vh' }}>
         <div className="sticky top-0 h-screen overflow-hidden flex items-center">
           <motion.div
             style={{ x }}
-            className="flex gap-4 md:gap-6 px-4 md:px-8 will-change-transform"
+            className="flex items-center gap-4 md:gap-5 px-6 md:px-10 will-change-transform"
           >
-            {[0, 1, 2, 3, 4].map((n) => (
-              <div
-                key={n}
-                className="relative shrink-0 w-[80vw] md:w-[38vw] aspect-[3/4] rounded-2xl bg-gray-200 overflow-hidden"
-              >
-                {/* Placeholder — swap for <Image> when real assets are provided */}
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm font-medium">
-                  Image {n + 1}
+            {IMG_SLOTS.map((defIndex, slotIndex) => {
+              const def = BASE_IMAGES[defIndex];
+              return (
+                <div
+                  key={slotIndex}
+                  className={`relative shrink-0 rounded-2xl bg-gray-200 overflow-hidden ${
+                    def.portrait
+                      ? 'w-[120px] md:w-[180px] aspect-[3/4]'
+                      : 'w-[200px] md:w-[290px] aspect-[16/9]'
+                  }`}
+                  style={{ transform: `translateY(${def.yOffset}px)` }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-[10px] font-medium">
+                    Image {defIndex + 1}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </motion.div>
         </div>
       </div>
