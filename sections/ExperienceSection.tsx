@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
 
 // ─── Mission paragraph tokens ──────────────────────────────────────────────────
 // Multi-word blue phrases are kept as single token units so they animate
@@ -73,34 +74,40 @@ const DarkDot = () => (
   />
 );
 
+// ─── Per-word span — calls useTransform inside so hooks rules are satisfied ──
+
+function Word({
+  progress, start, end, blue, text,
+}: {
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+  blue: boolean;
+  text: string;
+}) {
+  const color = useTransform(
+    progress,
+    [start, end],
+    ['rgba(1, 74, 173, 0.15)', blue ? '#014aad' : '#000000'],
+  );
+  return <motion.span style={{ color }}>{text}{' '}</motion.span>;
+}
+
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 const ExperienceSection = () => {
-  const sectionRef    = useRef<HTMLElement>(null);
-  const paragraphRef  = useRef<HTMLParagraphElement>(null);
-  const [revealedCount, setRevealedCount] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  // ── Word-by-word reveal observer (threshold 0.25) ────────────────────────
-  useEffect(() => {
-    const para = paragraphRef.current;
-    if (!para) return;
+  // Scroll-driven progress: 0 when section top enters at 80% of viewport,
+  // 1 when section top reaches 20% of viewport — mirrors Solidroad pattern.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start 0.8', 'start 0.2'],
+  });
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer.disconnect();
-        TOKENS.forEach((_, i) => {
-          setTimeout(() => setRevealedCount(i + 1), i * 100);
-        });
-      },
-      { threshold: 0.25 },
-    );
+  const N = TOKENS.length;
 
-    observer.observe(para);
-    return () => observer.disconnect();
-  }, []);
-
-  // ── Timeline reveal observer (existing, unchanged) ───────────────────────
+  // ── Timeline reveal observer (unchanged) ─────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -136,29 +143,23 @@ const ExperienceSection = () => {
 
   return (
     <section
-      id="experience"
+      id="our-story"
       ref={sectionRef}
       className="relative z-[2] bg-white w-full py-10 md:py-14 overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-4 md:px-8">
 
-        {/* ── Mission paragraph — word-by-word scroll reveal ─────────────── */}
-        <p
-          ref={paragraphRef}
-          className="text-center text-2xl md:text-3xl font-bold leading-relaxed mb-10 md:mb-12 max-w-3xl mx-auto"
-        >
+        {/* ── Mission paragraph — scroll-driven word reveal (Solidroad pattern) */}
+        <p className="text-center text-2xl md:text-3xl font-bold leading-relaxed mb-10 md:mb-12 max-w-3xl mx-auto">
           {TOKENS.map((token, i) => (
-            <span
+            <Word
               key={i}
-              style={{
-                color: i < revealedCount
-                  ? (token.blue ? '#014aad' : '#000000')
-                  : 'rgba(1, 74, 173, 0.15)',
-                transition: 'color 300ms ease',
-              }}
-            >
-              {token.text}{' '}
-            </span>
+              progress={scrollYProgress}
+              start={i / N}
+              end={(i + 1) / N}
+              blue={token.blue}
+              text={token.text}
+            />
           ))}
         </p>
 

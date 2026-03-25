@@ -15,7 +15,7 @@ import { useCart } from '../context/CartContext';
 const NAV_ITEMS = [
   { label: 'Products',  href: '#products',   section: 'products'   },
   { label: 'Shop',      href: '#portfolio',  section: 'portfolio'  },
-  { label: 'Our Story', href: '#experience', section: 'experience' },
+  { label: 'Our Story', href: '#our-story', section: 'our-story' },
   { label: 'Impact',    href: '#impact',     section: 'impact'     },
   { label: 'Invest',    href: '#contact',    section: 'contact'    },
 ];
@@ -28,7 +28,7 @@ export default function Navbar() {
   /* Active section tracking */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-    ['hero', 'products', 'portfolio', 'experience', 'impact', 'contact'].forEach((id) => {
+    ['hero', 'products', 'portfolio', 'our-story', 'impact', 'contact'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const obs = new IntersectionObserver(
