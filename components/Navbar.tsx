@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
 const NAV_ITEMS = [
-  { label: 'Products',  href: '#about',     section: 'about'      },
+  { label: 'Products',  href: '#products',   section: 'products'   },
   { label: 'Shop',      href: '#portfolio',  section: 'portfolio'  },
   { label: 'Our Story', href: '#experience', section: 'experience' },
   { label: 'Impact',    href: '#impact',     section: 'impact'     },
@@ -26,7 +26,7 @@ export default function Navbar() {
   /* Active section tracking */
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-    ['hero', 'about', 'portfolio', 'experience', 'impact', 'contact'].forEach((id) => {
+    ['hero', 'products', 'portfolio', 'experience', 'impact', 'contact'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
       const obs = new IntersectionObserver(
