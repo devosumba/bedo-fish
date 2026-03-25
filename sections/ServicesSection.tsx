@@ -82,8 +82,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       transition={{ delay: index * 0.08 }}
       className="product-card relative overflow-visible rounded-2xl"
     >
-      {/* Inner wrapper: aspect-square + overflow-hidden for content clipping */}
-      <div className="aspect-square flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
+      {/* Inner wrapper: aspect-[4/5] + overflow-hidden for content clipping */}
+      <div className="aspect-[4/5] flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
 
         {/* Image area — fills top ~54% of the square card */}
         <div className="relative flex-[0_0_54%] bg-gray-100 overflow-hidden">
@@ -160,8 +160,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
           </div>
 
-          {/* Bottom row: price left, Add to Cart right — pushed to bottom */}
-          <div className="mt-auto flex items-center justify-between">
+          {/* Bottom row: price left, Add to Cart right */}
+          <div className="mt-2 flex items-center justify-between">
             <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
             <button
               className="bg-[#014aad] text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1.5 whitespace-nowrap"
