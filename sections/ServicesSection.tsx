@@ -134,14 +134,14 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         {/* Card content — natural height, ends after last element */}
         <div className="p-3 flex flex-col gap-2">
 
+          {/* Price — directly below image/heart */}
+          <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
+
           {/* Name + description */}
           <div className="flex flex-col gap-0.5 min-w-0">
             <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
             <p className="text-gray-400 text-xs truncate">{product.description}</p>
           </div>
-
-          {/* Price */}
-          <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
 
           {/* Quantity counter — w-full, matches Add to Cart width */}
           <div className="w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
