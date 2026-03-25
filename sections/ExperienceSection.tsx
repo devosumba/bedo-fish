@@ -1,7 +1,53 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+
+// ─── Mission paragraph tokens ──────────────────────────────────────────────────
+// Multi-word blue phrases are kept as single token units so they animate
+// and color together. Punctuation stays attached to its token.
+
+const TOKENS: { text: string; blue: boolean }[] = [
+  { text: 'We',                       blue: false },
+  { text: 'believe',                  blue: false },
+  { text: 'great',                    blue: false },
+  { text: 'fish',                     blue: true  },
+  { text: 'should',                   blue: false },
+  { text: 'do',                       blue: false },
+  { text: 'more',                     blue: false },
+  { text: 'than',                     blue: false },
+  { text: 'taste',                    blue: false },
+  { text: 'good.',                    blue: false },
+  { text: 'Bedo Fish',                blue: true  },
+  { text: 'is',                       blue: false },
+  { text: 'a',                        blue: false },
+  { text: 'women-led',                blue: true  },
+  { text: 'social',                   blue: false },
+  { text: 'enterprise',               blue: false },
+  { text: 'roasting',                 blue: false },
+  { text: 'premium',                  blue: false },
+  { text: 'Lake Victoria',            blue: true  },
+  { text: 'tilapia',                  blue: false },
+  { text: 'while',                    blue: false },
+  { text: 'creating',                 blue: false },
+  { text: 'dignified work',           blue: true  },
+  { text: 'for',                      blue: false },
+  { text: 'women',                    blue: false },
+  { text: 'in',                       blue: false },
+  { text: 'fishing communities.',     blue: true  },
+  { text: 'When',                     blue: false },
+  { text: 'you',                      blue: false },
+  { text: 'choose',                   blue: false },
+  { text: 'Bedo,',                    blue: true  },
+  { text: 'you',                      blue: false },
+  { text: 'are',                      blue: false },
+  { text: 'backing',                  blue: false },
+  { text: 'a',                        blue: false },
+  { text: 'better',                   blue: false },
+  { text: 'food system',              blue: true  },
+  { text: 'from',                     blue: false },
+  { text: 'the',                      blue: false },
+  { text: 'source.',                  blue: false },
+];
 
 // ─── Timeline data ────────────────────────────────────────────────────────────
 
@@ -30,8 +76,31 @@ const DarkDot = () => (
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 const ExperienceSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef    = useRef<HTMLElement>(null);
+  const paragraphRef  = useRef<HTMLParagraphElement>(null);
+  const [revealedCount, setRevealedCount] = useState(0);
 
+  // ── Word-by-word reveal observer (threshold 0.25) ────────────────────────
+  useEffect(() => {
+    const para = paragraphRef.current;
+    if (!para) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        TOKENS.forEach((_, i) => {
+          setTimeout(() => setRevealedCount(i + 1), i * 100);
+        });
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(para);
+    return () => observer.disconnect();
+  }, []);
+
+  // ── Timeline reveal observer (existing, unchanged) ───────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -73,27 +142,25 @@ const ExperienceSection = () => {
     >
       <div className="max-w-5xl mx-auto px-4 md:px-8">
 
-        {/* ── Heading ────────────────────────────────────────────────────── */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-4xl md:text-5xl font-extrabold text-center text-[#0e0e0e] mb-3 leading-tight tracking-tight"
+        {/* ── Mission paragraph — word-by-word scroll reveal ─────────────── */}
+        <p
+          ref={paragraphRef}
+          className="text-center text-2xl md:text-3xl font-bold leading-relaxed mb-10 md:mb-12 max-w-3xl mx-auto"
         >
-          <span className="text-black">Work </span><span className="text-[#014aad]">Experience</span>
-        </motion.h2>
-
-        {/* ── Subheading ─────────────────────────────────────────────────── */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.18 }}
-          className="text-center text-[#555555] text-[16px] leading-relaxed mb-10 md:mb-12"
-        >
-          Five years in, I&apos;ve shipped full-stack systems across fintech, health-tech, and humanitarian tech
-        </motion.p>
+          {TOKENS.map((token, i) => (
+            <span
+              key={i}
+              style={{
+                color: i < revealedCount
+                  ? (token.blue ? '#014aad' : '#000000')
+                  : 'rgba(1, 74, 173, 0.15)',
+                transition: 'color 300ms ease',
+              }}
+            >
+              {token.text}{' '}
+            </span>
+          ))}
+        </p>
 
         {/* ── Desktop timeline ───────────────────────────────────────────── */}
         <div className="hidden md:block relative">
