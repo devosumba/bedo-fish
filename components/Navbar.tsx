@@ -10,6 +10,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { useCart } from '../context/CartContext';
 
 const NAV_ITEMS = [
   { label: 'Products',  href: '#products',   section: 'products'   },
@@ -22,6 +23,7 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { cartCount } = useCart();
 
   /* Active section tracking */
   useEffect(() => {
@@ -94,11 +96,16 @@ export default function Navbar() {
         <div className="flex items-center gap-3 pr-2">
           {/* Cart */}
           <a href="#portfolio" onClick={() => setActiveSection('portfolio')} aria-label="Cart"
-            className="text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
+            className="relative text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
             </svg>
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
+                {cartCount}
+              </span>
+            )}
           </a>
 
           {/* Separator */}
@@ -145,11 +152,16 @@ export default function Navbar() {
 
           {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
-            <a href="#portfolio" aria-label="Cart" className="text-[#014aad] hover:text-[#0145a3] transition-colors">
+            <a href="#portfolio" aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
               </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
+                  {cartCount}
+                </span>
+              )}
             </a>
             <button
               onClick={() => setMobileOpen((v) => !v)}
