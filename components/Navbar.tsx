@@ -2,6 +2,7 @@
 
 /*
  * Navbar — sticky top-3 (12px offset), pill height h-[67px] desktop / h-[55px] mobile
+ * Desktop pill width: max-w-6xl on md, lg:max-w-[74vw] on lg+ (~74% viewport, centered)
  * No scroll-conditional background. Pill floats directly over hero via z-[1000].
  * Icons (right, desktop): Cart | separator | TikTok | Instagram | Phone
  */
@@ -56,7 +57,7 @@ export default function Navbar() {
     >
       {/* ── Desktop pill ─────────────────────────────────────────────── */}
       <div
-        className="hidden md:grid w-full max-w-6xl bg-white rounded-full h-[67px] px-4 overflow-visible"
+        className="hidden md:grid w-full max-w-6xl lg:max-w-[74vw] bg-white rounded-full h-[67px] px-4 overflow-visible"
         style={{
           gridTemplateColumns: 'auto 1fr auto',
           alignItems: 'center',
