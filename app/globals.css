@@ -258,6 +258,38 @@ body {
   opacity: 1;
 }
 
+/* Product cards in Our Offerings — mirrors .portfolio-card hover exactly */
+.product-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 70%,
+    #014aad    80%,
+    #2a6fd4    90%,
+    #014aad   100%
+  );
+  animation: rotateBorder 2s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
+}
+
+.product-card:hover::before {
+  opacity: 1;
+}
+
 /* ─── Experience timeline scroll animations ──────────────────────────────── */
 
 .timeline-entry-left {

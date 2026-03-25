@@ -44,53 +44,60 @@ const TABS: Array<{ label: string; products: Product[] }> = [
 
 const PARAGRAPHS = [
   `Sustainably sourced from Lake Victoria to your table. Roasted fresh daily using energy-efficient ovens. No preservatives, no shortcuts! Packaged to international standards.`,
-  `Bedo Fish operates a vertically integrated production model anchored in sustainable sourcing from Lake Victoria, energy-efficient roasting process and international-grade packaging standards position us to meet growing demand across retail, export, and institutional supply chains.`,
+  `Fresh, sustainably sourced fish roasted daily and delivered with the quality and care your table deserves.`,
 ] as const;
 
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
   return (
+    // Outer wrapper: overflow-visible so the ::before rotating ring (inset: -2px)
+    // isn't clipped — mirrors the .portfolio-card two-layer pattern exactly.
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="aspect-square flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:-translate-y-1 hover:shadow-xl transition-all duration-300 cursor-pointer"
+      className="product-card relative overflow-visible rounded-2xl"
     >
-      {/* Image placeholder — fills top ~54% of the square card */}
-      <div className="relative flex-[0_0_54%] bg-gray-100 flex items-center justify-center overflow-hidden">
-        {product.badge && (
-          <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
-            {product.badge}
-          </span>
-        )}
-        {/* Neutral image placeholder icon */}
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gray-300">
-          <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-          <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5"/>
-          <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div>
+      {/* Inner wrapper: aspect-square + overflow-hidden for content clipping */}
+      <div className="aspect-square flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
 
-      {/* Card content — fills remaining ~46% */}
-      <div className="flex-1 flex flex-col justify-between p-3 min-h-0">
-        <div>
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
-          <p className="text-gray-400 text-xs mt-0.5 truncate">{product.description}</p>
+        {/* Image placeholder — fills top ~54% of the square card */}
+        <div className="relative flex-[0_0_54%] bg-gray-100 flex items-center justify-center overflow-hidden">
+          {product.badge && (
+            <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
+              {product.badge}
+            </span>
+          )}
+          {/* Neutral image placeholder icon */}
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-gray-300">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+            <circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
-        <div className="flex items-center justify-between mt-1.5">
-          <span className="font-bold text-gray-900 text-sm">{product.price}</span>
-          <button
-            className="bg-[#014aad] text-white text-[9px] font-semibold px-2 py-1.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1 whitespace-nowrap"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            Add to Cart
-          </button>
+
+        {/* Card content — fills remaining ~46% */}
+        <div className="flex-1 flex flex-col justify-between p-3 min-h-0">
+          <div>
+            <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
+            <p className="text-gray-400 text-xs mt-0.5 truncate">{product.description}</p>
+          </div>
+          <div className="flex items-center justify-between mt-1.5">
+            <span className="font-bold text-gray-900 text-sm">{product.price}</span>
+            <button
+              className="bg-[#014aad] text-white text-[9px] font-semibold px-2 py-1.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1 whitespace-nowrap"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Add to Cart
+            </button>
+          </div>
         </div>
+
       </div>
     </motion.div>
   );
@@ -235,7 +242,7 @@ const ServicesSection = () => {
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-[2] bg-[#0e0e0e] md:w-full py-16 md:py-24 overflow-hidden rounded-t-[2rem] -mt-6"
+      className="relative z-[2] bg-[#0e0e0e] md:w-full py-16 md:py-24 overflow-hidden rounded-[2rem] -mt-6"
     >
       {/* Decorative blobs */}
       <div className="absolute -top-24 left-[20%] w-96 h-96 bg-[#014aad] opacity-[0.07] rounded-full blur-[80px] pointer-events-none" />
@@ -293,7 +300,7 @@ const ServicesSection = () => {
         </div>
 
         {/* ── Pill tabs ────────────────────────────────────────────────────── */}
-        <div className="flex items-center gap-2 mb-8 flex-wrap">
+        <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
           {TABS.map((tab, i) => (
             <button
               key={tab.label}
