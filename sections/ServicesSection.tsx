@@ -54,9 +54,17 @@ const PARAGRAPHS = [
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
-  const [qty,   setQty]   = useState(0);
-  const [liked, setLiked] = useState(false);
+  const [qty,      setQty]      = useState(0);
+  const [liked,    setLiked]    = useState(false);
+  const [heartPop, setHeartPop] = useState(false);
   const { addToCart } = useCart();
+
+  function handleLike(e: React.MouseEvent) {
+    e.stopPropagation();
+    setLiked((v) => !v);
+    setHeartPop(true);
+    setTimeout(() => setHeartPop(false), 300);
+  }
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation();
@@ -87,81 +95,86 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             className="object-cover"
           />
 
-          {/* Named badge — top-left */}
+          {/* Named badge — top-left, matches size badge visually */}
           {product.badge && (
             <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
               {product.badge}
             </span>
           )}
 
-          {/* Size badge — top-right */}
-          <span className="absolute top-2.5 right-2.5 z-10 text-[13px] font-bold px-3.5 py-1.5 rounded-full text-white bg-[#014aad]">
+          {/* Size badge — top-right, same pill size as named badge */}
+          <span className="absolute top-2.5 right-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
             {product.size}
           </span>
 
-          {/* Like button — bottom-right */}
-          <button
+          {/* Like button — bottom-right, hover scale + click pop via Framer Motion */}
+          <motion.button
             aria-label={liked ? 'Unlike' : 'Like'}
-            onClick={(e) => { e.stopPropagation(); setLiked((v) => !v); }}
+            onClick={handleLike}
+            whileHover={{ scale: 1.2 }}
+            animate={heartPop ? { scale: [1, 1.3, 1] } : { scale: 1 }}
+            transition={heartPop
+              ? { duration: 0.3, ease: 'easeOut', times: [0, 0.5, 1] }
+              : { duration: 0.2, ease: 'easeOut' }
+            }
             className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-colors"
           >
             <svg
               width="14" height="14" viewBox="0 0 24 24"
               fill={liked ? '#014aad' : 'none'}
-              stroke={liked ? '#014aad' : '#9ca3af'}
+              stroke="#014aad"
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
               aria-hidden="true"
             >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
-          </button>
+          </motion.button>
         </div>
 
         {/* Card content — fills remaining ~46% */}
         <div className="flex-1 flex flex-col p-3">
 
-          {/* Name + description — stacked tight */}
-          <div className="flex flex-col gap-1">
-            <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
-            <p className="text-gray-400 text-xs truncate">{product.description}</p>
-          </div>
+          {/* Top row: name + description left, quantity counter right */}
+          <div className="flex items-start gap-2">
 
-          {/* Action rows — pushed to bottom */}
-          <div className="mt-auto flex flex-col gap-1.5">
+            {/* Left: name + description */}
+            <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+              <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
+              <p className="text-gray-400 text-xs truncate">{product.description}</p>
+            </div>
 
-            {/* Row 1: price left, Add to Cart right */}
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
+            {/* Right: quantity counter — vertical stack */}
+            <div className="flex flex-col items-center bg-gray-100 rounded-full px-1.5 py-1 shrink-0 gap-0.5">
               <button
-                className="bg-[#014aad] text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1.5 whitespace-nowrap"
-                onClick={handleAddToCart}
-              >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
-                Add to Cart
-              </button>
-            </div>
-
-            {/* Row 2: quantity counter centered */}
-            <div className="flex justify-center">
-              <div className="flex items-center gap-2 bg-gray-100 rounded-full px-2 py-1">
-                <button
-                  aria-label="Decrease quantity"
-                  onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
-                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-sm font-bold leading-none"
-                >−</button>
-                <span className="text-xs font-semibold text-gray-800 w-4 text-center">{qty}</span>
-                <button
-                  aria-label="Increase quantity"
-                  onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-sm font-bold leading-none"
-                >+</button>
-              </div>
+                aria-label="Increase quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                className="w-4 h-4 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+              >+</button>
+              <span className="text-[10px] font-semibold text-gray-800 leading-none">{qty}</span>
+              <button
+                aria-label="Decrease quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
+                className="w-4 h-4 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-xs font-bold leading-none"
+              >−</button>
             </div>
 
           </div>
+
+          {/* Bottom row: price left, Add to Cart right — pushed to bottom */}
+          <div className="mt-auto flex items-center justify-between">
+            <span className="font-bold text-[#014aad] text-sm">{product.price}</span>
+            <button
+              className="bg-[#014aad] text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-[#0157cc] transition-colors flex items-center gap-1.5 whitespace-nowrap"
+              onClick={handleAddToCart}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Add to Cart
+            </button>
+          </div>
+
         </div>
 
       </div>
