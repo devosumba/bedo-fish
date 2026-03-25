@@ -96,36 +96,41 @@ function Word({
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 const ExperienceSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef         = useRef<HTMLElement>(null);
+  const imageContainerRef  = useRef<HTMLDivElement>(null);
 
-  // Scroll-driven progress: 0 when section top enters at 80% of viewport,
-  // 1 when section top reaches 20% of viewport — mirrors Solidroad pattern.
+  // ── Paragraph scroll-driven word reveal ──────────────────────────────────
+  // Progress 0→1 as section top moves from 80% to 20% of viewport height.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start 0.8', 'start 0.2'],
   });
-
   const N = TOKENS.length;
+
+  // ── Image strip horizontal scroll ────────────────────────────────────────
+  // Progress 0→1 as the image container scrolls from entering to leaving viewport.
+  const { scrollYProgress: imageProgress } = useScroll({
+    target: imageContainerRef,
+    offset: ['start end', 'end start'],
+  });
+  // Strip translates from first image visible → last image visible.
+  // 5 images × ~38vw + gaps ≈ 200vw total. Move ~110vw across the scroll range.
+  const x = useTransform(imageProgress, [0, 1], ['5vw', '-115vw']);
 
   // ── Timeline reveal observer (unchanged) ─────────────────────────────────
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Lower threshold on mobile since the viewport is smaller
     const threshold = window.innerWidth < 768 ? 0.15 : 0.2;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
 
-        // Draw the timeline lines (both desktop + mobile; CSS hides the irrelevant one)
         section.querySelectorAll<HTMLElement>('.timeline-line').forEach(el => {
           el.classList.add('animate-in');
         });
-
-        // Trigger all entry elements simultaneously — CSS transition-delay per element
-        // handles the visual stagger (0s, 0.2s, 0.4s, 0.6s per entry row).
         section.querySelectorAll<HTMLElement>(
           '.timeline-entry-left, .timeline-entry-right, .timeline-dot'
         ).forEach(el => {
@@ -142,15 +147,19 @@ const ExperienceSection = () => {
   }, []);
 
   return (
+    // overflow-hidden removed: sticky inside this section requires unclipped
+    // vertical scroll. overflow-x is clipped by the sticky inner div itself.
     <section
       id="our-story"
       ref={sectionRef}
-      className="relative z-[2] bg-white w-full py-10 md:py-14 overflow-hidden"
+      className="relative z-[2] bg-white w-full py-10 md:py-14"
     >
-      <div className="max-w-5xl mx-auto px-4 md:px-8">
 
-        {/* ── Mission paragraph — scroll-driven word reveal (Solidroad pattern) */}
-        <p className="text-center text-2xl md:text-3xl font-bold leading-relaxed mb-10 md:mb-12 max-w-3xl mx-auto">
+      {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
+      <div className="max-w-5xl mx-auto px-4 md:px-8 mb-10 md:mb-16">
+        <p
+          className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
+        >
           {TOKENS.map((token, i) => (
             <Word
               key={i}
@@ -162,22 +171,44 @@ const ExperienceSection = () => {
             />
           ))}
         </p>
+      </div>
 
-        {/* ── Desktop timeline ───────────────────────────────────────────── */}
+      {/* ── Scroll-driven image strip (Solidroad pattern) ──────────────────
+           Tall outer div creates scroll distance. Inner sticky div pins to
+           the viewport while the strip translates horizontally with scroll.  */}
+      <div ref={imageContainerRef} style={{ height: '250vh' }}>
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+          <motion.div
+            style={{ x }}
+            className="flex gap-4 md:gap-6 px-4 md:px-8 will-change-transform"
+          >
+            {[0, 1, 2, 3, 4].map((n) => (
+              <div
+                key={n}
+                className="relative shrink-0 w-[80vw] md:w-[38vw] aspect-[3/4] rounded-2xl bg-gray-200 overflow-hidden"
+              >
+                {/* Placeholder — swap for <Image> when real assets are provided */}
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm font-medium">
+                  Image {n + 1}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* ── Timeline ───────────────────────────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-4 md:px-8 pt-10 md:pt-14">
+
+        {/* Desktop */}
         <div className="hidden md:block relative">
-          {/* Vertical dashed line — draws top-to-bottom via clip-path animation */}
           <div
             className="absolute left-1/2 -translate-x-px timeline-line"
             style={{ top: 8, bottom: 8, borderLeft: '2px dashed #1a1a2e' }}
           />
-
           <div className="flex flex-col gap-8">
             {ENTRIES.map(({ company, dates, title, orange }, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-[1fr_56px_1fr] items-start"
-              >
-                {/* Left — slides in from left */}
+              <div key={i} className="grid grid-cols-[1fr_56px_1fr] items-start">
                 <div
                   className="text-right pr-8 timeline-entry-left"
                   style={{ transitionDelay: `${i * 0.2}s` }}
@@ -185,16 +216,12 @@ const ExperienceSection = () => {
                   <p className="text-[#0e0e0e] font-bold text-base leading-snug">{company}</p>
                   <p className="text-[#555555] text-sm mt-0.5">{dates}</p>
                 </div>
-
-                {/* Center — dot scales up with slight bounce */}
                 <div
                   className="flex items-start justify-center pt-[3px] timeline-dot"
                   style={{ transitionDelay: `${i * 0.2 + 0.1}s` }}
                 >
                   {orange ? <OrangeDot /> : <DarkDot />}
                 </div>
-
-                {/* Right — slides in from right */}
                 <div
                   className="pl-8 timeline-entry-right"
                   style={{ transitionDelay: `${i * 0.2}s` }}
@@ -207,21 +234,15 @@ const ExperienceSection = () => {
           </div>
         </div>
 
-        {/* ── Mobile timeline ────────────────────────────────────────────── */}
+        {/* Mobile */}
         <div className="md:hidden relative">
-          {/* Center dashed line — same draw animation */}
           <div
             className="absolute left-1/2 -translate-x-px timeline-line"
             style={{ top: 7, bottom: 7, borderLeft: '2px dashed #1a1a2e' }}
           />
-
           <div className="flex flex-col gap-6">
             {ENTRIES.map(({ company, dates, title, orange }, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-[1fr_32px_1fr] items-start"
-              >
-                {/* Left: company + dates — slides from left */}
+              <div key={i} className="grid grid-cols-[1fr_32px_1fr] items-start">
                 <div
                   className="text-right pr-3 timeline-entry-left"
                   style={{ transitionDelay: `${i * 0.2}s` }}
@@ -229,8 +250,6 @@ const ExperienceSection = () => {
                   <p className="text-[#0e0e0e] font-bold text-xs leading-snug">{company}</p>
                   <p className="text-[#555555] text-[11px] mt-0.5">{dates}</p>
                 </div>
-
-                {/* Center: dot scales up */}
                 <div
                   className="flex items-start justify-center pt-[3px] timeline-dot"
                   style={{ transitionDelay: `${i * 0.2 + 0.1}s` }}
@@ -247,8 +266,6 @@ const ExperienceSection = () => {
                     />
                   )}
                 </div>
-
-                {/* Right: title + Full-time — slides from right */}
                 <div
                   className="pl-3 timeline-entry-right"
                   style={{ transitionDelay: `${i * 0.2}s` }}

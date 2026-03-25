@@ -33,7 +33,7 @@ export default function Navbar() {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([e]) => { if (e.isIntersecting) setActiveSection(id); },
-        { threshold: 0.3 }
+        { threshold: 0.5 }
       );
       obs.observe(el);
       observers.push(obs);
