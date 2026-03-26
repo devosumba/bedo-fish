@@ -197,7 +197,7 @@ const ExperienceSection = () => {
     >
 
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
-      <div className="max-w-5xl mx-auto px-4 md:px-8 mb-10 md:mb-16">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 mb-6 md:mb-8">
         <p
           className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
         >
