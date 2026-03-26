@@ -119,7 +119,7 @@ function Word({
     [start, end],
     ['rgba(1, 74, 173, 0.15)', blue ? '#014aad' : '#000000'],
   );
-  return <motion.span style={{ color }}>{text}{' '}</motion.span>;
+  return <motion.span style={{ color, display: 'inline' }}>{text}{' '}</motion.span>;
 }
 
 // ─── Section ──────────────────────────────────────────────────────────────────
