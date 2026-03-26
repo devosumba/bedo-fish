@@ -31,9 +31,11 @@ export default function Navbar() {
     ['hero', 'products', 'portfolio', 'our-story', 'impact', 'contact'].forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
+      // 'our-story' spans ~400vh so threshold:0.5 can never fire in a 100vh viewport.
+      // Use threshold:0 for it so the observer fires the moment any part is visible.
       const obs = new IntersectionObserver(
         ([e]) => { if (e.isIntersecting) setActiveSection(id); },
-        { threshold: 0.5 }
+        { threshold: id === 'our-story' ? 0 : 0.5 }
       );
       obs.observe(el);
       observers.push(obs);

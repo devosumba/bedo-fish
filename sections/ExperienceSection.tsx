@@ -73,20 +73,19 @@ const BASE_IMAGES: ImageDef[] = [
   { portrait: true,  yOffset: -32 }, // 4 → Image 5 — portrait, shifted up
 ];
 
-// 4 full sets of [0,1,2,3,4]. Each set ends on portrait (index 4) and the next
-// set starts on portrait (index 0), creating a P→P collision at every boundary.
-// Fix: insert defIndex 1 (landscape) as a bridge between sets.
-// Result: [set1] L [set2] L [set3] L [set4] = 5+1+5+1+5+1+5 = 23 slots.
-// Orientation sequence: P L P L P | L | P L P L P | L | P L P L P | L | P L P L P
+// 2 full sets of [0,1,2,3,4] plus the first slot of a third set.
+// Each set ends on portrait (index 4); the next set starts on portrait (index 0),
+// creating a P→P collision at every boundary.
+// Fix: insert defIndex 1 (landscape) as a bridge at each set boundary.
+// Result: [set1] L [set2] L [P] = 5+1+5+1+1 = 13 slots.
+// Orientation: P L P L P | L | P L P L P | L | P
 // Every adjacent pair is P-L or L-P — no two consecutive same orientations.
 const IMG_SLOTS = [
   0, 1, 2, 3, 4,  // set 1
-  1,              // bridge — landscape keeps alternation across boundary
+  1,              // bridge — preserves alternation at set boundary
   0, 1, 2, 3, 4,  // set 2
   1,              // bridge
-  0, 1, 2, 3, 4,  // set 3
-  1,              // bridge
-  0, 1, 2, 3, 4,  // set 4
+  0,              // first image of set 3 — scroll terminates here
 ];
 
 // Dot components — filled circle + dashed outline ring via outline-offset
@@ -216,9 +215,9 @@ const ExperienceSection = () => {
 
       {/* ── Scroll-driven image strip ─────────────────────────────────────
            300vh outer div creates scroll room. Inner sticky div pins to
-           viewport. 23-slot strip (4 sets × 5 images + 3 landscape bridges)
-           translates left. xVal is computed from actual DOM widths so the
-           last image lands flush with the container edge on scroll end.      */}
+           viewport. 13-slot strip (2 sets × 5 + 2 bridges + set-3 entry)
+           translates left. xVal uses actual DOM widths so the strip ends
+           precisely when the set-3 entry image is flush with the right edge. */}
       <div ref={imageContainerRef} style={{ height: '300vh' }}>
         <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden flex items-center">
           <motion.div
