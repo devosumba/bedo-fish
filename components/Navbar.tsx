@@ -25,21 +25,43 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { cartCount } = useCart();
 
-  /* Active section tracking */
+  /* Active section tracking — viewport-coverage picker.
+   * Each observer fires at threshold:0.1. All currently-visible sections
+   * are tracked in a Set. On every change the section with the most pixels
+   * visible in the viewport wins, so tall sections (our-story ~400vh) hold
+   * the active state for their entire scroll duration. */
   useEffect(() => {
+    const SECTION_IDS = ['hero', 'products', 'portfolio', 'our-story', 'impact', 'contact'];
+    const visible = new Set<string>();
     const observers: IntersectionObserver[] = [];
-    ['hero', 'products', 'portfolio', 'our-story', 'impact', 'contact'].forEach((id) => {
+
+    const pickActive = () => {
+      let best = '';
+      let bestCoverage = 0;
+      visible.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const coverage = Math.max(0, Math.min(window.innerHeight, r.bottom) - Math.max(0, r.top));
+        if (coverage > bestCoverage) { bestCoverage = coverage; best = id; }
+      });
+      if (best) setActiveSection(best);
+    };
+
+    SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-      // 'our-story' spans ~400vh so threshold:0.5 can never fire in a 100vh viewport.
-      // Use threshold:0 for it so the observer fires the moment any part is visible.
       const obs = new IntersectionObserver(
-        ([e]) => { if (e.isIntersecting) setActiveSection(id); },
-        { threshold: id === 'our-story' ? 0 : 0.5 }
+        ([entry]) => {
+          entry.isIntersecting ? visible.add(id) : visible.delete(id);
+          pickActive();
+        },
+        { threshold: 0.1 }
       );
       obs.observe(el);
       observers.push(obs);
     });
+
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
