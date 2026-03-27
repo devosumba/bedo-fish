@@ -51,12 +51,19 @@ export default function Navbar() {
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
+      // our-story: threshold:0 so the active state fires the instant any part of
+      // the section enters the viewport — the same frame the paragraph reveal begins
+      // (useScroll offset:'start 0.8' also fires on first pixel entering from bottom).
+      // All other sections use 0.1 (10% visible) for a natural mid-scroll transition.
       const obs = new IntersectionObserver(
         ([entry]) => {
           entry.isIntersecting ? visible.add(id) : visible.delete(id);
           pickActive();
         },
-        { threshold: 0.1 }
+        {
+          threshold: id === 'our-story' ? 0 : 0.1,
+          rootMargin: id === 'our-story' ? '0px 0px 0px 0px' : '0px',
+        }
       );
       obs.observe(el);
       observers.push(obs);
