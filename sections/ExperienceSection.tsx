@@ -88,6 +88,35 @@ const IMG_SLOTS = [
   0,              // first image of set 3 — scroll terminates here
 ];
 
+// Real image paths from public/images/
+const PORTRAIT_IMGS = [
+  '/images/portrait-scroll/1.jpg',
+  '/images/portrait-scroll/2.jpg',
+  '/images/portrait-scroll/3.jpg',
+  '/images/portrait-scroll/4.jpg',
+  '/images/portrait-scroll/5.jpg',
+  '/images/portrait-scroll/6.jpg',
+];
+const LANDSCAPE_IMGS = [
+  '/images/landscape-scroll/1.jpg',
+  '/images/landscape-scroll/2.jpg',
+  '/images/landscape-scroll/3.jpg',
+  '/images/landscape-scroll/4.jpg',
+  '/images/landscape-scroll/5.jpg',
+  '/images/landscape-scroll/6.jpg',
+];
+
+// Precompute full slot data: assign real image src to each slot by cycling
+// through the appropriate portrait/landscape array in slot order.
+let _pc = 0, _lc = 0;
+const FULL_SLOTS = IMG_SLOTS.map((defIndex) => {
+  const def = BASE_IMAGES[defIndex];
+  const src = def.portrait
+    ? PORTRAIT_IMGS[_pc++ % PORTRAIT_IMGS.length]
+    : LANDSCAPE_IMGS[_lc++ % LANDSCAPE_IMGS.length];
+  return { ...def, src };
+});
+
 // Dot components — filled circle + dashed outline ring via outline-offset
 const OrangeDot = () => (
   <div
@@ -225,24 +254,24 @@ const ExperienceSection = () => {
             style={{ x: xVal }}
             className="flex items-center gap-4 md:gap-5 px-6 md:px-10 will-change-transform"
           >
-            {IMG_SLOTS.map((defIndex, slotIndex) => {
-              const def = BASE_IMAGES[defIndex];
-              return (
-                <div
-                  key={slotIndex}
-                  className={`relative shrink-0 rounded-2xl bg-gray-200 overflow-hidden ${
-                    def.portrait
-                      ? 'w-[120px] md:w-[180px] aspect-[3/4]'
-                      : 'w-[200px] md:w-[290px] aspect-[16/9]'
-                  }`}
-                  style={{ transform: `translateY(${def.yOffset}px)` }}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-[10px] font-medium">
-                    Image {defIndex + 1}
-                  </div>
-                </div>
-              );
-            })}
+            {FULL_SLOTS.map((slot, slotIndex) => (
+              <div
+                key={slotIndex}
+                className={`relative shrink-0 rounded-2xl overflow-hidden ${
+                  slot.portrait
+                    ? 'w-[120px] md:w-[180px] aspect-[3/4]'
+                    : 'w-[200px] md:w-[290px] aspect-[16/9]'
+                }`}
+                style={{ transform: `translateY(${slot.yOffset}px)` }}
+              >
+                <img
+                  src={slot.src}
+                  alt=""
+                  className="absolute inset-0 w-full h-full object-cover"
+                  draggable={false}
+                />
+              </div>
+            ))}
           </motion.div>
         </div>
       </div>
