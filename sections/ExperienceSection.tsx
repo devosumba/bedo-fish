@@ -50,15 +50,6 @@ const TOKENS: { text: string; blue: boolean }[] = [
   { text: 'source.',                  blue: false },
 ];
 
-// ─── Timeline data ────────────────────────────────────────────────────────────
-
-const ENTRIES = [
-  { company: 'Vaultmont Wealth Lab', dates: '2025 – Present', title: 'Software Engineer',  orange: true  },
-  { company: 'Avrello Tech',         dates: '2023 – 2025',    title: 'Software Engineer',  orange: false },
-  { company: 'Phynix Media UK',      dates: '2021 – 2023',    title: 'Fullstack Engineer', orange: true  },
-  { company: 'D.Light',              dates: '2021 – 2022',    title: 'UX Designer',        orange: false },
-];
-
 // ─── Image strip ──────────────────────────────────────────────────────────────
 // Strictly alternating portrait / landscape with staggered vertical offsets.
 // BASE_IMAGES[0,2,4] are portraits; [1,3] are landscapes.
@@ -117,21 +108,6 @@ const FULL_SLOTS = IMG_SLOTS.map((defIndex) => {
   return { ...def, src };
 });
 
-// Dot components — filled circle + dashed outline ring via outline-offset
-const OrangeDot = () => (
-  <div
-    className="w-4 h-4 rounded-full bg-[#014aad] relative z-10"
-    style={{ outline: '2px dashed #014aad', outlineOffset: '4px' }}
-  />
-);
-
-const DarkDot = () => (
-  <div
-    className="w-4 h-4 rounded-full bg-[#1a1a2e] relative z-10"
-    style={{ outline: '2px dashed #1a1a2e', outlineOffset: '4px' }}
-  />
-);
-
 // ─── Per-word span — calls useTransform inside so hooks rules are satisfied ──
 
 function Word({
@@ -185,35 +161,6 @@ const ExperienceSection = () => {
       xVal.set(-latest * maxTranslate);
     });
   }, [imageProgress, xVal]);
-
-  // ── Timeline reveal observer (unchanged) ─────────────────────────────────
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const threshold = window.innerWidth < 768 ? 0.15 : 0.2;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-
-        section.querySelectorAll<HTMLElement>('.timeline-line').forEach(el => {
-          el.classList.add('animate-in');
-        });
-        section.querySelectorAll<HTMLElement>(
-          '.timeline-entry-left, .timeline-entry-right, .timeline-dot'
-        ).forEach(el => {
-          el.classList.add('animate-in');
-        });
-
-        observer.disconnect();
-      },
-      { threshold }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     // overflow-hidden removed: sticky inside this section requires unclipped
@@ -276,88 +223,6 @@ const ExperienceSection = () => {
         </div>
       </div>
 
-      {/* ── Timeline ───────────────────────────────────────────────────────── */}
-      <div className="max-w-5xl mx-auto px-4 md:px-8 pt-10 md:pt-14">
-
-        {/* Desktop */}
-        <div className="hidden md:block relative">
-          <div
-            className="absolute left-1/2 -translate-x-px timeline-line"
-            style={{ top: 8, bottom: 8, borderLeft: '2px dashed #1a1a2e' }}
-          />
-          <div className="flex flex-col gap-8">
-            {ENTRIES.map(({ company, dates, title, orange }, i) => (
-              <div key={i} className="grid grid-cols-[1fr_56px_1fr] items-start">
-                <div
-                  className="text-right pr-8 timeline-entry-left"
-                  style={{ transitionDelay: `${i * 0.2}s` }}
-                >
-                  <p className="text-[#0e0e0e] font-bold text-base leading-snug">{company}</p>
-                  <p className="text-[#555555] text-sm mt-0.5">{dates}</p>
-                </div>
-                <div
-                  className="flex items-start justify-center pt-[3px] timeline-dot"
-                  style={{ transitionDelay: `${i * 0.2 + 0.1}s` }}
-                >
-                  {orange ? <OrangeDot /> : <DarkDot />}
-                </div>
-                <div
-                  className="pl-8 timeline-entry-right"
-                  style={{ transitionDelay: `${i * 0.2}s` }}
-                >
-                  <p className="text-[#0e0e0e] font-bold text-base leading-snug">{title}</p>
-                  <p className="text-[#555555] text-sm mt-0.5">Full-time</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile */}
-        <div className="md:hidden relative">
-          <div
-            className="absolute left-1/2 -translate-x-px timeline-line"
-            style={{ top: 7, bottom: 7, borderLeft: '2px dashed #1a1a2e' }}
-          />
-          <div className="flex flex-col gap-6">
-            {ENTRIES.map(({ company, dates, title, orange }, i) => (
-              <div key={i} className="grid grid-cols-[1fr_32px_1fr] items-start">
-                <div
-                  className="text-right pr-3 timeline-entry-left"
-                  style={{ transitionDelay: `${i * 0.2}s` }}
-                >
-                  <p className="text-[#0e0e0e] font-bold text-xs leading-snug">{company}</p>
-                  <p className="text-[#555555] text-[11px] mt-0.5">{dates}</p>
-                </div>
-                <div
-                  className="flex items-start justify-center pt-[3px] timeline-dot"
-                  style={{ transitionDelay: `${i * 0.2 + 0.1}s` }}
-                >
-                  {orange ? (
-                    <div
-                      className="w-[14px] h-[14px] rounded-full bg-[#014aad] relative z-10"
-                      style={{ outline: '2px dashed #014aad', outlineOffset: '3px' }}
-                    />
-                  ) : (
-                    <div
-                      className="w-[14px] h-[14px] rounded-full bg-[#1a1a2e] relative z-10"
-                      style={{ outline: '2px dashed #1a1a2e', outlineOffset: '3px' }}
-                    />
-                  )}
-                </div>
-                <div
-                  className="pl-3 timeline-entry-right"
-                  style={{ transitionDelay: `${i * 0.2}s` }}
-                >
-                  <p className="text-[#0e0e0e] font-bold text-xs leading-snug">{title}</p>
-                  <p className="text-[#555555] text-[11px] mt-0.5">Full-time</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
     </section>
   );
 };

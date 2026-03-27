@@ -14,8 +14,7 @@ import { useCart } from '../context/CartContext';
 
 const NAV_ITEMS = [
   { label: 'Products',  href: '#products',   section: 'products'   },
-  { label: 'Shop',      href: '#portfolio',  section: 'portfolio'  },
-  { label: 'Our Story', href: '#our-story', section: 'our-story' },
+  { label: 'Our Story', href: '#our-story',  section: 'our-story'  },
   { label: 'Impact',    href: '#impact',     section: 'impact'     },
   { label: 'Invest',    href: '#contact',    section: 'contact'    },
 ];
@@ -51,9 +50,8 @@ export default function Navbar() {
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (!el) return;
-      // our-story: threshold:0 so the active state fires the instant any part of
-      // the section enters the viewport — the same frame the paragraph reveal begins
-      // (useScroll offset:'start 0.8' also fires on first pixel entering from bottom).
+      // our-story + impact: threshold:0 so the active state fires the instant any
+      // part of the section enters the viewport.
       // All other sections use 0.1 (10% visible) for a natural mid-scroll transition.
       const obs = new IntersectionObserver(
         ([entry]) => {
@@ -61,8 +59,8 @@ export default function Navbar() {
           pickActive();
         },
         {
-          threshold: id === 'our-story' ? 0 : 0.1,
-          rootMargin: id === 'our-story' ? '0px 0px 0px 0px' : '0px',
+          threshold: (id === 'our-story' || id === 'impact') ? 0 : 0.1,
+          rootMargin: '0px 0px 0px 0px',
         }
       );
       obs.observe(el);
