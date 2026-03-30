@@ -1,5 +1,24 @@
 "use client";
 
+const STAT_CARDS = [
+  {
+    stat: '300+',
+    description: 'Women empowered with dignified jobs and training across fishing communities in Kenya',
+  },
+  {
+    stat: '40%',
+    description: 'Reduction in emissions through modern energy-efficient roasting ovens',
+  },
+  {
+    stat: '3+',
+    description: 'Export markets targeted to bring premium African tilapia to the world',
+  },
+  {
+    stat: '$4B',
+    description: 'African tilapia market opportunity at the intersection of global protein demand and sustainable supply',
+  },
+];
+
 export default function ImpactSection() {
   return (
     <section
@@ -21,11 +40,39 @@ export default function ImpactSection() {
         </div>
 
         {/* ── Impact paragraph ──────────────────────────────────────────── */}
-        <p className="text-base text-[#0e0e0e] text-center max-w-3xl mx-auto mt-3 mb-12 md:mb-16 leading-relaxed">
+        <p className="text-base text-[#0e0e0e] text-center max-w-3xl mx-auto mt-3 mb-10 md:mb-14 leading-relaxed">
           We are not just roasting fish. We are rewriting what African food
           enterprise looks like. Bedo Fish is proving that sustainable,
           community-powered food production is not just possible. It is scalable.
         </p>
+
+        {/* ── Stat image cards ──────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+          {STAT_CARDS.map(({ stat, description }, i) => (
+            <div key={i} className="flex flex-col gap-3">
+
+              {/* Image placeholder with blue accent corner */}
+              <div className="relative w-full aspect-[4/3] rounded-2xl bg-gray-200 overflow-hidden">
+                {/* Blue decorative corner accent — top-right */}
+                <div
+                  className="absolute top-0 right-0 w-8 h-8 rounded-bl-2xl"
+                  style={{ background: '#014aad' }}
+                />
+              </div>
+
+              {/* Stat */}
+              <p className="text-2xl md:text-3xl font-extrabold text-[#0e0e0e] leading-tight">
+                {stat}
+              </p>
+
+              {/* Description */}
+              <p className="text-sm text-[#555555] leading-relaxed">
+                {description}
+              </p>
+
+            </div>
+          ))}
+        </div>
 
       </div>
     </section>
