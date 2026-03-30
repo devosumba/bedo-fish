@@ -51,40 +51,33 @@ export default function ImpactSection() {
           {STAT_CARDS.map(({ stat, description }, i) => (
             <div key={i} className="flex flex-col gap-3">
 
-              {/*
-                Card image stack.
-                paddingBottom: 70% creates container height = 70% of width.
-                Both children are position:absolute, sized as % of that box.
-
-                Image:      top:0  left:0  w:80%  h:86%  → 60%W tall → 4:3 aspect
-                Decoration: bot:0  right:0 w:62%  h:58%  → 40.6%W tall
-                Bottom peek: (70% - 60.2%) / 40.6% ≈ 24%  ✓
-                Right peek:  (100% - 80%)  / 62%   ≈ 32%
-              */}
+              {/* Image composition container */}
               <div className="relative w-full" style={{ paddingBottom: '70%' }}>
 
-                {/* Element 1 — blue decorative block, behind image */}
+                {/* Element 1 — blue decorative block, bottom-right, behind image */}
                 <div
-                  className="absolute rounded-[28px] bg-[#014aad]"
+                  className="absolute bg-[#014aad]"
                   style={{
                     bottom: 0,
                     right: 0,
-                    width: '62%',
-                    height: '58%',
+                    width: '65%',
+                    height: '60%',
+                    borderRadius: '24px',
                     zIndex: 1,
                   }}
                 />
 
-                {/* Element 2 — image placeholder, top-left, on top */}
+                {/* Element 2 — image, top-left, overlapping block */}
                 <div
-                  className="absolute rounded-[18px] bg-gray-200 overflow-hidden"
+                  className="absolute bg-gray-200 overflow-hidden"
                   style={{
                     top: 0,
                     left: 0,
-                    width: '80%',
-                    height: '86%',
-                    zIndex: 2,
+                    width: '78%',
+                    height: '78%',
+                    borderRadius: '16px',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                    zIndex: 2,
                   }}
                 />
 
