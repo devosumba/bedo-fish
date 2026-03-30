@@ -51,32 +51,36 @@ export default function ImpactSection() {
           {STAT_CARDS.map(({ stat, description }, i) => (
             <div key={i} className="flex flex-col gap-3">
 
-              {/* Image composition container */}
-              <div className="relative w-full" style={{ paddingBottom: '70%' }}>
+              {/*
+                Near-square container: paddingBottom 90% → height = 90% of width.
+                Image:  top-left,     85% × 85%  → covers top-left bulk
+                Block:  bottom-right, 62% × 62%  → peeks ~15% right, ~13.5% bottom
+              */}
+              <div className="relative w-full" style={{ paddingBottom: '90%' }}>
 
-                {/* Element 1 — blue decorative block, bottom-right, behind image */}
+                {/* Element 1 — blue block, bottom-right, behind image */}
                 <div
                   className="absolute bg-[#014aad]"
                   style={{
                     bottom: 0,
                     right: 0,
-                    width: '65%',
-                    height: '60%',
-                    borderRadius: '24px',
+                    width: '62%',
+                    height: '62%',
+                    borderRadius: '20px',
                     zIndex: 1,
                   }}
                 />
 
-                {/* Element 2 — image, top-left, overlapping block */}
+                {/* Element 2 — image, top-left, on top of block */}
                 <div
                   className="absolute bg-gray-200 overflow-hidden"
                   style={{
                     top: 0,
                     left: 0,
-                    width: '78%',
-                    height: '78%',
+                    width: '85%',
+                    height: '85%',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.14)',
                     zIndex: 2,
                   }}
                 />
