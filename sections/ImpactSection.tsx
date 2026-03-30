@@ -49,51 +49,54 @@ export default function ImpactSection() {
         {/* ── Stat image cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {STAT_CARDS.map(({ stat, description }, i) => (
-            <div key={i} className="flex flex-col gap-4">
+            <div key={i} className="flex flex-col gap-3">
 
               {/*
-                Image stack — creates the layered offset effect.
-                The wrapper's padding-right + padding-bottom reserve the space
-                where the blue decoration peeks out. Both layers are the same
-                size; the decoration sits 18% right and down from the image.
+                Card image stack.
+                paddingBottom: 70% creates container height = 70% of width.
+                Both children are position:absolute, sized as % of that box.
 
-                Container:  100% wide, height = image height + padding-bottom
-                Image:      fills content box (82% of container width), z=2
-                Decoration: same size as image, offset 18% right+down, z=1
+                Image:      top:0  left:0  w:80%  h:86%  → 60%W tall → 4:3 aspect
+                Decoration: bot:0  right:0 w:62%  h:58%  → 40.6%W tall
+                Bottom peek: (70% - 60.2%) / 40.6% ≈ 24%  ✓
+                Right peek:  (100% - 80%)  / 62%   ≈ 32%
               */}
-              <div className="relative w-full" style={{ paddingRight: '18%', paddingBottom: '18%' }}>
+              <div className="relative w-full" style={{ paddingBottom: '70%' }}>
 
-                {/* Layer 1 — blue decoration, behind image */}
+                {/* Element 1 — blue decorative block, behind image */}
                 <div
                   className="absolute rounded-[28px] bg-[#014aad]"
                   style={{
-                    top:    '18%',
-                    left:   '18%',
-                    right:  0,
                     bottom: 0,
+                    right: 0,
+                    width: '62%',
+                    height: '58%',
                     zIndex: 1,
                   }}
                 />
 
-                {/* Layer 2 — image placeholder, upper-left, on top */}
+                {/* Element 2 — image placeholder, top-left, on top */}
                 <div
-                  className="relative w-full rounded-2xl bg-gray-200 overflow-hidden"
+                  className="absolute rounded-[18px] bg-gray-200 overflow-hidden"
                   style={{
-                    aspectRatio: '4/3',
+                    top: 0,
+                    left: 0,
+                    width: '80%',
+                    height: '86%',
                     zIndex: 2,
-                    boxShadow: '0 6px 24px rgba(0,0,0,0.13)',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                   }}
                 />
 
               </div>
 
               {/* Stat */}
-              <p className="text-2xl md:text-3xl font-extrabold text-[#0e0e0e] leading-tight">
+              <p className="text-2xl md:text-3xl font-extrabold text-[#0e0e0e] leading-tight mt-1">
                 {stat}
               </p>
 
               {/* Description */}
-              <p className="text-sm text-[#555555] leading-relaxed -mt-1">
+              <p className="text-sm text-[#555555] leading-relaxed">
                 {description}
               </p>
 
