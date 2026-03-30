@@ -30,17 +30,18 @@ export default function ImpactSection() {
   return (
     <section
       id="impact"
-      className="relative z-[2] bg-white w-full pt-6 pb-16 md:pt-8 md:pb-24"
+      className="relative z-[2] bg-white w-full pt-4 pb-16 md:pb-24"
     >
       <div className="max-w-6xl mx-auto px-4 md:px-8">
 
         {/* ── Centered heading ──────────────────────────────────────────── */}
         <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold leading-tight text-[#0e0e0e]">
-            Our
-          </h2>
-          <h2 className="text-4xl md:text-5xl font-extrabold leading-tight text-[#014aad]">
-            Impact
+          <h2
+            className="text-4xl md:text-5xl font-extrabold leading-tight"
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            <span className="text-[#0e0e0e]">Our </span>
+            <span className="text-[#014aad]">Impact</span>
           </h2>
         </div>
 
