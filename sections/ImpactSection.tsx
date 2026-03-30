@@ -30,7 +30,8 @@ export default function ImpactSection() {
   return (
     <section
       id="impact"
-      className="relative z-[2] bg-white w-full pt-4 pb-16 md:pb-24"
+      className="relative z-[2] bg-white w-full pb-16 md:pb-24"
+      style={{ marginTop: '-48px', paddingTop: 0 }}
     >
       <div className="max-w-6xl mx-auto px-4 md:px-8">
 
@@ -48,11 +49,8 @@ export default function ImpactSection() {
         {/* ── Impact paragraph ──────────────────────────────────────────── */}
         <p className="text-base text-[#0e0e0e] text-center max-w-3xl mx-auto mt-3 mb-12 md:mb-16 leading-relaxed">
           We are not just roasting fish. We are rewriting what African food
-          enterprise looks like. With a 40% reduction in emissions, 300+ women
-          trained and employed, and our sights set on a $4 billion export
-          opportunity across three markets, Bedo Fish is proving that
-          sustainable, community-powered food production is not just possible.
-          It is scalable.
+          enterprise looks like. Bedo Fish is proving that sustainable,
+          community-powered food production is not just possible. It is scalable.
         </p>
 
         {/* ── Two-column content ────────────────────────────────────────── */}
