@@ -19,9 +19,6 @@ const STAT_CARDS = [
   },
 ];
 
-// Offset amount: how far the blue decoration peeks out from behind the image
-const OFFSET = 20; // px
-
 export default function ImpactSection() {
   return (
     <section
@@ -54,32 +51,40 @@ export default function ImpactSection() {
           {STAT_CARDS.map(({ stat, description }, i) => (
             <div key={i} className="flex flex-col gap-4">
 
-              {/* Image stack — wrapper reserves space for the offset */}
-              <div
-                className="relative w-full"
-                style={{ paddingRight: OFFSET, paddingBottom: OFFSET }}
-              >
-                {/* Layer 1 (back): blue decorative rounded rectangle, offset bottom-right */}
+              {/*
+                Image stack — creates the layered offset effect.
+                The wrapper's padding-right + padding-bottom reserve the space
+                where the blue decoration peeks out. Both layers are the same
+                size; the decoration sits 18% right and down from the image.
+
+                Container:  100% wide, height = image height + padding-bottom
+                Image:      fills content box (82% of container width), z=2
+                Decoration: same size as image, offset 18% right+down, z=1
+              */}
+              <div className="relative w-full" style={{ paddingRight: '18%', paddingBottom: '18%' }}>
+
+                {/* Layer 1 — blue decoration, behind image */}
                 <div
-                  className="absolute rounded-2xl bg-[#014aad]"
+                  className="absolute rounded-[28px] bg-[#014aad]"
                   style={{
-                    top: OFFSET,
-                    left: OFFSET,
-                    right: 0,
+                    top:    '18%',
+                    left:   '18%',
+                    right:  0,
                     bottom: 0,
                     zIndex: 1,
                   }}
                 />
 
-                {/* Layer 2 (front): image placeholder, upper-left, above decoration */}
+                {/* Layer 2 — image placeholder, upper-left, on top */}
                 <div
                   className="relative w-full rounded-2xl bg-gray-200 overflow-hidden"
                   style={{
                     aspectRatio: '4/3',
                     zIndex: 2,
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                    boxShadow: '0 6px 24px rgba(0,0,0,0.13)',
                   }}
                 />
+
               </div>
 
               {/* Stat */}
@@ -88,7 +93,7 @@ export default function ImpactSection() {
               </p>
 
               {/* Description */}
-              <p className="text-sm text-[#555555] leading-relaxed -mt-2">
+              <p className="text-sm text-[#555555] leading-relaxed -mt-1">
                 {description}
               </p>
 
