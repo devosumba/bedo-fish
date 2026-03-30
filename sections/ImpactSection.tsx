@@ -19,6 +19,9 @@ const STAT_CARDS = [
   },
 ];
 
+// Offset amount: how far the blue decoration peeks out from behind the image
+const OFFSET = 20; // px
+
 export default function ImpactSection() {
   return (
     <section
@@ -47,16 +50,35 @@ export default function ImpactSection() {
         </p>
 
         {/* ── Stat image cards ──────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {STAT_CARDS.map(({ stat, description }, i) => (
-            <div key={i} className="flex flex-col gap-3">
+            <div key={i} className="flex flex-col gap-4">
 
-              {/* Image placeholder with blue accent corner */}
-              <div className="relative w-full aspect-[4/3] rounded-2xl bg-gray-200 overflow-hidden">
-                {/* Blue decorative corner accent — top-right */}
+              {/* Image stack — wrapper reserves space for the offset */}
+              <div
+                className="relative w-full"
+                style={{ paddingRight: OFFSET, paddingBottom: OFFSET }}
+              >
+                {/* Layer 1 (back): blue decorative rounded rectangle, offset bottom-right */}
                 <div
-                  className="absolute top-0 right-0 w-8 h-8 rounded-bl-2xl"
-                  style={{ background: '#014aad' }}
+                  className="absolute rounded-2xl bg-[#014aad]"
+                  style={{
+                    top: OFFSET,
+                    left: OFFSET,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 1,
+                  }}
+                />
+
+                {/* Layer 2 (front): image placeholder, upper-left, above decoration */}
+                <div
+                  className="relative w-full rounded-2xl bg-gray-200 overflow-hidden"
+                  style={{
+                    aspectRatio: '4/3',
+                    zIndex: 2,
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
+                  }}
                 />
               </div>
 
@@ -66,7 +88,7 @@ export default function ImpactSection() {
               </p>
 
               {/* Description */}
-              <p className="text-sm text-[#555555] leading-relaxed">
+              <p className="text-sm text-[#555555] leading-relaxed -mt-2">
                 {description}
               </p>
 
