@@ -258,13 +258,9 @@ body {
   opacity: 1;
 }
 
-/* Product cards in Our Offerings
-   Mobile: only the rotating border ring shows on touch — no translateY
-   so inner buttons stay fully tappable.
-   Desktop (md+): full animation mirrors .portfolio-card exactly.        */
+/* Product cards in Our Offerings — hover shows border ring only, no transform */
 .product-card {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card::before {
@@ -289,10 +285,3 @@ body {
   opacity: 1;
 }
 
-/* translateY + box-shadow only on desktop — prevents mobile tap issues */
-@media (min-width: 768px) {
-  .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
-  }
-}
