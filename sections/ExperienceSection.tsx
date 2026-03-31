@@ -194,7 +194,7 @@ const ExperienceSection = () => {
            viewport. 13-slot strip (2 sets × 5 + 2 bridges + set-3 entry)
            translates left. xVal uses actual DOM widths so the strip ends
            precisely when the set-3 entry image is flush with the right edge. */}
-      <div ref={imageContainerRef} className="h-[160vh] md:h-[300vh]" style={{ marginTop: '-70px' }}>
+      <div ref={imageContainerRef} className="h-[110vh] md:h-[300vh]" style={{ marginTop: '-70px' }}>
         <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden flex items-center">
           <motion.div
             ref={stripRef}
