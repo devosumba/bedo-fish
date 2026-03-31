@@ -55,10 +55,14 @@ export default function ImpactSection() {
               */}
               <div className="relative w-full" style={{ paddingBottom: '70%' }}>
 
-                {/* Blue offset frame — behind image on top, right, bottom */}
+                {/* Blue offset frame — right 33% of container, peeks on right/top/bottom */}
                 <div
-                  className="absolute inset-0 bg-[#014aad]"
+                  className="absolute bg-[#014aad]"
                   style={{
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: '33%',
                     borderRadius: '16px',
                     zIndex: 1,
                   }}
