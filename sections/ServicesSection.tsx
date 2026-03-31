@@ -74,16 +74,14 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
   }
 
   return (
-    // Outer wrapper: overflow-visible so the ::before rotating ring (inset: -2px)
-    // isn't clipped — mirrors the .portfolio-card two-layer pattern exactly.
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="product-card relative overflow-visible rounded-2xl"
+      className="product-card relative w-full rounded-2xl overflow-hidden"
     >
       {/* Inner wrapper: height driven by content, no fixed aspect ratio */}
-      <div className="flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer border border-gray-100">
+      <div className="flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer">
 
         {/* Image area — 3:2 aspect ratio, self-contained */}
         <div className="relative w-full aspect-[3/2] bg-gray-100 overflow-hidden">
