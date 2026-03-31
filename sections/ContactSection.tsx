@@ -265,7 +265,17 @@ export default function ContactSection() {
 
         {/* Copyright */}
         <p className="text-xs text-center" style={{ color: '#9ca3af' }}>
-          &copy; {new Date().getFullYear()} Bedo Fish. All rights reserved.
+          &copy; {new Date().getFullYear()} Bedo Fish. All rights reserved | Developed by{' '}
+          <a
+            href="https://www.linkedin.com/in/john-austine-osumba-689327207/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#014aad', fontWeight: 700, fontSize: '0.8rem', textDecoration: 'none' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'underline'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.textDecoration = 'none'; }}
+          >
+            Osumba
+          </a>
         </p>
 
       </div>
