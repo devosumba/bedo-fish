@@ -258,7 +258,7 @@ export default function ContactSection() {
               className="text-xs pl-4"
               style={{ color: '#9ca3af' }}
             >
-              Sending to johnaustineosumba@gmail.com from {email}
+              Sending to info@bedofish.com from {email}
             </motion.p>
           )}
         </motion.div>
