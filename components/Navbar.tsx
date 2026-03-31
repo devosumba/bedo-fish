@@ -7,7 +7,7 @@
  * Icons (right, desktop): Cart | separator | TikTok | Instagram | Phone
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useCart } from '../context/CartContext';
@@ -23,7 +23,18 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartPulse, setCartPulse] = useState(false);
   const { cartCount } = useCart();
+  const prevCartCount = useRef(cartCount);
+
+  useEffect(() => {
+    if (cartCount > prevCartCount.current) {
+      setCartPulse(true);
+      const t = setTimeout(() => setCartPulse(false), 350);
+      return () => clearTimeout(t);
+    }
+    prevCartCount.current = cartCount;
+  }, [cartCount]);
 
   /* Active section tracking — viewport-coverage picker.
    * Each observer fires at threshold:0.1. All currently-visible sections
@@ -127,10 +138,16 @@ export default function Navbar() {
           {/* Cart */}
           <a href="#portfolio" onClick={() => setActiveSection('portfolio')} aria-label="Cart"
             className="relative text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
+            <motion.span
+              animate={{ scale: cartPulse ? [1, 1.3, 1] : 1 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="flex"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+            </motion.span>
             {cartCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
                 {cartCount}
@@ -183,10 +200,16 @@ export default function Navbar() {
           {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
             <a href="#portfolio" aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
+              <motion.span
+                animate={{ scale: cartPulse ? [1, 1.3, 1] : 1 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="flex"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+              </motion.span>
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
                   {cartCount}

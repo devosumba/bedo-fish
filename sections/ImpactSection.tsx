@@ -1,5 +1,7 @@
 "use client";
 
+import Image from 'next/image';
+
 const STAT_CARDS = [
   {
     heading: 'Gender Equality',
@@ -22,8 +24,7 @@ export default function ImpactSection() {
   return (
     <section
       id="impact"
-      className="relative z-[2] bg-white w-full pb-16 md:pb-24 -mt-14 md:-mt-12"
-      style={{ paddingTop: 0 }}
+      className="relative z-[2] bg-white w-full pb-16 md:pb-24 pt-7 md:pt-0 md:-mt-12"
     >
       <div className="max-w-6xl mx-auto px-4 md:px-8">
 
@@ -48,7 +49,7 @@ export default function ImpactSection() {
         {/* ── Stat image cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10">
           {STAT_CARDS.map(({ heading, description, src }, i) => (
-            <div key={i} className="flex flex-col gap-3">
+            <div key={i} className="flex flex-col gap-3 max-w-sm mx-auto w-full md:max-w-none">
 
               {/*
                 Blue fills the full container behind the image.
@@ -72,22 +73,28 @@ export default function ImpactSection() {
                 />
 
                 {/* Image — flush left, inset 14px on top / right / bottom */}
-                <img
-                  src={src}
-                  alt=""
-                  className="absolute object-cover"
+                <div
                   style={{
+                    position: 'absolute',
                     top: '14px',
                     left: 0,
                     right: '14px',
                     bottom: '14px',
-                    width: 'calc(100% - 14px)',
-                    height: 'calc(100% - 28px)',
                     borderRadius: '12px',
+                    overflow: 'hidden',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                     zIndex: 2,
                   }}
-                />
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    quality={90}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
 
               </div>
 
