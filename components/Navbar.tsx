@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: 'Products',  href: '#products',   section: 'products'   },
   { label: 'Our Story', href: '#our-story',  section: 'our-story'  },
   { label: 'Impact',    href: '#impact',     section: 'impact'     },
+  { label: 'Team',      href: '#team',       section: 'team'       },
   { label: 'Invest',    href: '#contact',    section: 'contact'    },
 ];
 
@@ -30,7 +31,7 @@ export default function Navbar() {
    * visible in the viewport wins, so tall sections (our-story ~400vh) hold
    * the active state for their entire scroll duration. */
   useEffect(() => {
-    const SECTION_IDS = ['hero', 'products', 'portfolio', 'our-story', 'impact', 'contact'];
+    const SECTION_IDS = ['hero', 'products', 'our-story', 'impact', 'team', 'contact'];
     const visible = new Set<string>();
     const observers: IntersectionObserver[] = [];
 
@@ -59,7 +60,7 @@ export default function Navbar() {
           pickActive();
         },
         {
-          threshold: (id === 'our-story' || id === 'impact') ? 0 : 0.1,
+          threshold: (id === 'our-story' || id === 'impact' || id === 'team') ? 0 : 0.1,
           rootMargin: '0px 0px 0px 0px',
         }
       );
