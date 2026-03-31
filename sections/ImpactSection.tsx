@@ -13,10 +13,6 @@ const STAT_CARDS = [
     stat: '3+',
     description: 'Export markets targeted to bring premium African tilapia to the world',
   },
-  {
-    stat: '$4B',
-    description: 'African tilapia market opportunity at the intersection of global protein demand and sustainable supply',
-  },
 ];
 
 export default function ImpactSection() {
@@ -47,40 +43,37 @@ export default function ImpactSection() {
         </p>
 
         {/* ── Stat image cards ──────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10">
           {STAT_CARDS.map(({ stat, description }, i) => (
             <div key={i} className="flex flex-col gap-3">
 
               {/*
-                Near-square container: paddingBottom 88% → height = 88% of width.
-                Image:  top-left,     76% × 76%  → right/bottom peek = 24%
-                Block:  bottom-right, 67% × 67%  → ~36% of block visible each edge
+                Blue fills the full container behind the image.
+                Image is inset 14px on top, right, and bottom — flush to left.
+                Blue peeks as a thin ~14px strip on top, right, and bottom only.
+                No blue visible on the left (image covers it from x=0).
               */}
-              <div className="relative w-full" style={{ paddingBottom: '88%' }}>
+              <div className="relative w-full" style={{ paddingBottom: '70%' }}>
 
-                {/* Element 1 — blue block, bottom-right, behind image */}
+                {/* Blue offset frame — behind image on top, right, bottom */}
                 <div
-                  className="absolute bg-[#014aad]"
+                  className="absolute inset-0 bg-[#014aad]"
                   style={{
-                    bottom: 0,
-                    right: 0,
-                    width: '67%',
-                    height: '67%',
-                    borderRadius: '20px',
+                    borderRadius: '16px',
                     zIndex: 1,
                   }}
                 />
 
-                {/* Element 2 — image extends almost to block's far corner */}
+                {/* Image — flush left, inset 14px on top / right / bottom */}
                 <div
                   className="absolute bg-gray-200 overflow-hidden"
                   style={{
-                    top: 0,
+                    top: '14px',
                     left: 0,
-                    width: '76%',
-                    height: '76%',
-                    borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.14)',
+                    right: '14px',
+                    bottom: '14px',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                     zIndex: 2,
                   }}
                 />
