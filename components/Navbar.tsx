@@ -17,7 +17,7 @@ const NAV_ITEMS = [
   { label: 'Our Story', href: '#our-story',  section: 'our-story'  },
   { label: 'Impact',    href: '#impact',     section: 'impact'     },
   { label: 'Team',      href: '#team',       section: 'team'       },
-  { label: 'Invest',    href: '#contact',    section: 'contact'    },
+  { label: 'Contact',   href: '#contact',    section: 'contact'    },
 ];
 
 export default function Navbar() {
@@ -60,7 +60,7 @@ export default function Navbar() {
           pickActive();
         },
         {
-          threshold: (id === 'our-story' || id === 'impact' || id === 'team') ? 0 : 0.1,
+          threshold: (id === 'our-story' || id === 'impact' || id === 'team' || id === 'contact') ? 0 : 0.1,
           rootMargin: '0px 0px 0px 0px',
         }
       );

@@ -5,35 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 type Step = 'email' | 'message' | 'sent';
 
-const STATS = [
-  {
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#014aad" aria-hidden="true">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
-    text: '4.9/5 Average Ratings',
-  },
-  {
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#014aad" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="8" r="6" />
-        <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
-      </svg>
-    ),
-    text: '5 Years + Experience',
-  },
-  {
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#014aad" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-        <polyline points="22 4 12 14.01 9 11.01" />
-      </svg>
-    ),
-    text: 'Certified Software Engineer',
-  },
-];
-
 const EnvelopeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#014aad" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -105,8 +76,8 @@ export default function ContactSection() {
     step === 'email'
       ? 'Enter Email Address'
       : step === 'message'
-      ? 'Tell us about your project — what are you building?'
-      : "Message sent! I'll be in touch soon 🚀";
+      ? 'Join the Bedo Community. Share Your Experience/Review'
+      : "Message sent! We will be in touch soon.";
 
   return (
     <section id="contact" className="bg-white w-full py-20 md:py-28">
@@ -258,7 +229,7 @@ export default function ContactSection() {
               disabled={step === 'sent' || sending}
               className="flex-shrink-0 font-semibold text-sm px-5 py-2 rounded-full transition-colors focus:outline-none"
               style={{
-                background: step === 'sent' ? '#4ade80' : '#014aad',
+                background: '#014aad',
                 color: '#fff',
                 opacity: sending ? 0.7 : 1,
                 cursor: step === 'sent' || sending ? 'default' : 'pointer',
@@ -292,21 +263,10 @@ export default function ContactSection() {
           )}
         </motion.div>
 
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-6 md:gap-10"
-        >
-          {STATS.map(({ icon, text }) => (
-            <div key={text} className="flex items-center gap-2 text-sm font-medium" style={{ color: '#1a1a2e' }}>
-              {icon}
-              <span>{text}</span>
-            </div>
-          ))}
-        </motion.div>
+        {/* Copyright */}
+        <p className="text-xs text-center" style={{ color: '#9ca3af' }}>
+          &copy; {new Date().getFullYear()} Bedo Fish. All rights reserved.
+        </p>
 
       </div>
     </section>
