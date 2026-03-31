@@ -4,14 +4,17 @@ const STAT_CARDS = [
   {
     stat: '300+',
     description: 'Women empowered with dignified jobs and training across fishing communities in Kenya',
+    src: '/images/impact-images/1.jpg',
   },
   {
     stat: '40%',
     description: 'Reduction in emissions through modern energy-efficient roasting ovens',
+    src: '/images/impact-images/2.jpg',
   },
   {
     stat: '3+',
     description: 'Export markets targeted to bring premium African tilapia to the world',
+    src: '/images/impact-images/3.jpg',
   },
 ];
 
@@ -44,7 +47,7 @@ export default function ImpactSection() {
 
         {/* ── Stat image cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10">
-          {STAT_CARDS.map(({ stat, description }, i) => (
+          {STAT_CARDS.map(({ stat, description, src }, i) => (
             <div key={i} className="flex flex-col gap-3">
 
               {/*
@@ -69,13 +72,17 @@ export default function ImpactSection() {
                 />
 
                 {/* Image — flush left, inset 14px on top / right / bottom */}
-                <div
-                  className="absolute bg-gray-200 overflow-hidden"
+                <img
+                  src={src}
+                  alt=""
+                  className="absolute object-cover"
                   style={{
                     top: '14px',
                     left: 0,
                     right: '14px',
                     bottom: '14px',
+                    width: 'calc(100% - 14px)',
+                    height: 'calc(100% - 28px)',
                     borderRadius: '12px',
                     boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                     zIndex: 2,
