@@ -2,18 +2,18 @@
 
 const STAT_CARDS = [
   {
-    stat: '300+',
-    description: 'Women empowered with dignified jobs and training across fishing communities in Kenya',
+    heading: 'Gender Equality',
+    description: '300+ Women empowered with dignified jobs and training across fishing communities in Kenya.',
     src: '/images/impact-images/1.jpg',
   },
   {
-    stat: '40%',
-    description: 'Reduction in emissions through modern energy-efficient roasting ovens',
+    heading: 'Climate Action',
+    description: '40% Reduction in carbon emissions through modern energy-efficient roasting ovens.',
     src: '/images/impact-images/2.jpg',
   },
   {
-    stat: '3+',
-    description: 'Export markets targeted to bring premium African tilapia to the world',
+    heading: 'Responsible Production',
+    description: 'Reducing food waste by extending shelf life and cutting post-harvest losses.',
     src: '/images/impact-images/3.jpg',
   },
 ];
@@ -47,7 +47,7 @@ export default function ImpactSection() {
 
         {/* ── Stat image cards ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-10">
-          {STAT_CARDS.map(({ stat, description, src }, i) => (
+          {STAT_CARDS.map(({ heading, description, src }, i) => (
             <div key={i} className="flex flex-col gap-3">
 
               {/*
@@ -91,9 +91,9 @@ export default function ImpactSection() {
 
               </div>
 
-              {/* Stat */}
-              <p className="text-2xl md:text-3xl font-extrabold text-[#0e0e0e] leading-tight mt-1">
-                {stat}
+              {/* Heading */}
+              <p className="text-2xl md:text-3xl font-extrabold text-[#014aad] leading-tight mt-1">
+                {heading}
               </p>
 
               {/* Description */}
