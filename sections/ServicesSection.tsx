@@ -316,7 +316,7 @@ const ServicesSection = () => {
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-[2] bg-[#0e0e0e] md:w-full py-16 md:py-24 overflow-hidden rounded-[2rem] -mt-6"
+      className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[2rem] -mt-6"
     >
       {/* Decorative blobs */}
       <div className="absolute -top-24 left-[20%] w-96 h-96 bg-[#014aad] opacity-[0.07] rounded-full blur-[80px] pointer-events-none" />
@@ -398,7 +398,7 @@ const ServicesSection = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-0"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {TABS[activeTab].products.map((product, i) => (
               <ProductCard key={product.id} product={product} index={i} />

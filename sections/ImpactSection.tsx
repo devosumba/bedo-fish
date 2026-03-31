@@ -22,7 +22,7 @@ export default function ImpactSection() {
   return (
     <section
       id="impact"
-      className="relative z-[2] bg-white w-full pb-16 md:pb-24 -mt-20 md:-mt-12"
+      className="relative z-[2] bg-white w-full pb-16 md:pb-24 -mt-14 md:-mt-12"
       style={{ paddingTop: 0 }}
     >
       <div className="max-w-6xl mx-auto px-4 md:px-8">
