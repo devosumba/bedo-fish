@@ -52,11 +52,11 @@ export default function ImpactSection() {
             <div key={i} className="flex flex-col gap-3">
 
               {/*
-                Near-square container: paddingBottom 90% → height = 90% of width.
-                Image:  top-left,     85% × 85%  → covers top-left bulk
-                Block:  bottom-right, 62% × 62%  → peeks ~15% right, ~13.5% bottom
+                Near-square container: paddingBottom 88% → height = 88% of width.
+                Image:  top-left,     76% × 76%  → right/bottom peek = 24%
+                Block:  bottom-right, 67% × 67%  → ~36% of block visible each edge
               */}
-              <div className="relative w-full" style={{ paddingBottom: '90%' }}>
+              <div className="relative w-full" style={{ paddingBottom: '88%' }}>
 
                 {/* Element 1 — blue block, bottom-right, behind image */}
                 <div
@@ -64,21 +64,21 @@ export default function ImpactSection() {
                   style={{
                     bottom: 0,
                     right: 0,
-                    width: '62%',
-                    height: '62%',
+                    width: '67%',
+                    height: '67%',
                     borderRadius: '20px',
                     zIndex: 1,
                   }}
                 />
 
-                {/* Element 2 — image, top-left, on top of block */}
+                {/* Element 2 — image extends almost to block's far corner */}
                 <div
                   className="absolute bg-gray-200 overflow-hidden"
                   style={{
                     top: 0,
                     left: 0,
-                    width: '85%',
-                    height: '85%',
+                    width: '76%',
+                    height: '76%',
                     borderRadius: '16px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.14)',
                     zIndex: 2,
