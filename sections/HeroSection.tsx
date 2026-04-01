@@ -114,6 +114,7 @@ const HeroSection = () => {
             transition={{ delay: 0.1, duration: 0.6 }}
             aria-hidden="true"
             style={{
+              marginTop: '-24px',
               background: 'rgba(255, 255, 255, 0.15)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
