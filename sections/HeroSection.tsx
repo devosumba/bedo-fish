@@ -100,8 +100,8 @@ const HeroSection = () => {
 
       {/* Content */}
       <div
-        className="relative z-10 w-full flex flex-col items-center px-4 gap-8"
-        style={{ paddingTop: '193px', paddingBottom: '80px' }}
+        className="relative z-10 w-full flex flex-col items-center px-4 gap-8 pt-[107px] md:pt-[193px]"
+        style={{ paddingBottom: '80px' }}
       >
 
         {/* Glassmorphism badge + heading share a tighter vertical gap */}

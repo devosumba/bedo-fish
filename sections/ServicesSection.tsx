@@ -311,11 +311,20 @@ const ServicesSection = () => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Mobile paragraph autoplay — cycles every 1500ms on mobile only ──────────
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.innerWidth >= 768) return;
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % PARAGRAPHS.length);
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[2rem] -mt-6"
+      className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[2rem] -mt-8 md:-mt-6"
     >
       {/* Decorative blobs */}
       <div className="absolute -top-24 left-[20%] w-96 h-96 bg-[#014aad] opacity-[0.07] rounded-full blur-[80px] pointer-events-none" />
@@ -331,15 +340,15 @@ const ServicesSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight"
+            className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight text-center md:text-left"
           >
             Our <span className="text-[#014aad]">Offerings</span>
           </motion.h2>
 
           {/* Vertical dots + animated paragraph */}
-          <div className="md:flex-1 md:max-w-[60%] flex items-start gap-4">
-            {/* Dot slider controls */}
-            <div className="flex flex-col items-center gap-2 pt-1 shrink-0">
+          <div className="w-full md:flex-1 md:max-w-[60%] flex items-center justify-center md:items-start md:justify-start gap-4">
+            {/* Dot slider controls — hidden on mobile (autoplay runs instead) */}
+            <div className="hidden md:flex flex-col items-center gap-2 pt-1 shrink-0">
               {PARAGRAPHS.map((_, i) => (
                 <button
                   key={i}
@@ -363,7 +372,7 @@ const ServicesSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.25 }}
-                  className="text-gray-400 text-[15px] leading-relaxed"
+                  className="text-gray-400 text-[15px] leading-relaxed text-center md:text-left"
                 >
                   {PARAGRAPHS[activeSlide]}
                 </motion.p>
