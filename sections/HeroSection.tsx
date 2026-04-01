@@ -193,7 +193,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="flex items-center gap-4"
+          className="flex items-center rounded-full bg-white/10 border border-white/30 backdrop-blur-sm px-4 py-2 gap-3"
         >
           <span className="text-white font-bold" style={{ fontSize: '1.05rem' }}>Find Us Online</span>
 
