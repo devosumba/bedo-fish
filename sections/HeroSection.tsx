@@ -105,7 +105,7 @@ const HeroSection = () => {
       >
 
         {/* Glassmorphism badge + heading share a tighter vertical gap */}
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-8 md:gap-3">
 
           {/* Badge — decorative, not interactive */}
           <motion.span

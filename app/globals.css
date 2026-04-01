@@ -258,16 +258,30 @@ body {
   opacity: 1;
 }
 
-/* Product cards — no animation on mobile, gentle border hover on desktop only */
+/* Product cards in Our Offerings — hover shows border ring only, no transform */
 .product-card {
-  border: 2px solid transparent;
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
 }
 
-@media (min-width: 768px) {
-  .product-card:hover {
-    border-color: #014aad;
-    box-shadow: 0 4px 12px rgba(1, 74, 173, 0.15);
-  }
+.product-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--angle),
+    transparent 70%,
+    #014aad    80%,
+    #2a6fd4    90%,
+    #014aad   100%
+  );
+  animation: rotateBorder 2s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Border ring fires on all viewports — safe, does not affect layout */
+.product-card:hover::before {
+  opacity: 1;
 }
 

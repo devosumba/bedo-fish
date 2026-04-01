@@ -78,7 +78,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="product-card relative w-full rounded-2xl overflow-hidden"
+      className="product-card relative w-full overflow-visible rounded-2xl"
     >
       {/* Inner wrapper: height driven by content, no fixed aspect ratio */}
       <div className="flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer">
@@ -311,15 +311,6 @@ const ServicesSection = () => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Mobile paragraph autoplay — cycles every 1500ms on mobile only ──────────
-  useEffect(() => {
-    if (typeof window === 'undefined' || window.innerWidth >= 768) return;
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % PARAGRAPHS.length);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <section
       ref={sectionRef}
@@ -345,10 +336,10 @@ const ServicesSection = () => {
             Our <span className="text-[#014aad]">Offerings</span>
           </motion.h2>
 
-          {/* Vertical dots + animated paragraph */}
-          <div className="w-full md:flex-1 md:max-w-[60%] flex items-center justify-center md:items-start md:justify-start gap-4">
-            {/* Dot slider controls — hidden on mobile (autoplay runs instead) */}
-            <div className="hidden md:flex flex-col items-center gap-2 pt-1 shrink-0">
+          {/* Desktop: dots + animated paragraph */}
+          <div className="hidden md:flex md:flex-1 md:max-w-[60%] items-start gap-4">
+            {/* Dot slider controls */}
+            <div className="flex flex-col items-center gap-2 pt-1 shrink-0">
               {PARAGRAPHS.map((_, i) => (
                 <button
                   key={i}
@@ -368,17 +359,22 @@ const ServicesSection = () => {
               <AnimatePresence mode="wait">
                 <motion.p
                   key={activeSlide}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, ease: 'easeInOut' }}
-                  className="text-gray-400 text-[15px] leading-relaxed text-center md:text-left"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                  className="text-gray-400 text-[15px] leading-relaxed"
                 >
                   {PARAGRAPHS[activeSlide]}
                 </motion.p>
               </AnimatePresence>
             </div>
           </div>
+
+          {/* Mobile: static first paragraph only */}
+          <p className="md:hidden text-gray-400 text-[15px] leading-relaxed">
+            {PARAGRAPHS[0]}
+          </p>
         </div>
 
         {/* ── Pill tabs ────────────────────────────────────────────────────── */}
