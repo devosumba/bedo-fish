@@ -95,7 +95,7 @@ export default function Navbar() {
       initial={{ y: -28, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.35, ease: 'easeOut', delay: 0.05 }}
-      className="sticky top-3 w-full flex justify-center pt-0 pb-2 px-4 z-[1000]"
+      className="sticky top-5 w-full flex justify-center pt-0 pb-2 px-4 z-[1000]"
       aria-label="Main Navigation"
     >
       {/* ── Desktop pill ─────────────────────────────────────────────── */}
