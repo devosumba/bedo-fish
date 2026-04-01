@@ -124,7 +124,7 @@ function Word({
     [start, end],
     ['rgba(1, 74, 173, 0.15)', blue ? '#014aad' : '#000000'],
   );
-  return <motion.span style={{ color, display: 'inline' }}>{text}{' '}</motion.span>;
+  return <motion.span style={{ color, display: 'inline', wordSpacing: 'normal', letterSpacing: 'normal' }}>{text}{' '}</motion.span>;
 }
 
 // ─── Section ──────────────────────────────────────────────────────────────────
@@ -172,9 +172,9 @@ const ExperienceSection = () => {
     >
 
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
-      <div className="max-w-5xl mx-auto px-4 md:px-8 mb-0">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 mb-0 mt-5 md:mt-0">
         <p
-          className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-left md:text-justify max-w-3xl mx-auto"
+          className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-justify max-w-3xl mx-auto"
         >
           {TOKENS.map((token, i) => (
             <Word

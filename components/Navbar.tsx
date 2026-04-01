@@ -196,7 +196,8 @@ export default function Navbar() {
       {/* ── Mobile pill ───────────────────────────────────────────────── */}
       <div className="md:hidden w-full">
         <div
-          className="flex items-center justify-between w-full bg-transparent rounded-full px-3 h-[55px]"
+          className="flex items-center justify-between w-full bg-white rounded-full px-3 h-[55px]"
+          style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
         >
           {/* Logo */}
           <a href="#hero" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pl-2">
@@ -206,11 +207,17 @@ export default function Navbar() {
           {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
             <a href="#portfolio" aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors"
-              style={cartHighlight ? { filter: 'drop-shadow(0 0 6px rgba(1,74,173,0.9))' } : undefined}
+              style={cartHighlight ? { filter: 'drop-shadow(0 0 8px rgba(1,74,173,0.95))' } : undefined}
             >
               <motion.span
-                animate={{ scale: cartPulse ? [1, 1.3, 1] : 1 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
+                animate={cartHighlight
+                  ? { scale: [1, 1.25, 1] }
+                  : { scale: cartPulse ? [1, 1.3, 1] : 1 }
+                }
+                transition={cartHighlight
+                  ? { duration: 0.5, repeat: 3, repeatType: 'loop', ease: 'easeInOut' }
+                  : { duration: 0.35, ease: 'easeOut' }
+                }
                 className="flex"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -250,7 +257,8 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="mt-2 bg-transparent rounded-2xl overflow-hidden"
+              className="mt-2 bg-white rounded-2xl overflow-hidden"
+              style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
             >
               {NAV_ITEMS.map((item) => (
                 <a
