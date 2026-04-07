@@ -191,12 +191,7 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08 }}
-      className="product-card relative w-full overflow-visible rounded-2xl"
-    >
+    <div className="product-card relative w-full overflow-visible rounded-2xl">
       {/* Inner wrapper: height driven by content, no fixed aspect ratio */}
       <div className="flex flex-col bg-white rounded-2xl overflow-hidden">
 
@@ -213,21 +208,21 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
 
           {/* Named badge — top-left, matches size badge visually */}
           {product.badge && (
-            <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
+            <span className="absolute top-2.5 left-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad] pointer-events-none">
               {product.badge}
             </span>
           )}
 
           {/* Size badge — top-right, same pill size as named badge */}
-          <span className="absolute top-2.5 right-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad]">
+          <span className="absolute top-2.5 right-2.5 z-10 text-[10px] font-semibold px-2 py-0.5 rounded-full text-white bg-[#014aad] pointer-events-none">
             {product.size}
           </span>
 
           {/* Like button — bottom-right: solid #014aad circle, white heart */}
-                    <button
+          <button
             aria-label={liked ? 'Unlike' : 'Like'}
             onClick={handleLike}
-            className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-[#014aad]"
+            className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-[#014aad] pointer-events-auto"
           >
             <svg
               width="14" height="14" viewBox="0 0 24 24"
@@ -242,7 +237,7 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
         </div>
 
         {/* Card content — natural height, ends after last element */}
-        <div className="p-3 flex flex-col gap-2">
+        <div className="relative z-10 p-3 flex flex-col gap-2">
 
           {/* Name left, price right — same row */}
           <div className="flex flex-row items-center justify-between gap-2 min-w-0">
@@ -254,23 +249,23 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
           <p className="text-gray-400 text-xs truncate -mt-1">{product.description}</p>
 
           {/* Quantity counter — w-full, matches Add to Cart width */}
-          <div className="w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
+          <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
             <button
               aria-label="Decrease quantity"
               onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none"
+              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
             >−</button>
             <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
             <button
               aria-label="Increase quantity"
               onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none"
+              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
             >+</button>
           </div>
 
           {/* Add to Cart — w-full, same width as counter */}
           <button
-            className="w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
+            className="pointer-events-auto w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
             onClick={handleAddToCart}
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -283,7 +278,7 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
         </div>
 
       </div>
-    </motion.div>
+    </div>
   );
 }
 

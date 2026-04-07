@@ -262,7 +262,7 @@ body {
 .product-card {
   border: 2px solid transparent;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+  transition: border 200ms ease, box-shadow 200ms ease;
 }
 
 @media (min-width: 768px) {
