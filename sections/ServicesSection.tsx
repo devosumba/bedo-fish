@@ -97,7 +97,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
         <button
           aria-label="Close"
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-[#014aad] hover:text-[#0145a3] transition-colors"
+          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-[#014aad] text-white transition-all duration-150 hover:[filter:brightness(0.85)]"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -155,16 +155,19 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
             </button>
           </div>
 
-          <button
-            className="w-full bg-[#014aad] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-2"
-            onClick={handleAddToCart}
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            Add to Cart
-          </button>
+          <div className="flex flex-row items-center gap-3">
+            <button
+              className="flex-1 bg-[#014aad] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-2"
+              onClick={handleAddToCart}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Add to Cart
+            </button>
+            <div className="w-10 shrink-0" aria-hidden="true" />
+          </div>
         </div>
       </motion.div>
     </div>
@@ -174,8 +177,9 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index, onOpenQuickView }: { product: Product; index: number; onOpenQuickView: (p: Product) => void }) {
-  const [qty,   setQty]   = useState(1);
-  const [liked, setLiked] = useState(false);
+  const [qty,      setQty]      = useState(1);
+  const [liked,    setLiked]    = useState(false);
+  const [atcPhase, setAtcPhase] = useState<'idle' | 'flip' | 'push' | 'added'>('idle');
   const { addToCart } = useCart();
 
   function handleLike(e: React.MouseEvent) {
@@ -185,8 +189,13 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation();
+    if (atcPhase !== 'idle') return;
     addToCart({ name: product.name, size: product.size, price: product.price }, qty);
     setQty(1);
+    setAtcPhase('flip');
+    setTimeout(() => setAtcPhase('push'), 150);
+    setTimeout(() => setAtcPhase('added'), 500);
+    setTimeout(() => setAtcPhase('idle'), 2000);
   }
 
   return (
@@ -266,13 +275,32 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
           {/* Add to Cart — w-full, same width as counter */}
           <button
             className="pointer-events-auto w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
+            style={atcPhase !== 'idle' ? { pointerEvents: 'none' } : undefined}
             onClick={handleAddToCart}
           >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-            </svg>
-            Add to Cart
+            {atcPhase === 'added' ? 'Added To Cart' : (
+              <>
+                <motion.span
+                  className="flex"
+                  animate={
+                    atcPhase === 'flip' ? { scaleX: -1 } :
+                    atcPhase === 'push' ? { scaleX: -1, x: [0, 7, 0, 7, 0] } :
+                    { scaleX: 1, x: 0 }
+                  }
+                  transition={
+                    atcPhase === 'flip' ? { duration: 0.15 } :
+                    atcPhase === 'push' ? { duration: 0.35 } :
+                    { duration: 0 }
+                  }
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                </motion.span>
+                Add to Cart
+              </>
+            )}
           </button>
 
         </div>
