@@ -25,11 +25,11 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartPulse,      setCartPulse]      = useState(false);
   const [cartHighlight,  setCartHighlight]  = useState(false);
-  const { cartCount } = useCart();
-  const prevCartCount = useRef(cartCount);
+  const { totalItems } = useCart();
+  const prevCartCount = useRef(totalItems);
 
   useEffect(() => {
-    if (cartCount > prevCartCount.current) {
+    if (totalItems > prevCartCount.current) {
       setCartPulse(true);
       const t = setTimeout(() => setCartPulse(false), 350);
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -40,8 +40,8 @@ export default function Navbar() {
       }
       return () => clearTimeout(t);
     }
-    prevCartCount.current = cartCount;
-  }, [cartCount]);
+    prevCartCount.current = totalItems;
+  }, [totalItems]);
 
   /* Active section tracking — viewport-coverage picker.
    * Each observer fires at threshold:0.1. All currently-visible sections
@@ -155,9 +155,9 @@ export default function Navbar() {
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
               </svg>
             </motion.span>
-            {cartCount > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
-                {cartCount}
+                {totalItems}
               </span>
             )}
           </a>
@@ -225,9 +225,9 @@ export default function Navbar() {
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
                 </svg>
               </motion.span>
-              {cartCount > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-[#014aad] text-white text-[9px] font-bold px-0.5 leading-none border border-white">
-                  {cartCount}
+                  {totalItems}
                 </span>
               )}
             </a>

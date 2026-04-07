@@ -174,7 +174,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index, onOpenQuickView }: { product: Product; index: number; onOpenQuickView: (p: Product) => void }) {
-  const [qty,   setQty]   = useState(0);
+  const [qty,   setQty]   = useState(1);
   const [liked, setLiked] = useState(false);
   const { addToCart } = useCart();
 
@@ -185,9 +185,8 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
 
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation();
-    const qtyToAdd = qty === 0 ? 1 : qty;
-    addToCart({ name: product.name, size: product.size, price: product.price }, qtyToAdd);
-    setQty(0);
+    addToCart({ name: product.name, size: product.size, price: product.price }, qty);
+    setQty(1);
   }
 
   return (
@@ -252,8 +251,9 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
           <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
             <button
               aria-label="Decrease quantity"
-              onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(0, q - 1)); }}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
+              disabled={qty === 1}
+              onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
+              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
             >−</button>
             <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
             <button
