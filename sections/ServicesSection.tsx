@@ -69,6 +69,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
   }, [onClose]);
 
   function handleAddToCart() {
+    if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
     addToCart({ name: product.name, size: product.size, price: product.price }, popupQty);
     onClose();
   }
@@ -190,6 +191,7 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation();
     if (atcPhase !== 'idle') return;
+    if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
     addToCart({ name: product.name, size: product.size, price: product.price }, qty);
     setQty(1);
     setAtcPhase('flip');
