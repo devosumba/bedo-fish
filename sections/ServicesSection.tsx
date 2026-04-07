@@ -51,19 +51,136 @@ const PARAGRAPHS = [
   `Fresh, sustainably sourced fish roasted daily and delivered with the quality and care your table deserves.`,
 ] as const;
 
+// ─── Quick view modal ──────────────────────────────────────────────────────────────
+
+function QuickViewModal({ product, onClose }: { product: Product; onClose: () => void }) {
+  const [popupQty, setPopupQty] = useState(1);
+  const [liked, setLiked] = useState(false);
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === 'Escape') onClose(); }
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  function handleAddToCart() {
+    addToCart({ name: product.name, size: product.size, price: product.price }, popupQty);
+    onClose();
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <motion.div
+        className="absolute inset-0 bg-black/60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        onClick={onClose}
+      />
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        className="relative bg-white rounded-2xl w-full max-w-2xl flex flex-col md:flex-row overflow-hidden shadow-2xl"
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 16 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* X close button */}
+        <button
+          aria-label="Close"
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        {/* Left panel */}
+        <div className="relative w-full md:w-[45%] aspect-[4/3] md:aspect-auto md:min-h-[320px] bg-gray-100 shrink-0">
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            quality={90}
+            sizes="(max-width: 768px) 100vw, 45vw"
+            className="object-cover"
+          />
+        </div>
+
+        {/* Right panel */}
+        <div className="flex flex-col gap-4 p-6 flex-1 min-w-0">
+          <h2 className="font-bold text-xl text-gray-900 pr-8">{product.name}</h2>
+
+          <div className="flex items-center gap-3">
+            <span className="font-bold text-[#014aad] text-lg">{product.price}</span>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full border border-green-500 text-green-600">In Stock</span>
+          </div>
+
+          <p className="text-gray-500 text-sm leading-relaxed">{product.description}</p>
+
+          <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-3 py-2 w-full max-w-[160px]">
+            <button
+              aria-label="Decrease quantity"
+              onClick={() => setPopupQty((q) => Math.max(1, q - 1))}
+              className="w-6 h-6 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-sm font-bold leading-none"
+            >−</button>
+            <span className="text-sm font-semibold text-gray-800 w-6 text-center leading-none">{popupQty}</span>
+            <button
+              aria-label="Increase quantity"
+              onClick={() => setPopupQty((q) => q + 1)}
+              className="w-6 h-6 flex items-center justify-center rounded-full text-gray-600 hover:bg-white transition-colors text-sm font-bold leading-none"
+            >+</button>
+          </div>
+
+          <div className="flex items-center gap-3 mt-auto">
+            <button
+              className="flex-1 bg-[#014aad] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-2"
+              onClick={handleAddToCart}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              </svg>
+              Add to Cart
+            </button>
+            <button
+              aria-label={liked ? 'Unlike' : 'Like'}
+              onClick={() => setLiked((v) => !v)}
+              className="w-11 h-11 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shrink-0"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24"
+                fill={liked ? '#014aad' : 'none'}
+                stroke={liked ? '#014aad' : 'currentColor'}
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // ─── Product card ─────────────────────────────────────────────────────────────
 
-function ProductCard({ product, index }: { product: Product; index: number }) {
-  const [qty,      setQty]      = useState(0);
-  const [liked,    setLiked]    = useState(false);
-  const [heartPop, setHeartPop] = useState(false);
+function ProductCard({ product, index, onOpenQuickView }: { product: Product; index: number; onOpenQuickView: (p: Product) => void }) {
+  const [qty,   setQty]   = useState(0);
+  const [liked, setLiked] = useState(false);
   const { addToCart } = useCart();
 
   function handleLike(e: React.MouseEvent) {
     e.stopPropagation();
     setLiked((v) => !v);
-    setHeartPop(true);
-    setTimeout(() => setHeartPop(false), 200);
   }
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -81,10 +198,10 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       className="product-card relative w-full overflow-visible rounded-2xl"
     >
       {/* Inner wrapper: height driven by content, no fixed aspect ratio */}
-      <div className="flex flex-col bg-white rounded-2xl overflow-hidden cursor-pointer">
+      <div className="flex flex-col bg-white rounded-2xl overflow-hidden">
 
         {/* Image area — 3:2 aspect ratio, self-contained */}
-        <div className="relative w-full aspect-[3/2] bg-gray-100 overflow-hidden">
+        <div className="relative w-full aspect-[3/2] bg-gray-100 overflow-hidden cursor-pointer" onClick={() => onOpenQuickView(product)}>
           <Image
             src={product.image}
             alt={product.name}
@@ -107,15 +224,9 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </span>
 
           {/* Like button — bottom-right: solid #014aad circle, white heart */}
-          <motion.button
+                    <button
             aria-label={liked ? 'Unlike' : 'Like'}
             onClick={handleLike}
-            whileHover={{ scale: 1.1 }}
-            animate={heartPop ? { scale: [1, 0.9, 1] } : { scale: 1 }}
-            transition={heartPop
-              ? { duration: 0.2, ease: 'easeOut', times: [0, 0.5, 1] }
-              : { duration: 0.2, ease: 'easeOut' }
-            }
             className="absolute bottom-2 right-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-[#014aad]"
           >
             <svg
@@ -127,7 +238,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             >
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
-          </motion.button>
+          </button>
         </div>
 
         {/* Card content — natural height, ends after last element */}
@@ -181,6 +292,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 const ServicesSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab,   setActiveTab]   = useState(0);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const sectionRef            = useRef<HTMLElement>(null);
   const paragraphContainerRef = useRef<HTMLDivElement>(null);
@@ -405,12 +517,18 @@ const ServicesSection = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {TABS[activeTab].products.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} />
+              <ProductCard key={product.id} product={product} index={i} onOpenQuickView={setQuickViewProduct} />
             ))}
           </motion.div>
         </AnimatePresence>
 
       </div>
+
+      <AnimatePresence>
+        {quickViewProduct && (
+          <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 };
