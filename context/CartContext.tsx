@@ -1,6 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+const STORAGE_KEY = 'bedo-cart';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -40,10 +42,27 @@ const CartContext = createContext<CartContextType>({
 // ─── Provider ──────────────────────────────────────────────────────────────────
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    // localStorage is not available during SSR
+    if (typeof window === 'undefined') return [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as CartItem[]) : [];
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+      return [];
+    }
+  });
 
   const totalItems  = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalAmount = items.reduce((sum, i) => sum + i.totalPrice, 0);
+
+  // Sync cart state to localStorage on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {}
+  }, [items]);
 
   function addToCart(item: { name: string; size: string; price: string; image: string; description: string }, qty: number) {
     const unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''), 10) || 0;
@@ -75,6 +94,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function clearCart() {
     setItems([]);
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
   }
 
   return (

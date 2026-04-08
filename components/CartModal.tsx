@@ -99,9 +99,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                       {/* Name, price/description, qty + delete */}
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 text-sm leading-tight">{item.name}</p>
-                        {/* Mobile: description — Desktop: fixed unit price */}
-                        <p className="text-gray-400 text-xs mt-0.5 line-clamp-2 md:hidden">{item.description}</p>
-                        <p className="text-gray-400 text-xs mt-0.5 hidden md:block">Ksh {item.unitPrice}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">Ksh {item.unitPrice}</p>
                         {/* Counter row — minus, count, plus only; delete inline on mobile only */}
                         <div className="flex items-center gap-2 mt-2">
                           <button
