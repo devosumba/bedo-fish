@@ -71,13 +71,18 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
             </div>
 
             {items.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6 text-center">
+              <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6 text-center">
                 <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#014aad" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                   <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
                 </svg>
-                <p className="font-semibold text-gray-900 text-base">Your cart is empty</p>
-                <p className="text-gray-400 text-sm">Add products from our offerings to get started</p>
+                <p className="font-semibold text-[#014aad] text-base">Your cart is empty</p>
+                <button
+                  onClick={() => { onClose(); setTimeout(() => { document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }, 50); }}
+                  className="bg-[#014aad] text-white font-bold px-6 py-[10px] rounded-full hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                >
+                  Explore Our Offerings
+                </button>
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto">
