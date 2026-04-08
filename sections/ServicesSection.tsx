@@ -70,7 +70,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 
   function handleAddToCart() {
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image }, popupQty);
+    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description }, popupQty);
     onClose();
   }
 
@@ -192,7 +192,7 @@ function ProductCard({ product, index, onOpenQuickView }: { product: Product; in
     e.stopPropagation();
     if (atcPhase !== 'idle') return;
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image }, qty);
+    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description }, qty);
     setQty(1);
     setAtcPhase('flip');
     setTimeout(() => setAtcPhase('push'), 150);

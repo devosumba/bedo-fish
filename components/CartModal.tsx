@@ -3,11 +3,35 @@
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect, useRef } from 'react';
 
 export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const { items, totalAmount, updateQuantity } = useCart();
+  const { items, totalAmount, updateQuantity, removeFromCart } = useCart();
   const deliveryFee = 0;
   const total = totalAmount + deliveryFee;
+  const scrollYRef = useRef(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollYRef.current = window.scrollY;
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '-' + scrollYRef.current + 'px';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      window.scrollTo(0, scrollYRef.current);
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -34,13 +58,13 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
 
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
-              <h2 className="font-bold text-xl text-gray-900">Your Cart</h2>
+              <h2 className="font-bold text-xl text-[#014aad]">Your Cart</h2>
               <button
                 aria-label="Close cart"
                 onClick={onClose}
-                className="text-[#014aad] hover:opacity-70 transition-opacity focus:outline-none"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none shrink-0"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
@@ -69,7 +93,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                       {/* Name, price, qty */}
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 text-sm leading-tight">{item.name}</p>
-                        <p className="text-gray-400 text-xs mt-0.5">Ksh {item.unitPrice}</p>
+                        <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{item.description}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <button
                             aria-label="Decrease quantity"
@@ -85,9 +109,18 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         </div>
                       </div>
 
-                      {/* Item total */}
-                      <div className="shrink-0 text-right">
+                      {/* Item total + delete */}
+                      <div className="shrink-0 text-right flex flex-col items-end gap-2">
                         <span className="font-bold text-gray-900 text-sm">Ksh {item.totalPrice.toFixed(2)}</span>
+                        <button
+                          aria-label="Remove item"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-[#014aad] hover:opacity-70 transition-opacity focus:outline-none"
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                        </button>
                       </div>
                     </div>
                     <div className="border-b border-gray-100" />
@@ -100,16 +133,16 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
             {items.length > 0 && (
               <div className="shrink-0 px-6 py-5 bg-white border-t border-gray-100">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-gray-900 text-sm">Subtotal</span>
-                  <span className="font-bold text-gray-900 text-sm">Ksh {totalAmount.toFixed(2)}</span>
+                  <span className="font-bold text-[#014aad] text-sm">Subtotal</span>
+                  <span className="font-bold text-[#014aad] text-sm">Ksh {totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">Delivery Fee</span>
                   <span className="text-gray-400 text-sm">Ksh 0.00</span>
                 </div>
                 <div className="border-t border-gray-200 pt-3 flex items-center justify-between mb-4">
-                  <span className="font-bold text-gray-900 text-base">Total</span>
-                  <span className="font-bold text-gray-900 text-base">Ksh {total.toFixed(2)}</span>
+                  <span className="font-bold text-[#014aad] text-base">Total</span>
+                  <span className="font-bold text-[#014aad] text-base">Ksh {total.toFixed(2)}</span>
                 </div>
                 <button className="w-full bg-[#014aad] text-white font-semibold py-3.5 rounded-full text-sm hover:bg-[#0157cc] transition-colors">
                   Proceed to Checkout
