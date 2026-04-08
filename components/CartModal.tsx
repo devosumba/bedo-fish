@@ -129,7 +129,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                       </div>
 
                       {/* Item total + desktop delete stacked in right column */}
-                      <div className="shrink-0 flex flex-col items-end gap-2">
+                      <div className="shrink-0 flex flex-col items-end justify-between">
                         <span className="font-bold text-gray-900 text-sm">Ksh {item.totalPrice.toFixed(2)}</span>
                         {/* Desktop only: delete below price */}
                         <button
