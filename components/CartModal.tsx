@@ -95,7 +95,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
                       </div>
 
-                      {/* Name, price, qty */}
+                      {/* Name, description, qty + delete */}
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 text-sm leading-tight">{item.name}</p>
                         <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{item.description}</p>
@@ -103,29 +103,29 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                           <button
                             aria-label="Decrease quantity"
                             onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                            className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded text-gray-700 text-sm font-bold hover:border-[#014aad] transition-colors leading-none"
+                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
                           >-</button>
                           <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">{item.quantity}</span>
                           <button
                             aria-label="Increase quantity"
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded text-gray-700 text-sm font-bold hover:border-[#014aad] transition-colors leading-none"
+                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
                           >+</button>
+                          <button
+                            aria-label="Remove item"
+                            onClick={() => removeFromCart(item.id)}
+                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                            </svg>
+                          </button>
                         </div>
                       </div>
 
-                      {/* Item total + delete */}
-                      <div className="shrink-0 text-right flex flex-col items-end gap-2">
+                      {/* Item total */}
+                      <div className="shrink-0 text-right">
                         <span className="font-bold text-gray-900 text-sm">Ksh {item.totalPrice.toFixed(2)}</span>
-                        <button
-                          aria-label="Remove item"
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-[#014aad] hover:opacity-70 transition-opacity focus:outline-none"
-                        >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                          </svg>
-                        </button>
                       </div>
                     </div>
                     <div className="border-b border-gray-100" />
