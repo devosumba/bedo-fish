@@ -88,33 +88,50 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
               <div className="flex-1 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.id} className="px-6">
-                    <div className="flex items-start gap-4 py-4">
+                    {/* md:items-stretch lets the thumbnail grow to match the content column height */}
+                    <div className="flex items-start md:items-stretch gap-4 py-4">
 
-                      {/* Thumbnail */}
-                      <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gray-100">
-                        <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
+                      {/* Thumbnail — fixed square on mobile, stretches to content height on desktop */}
+                      <div className="relative w-16 h-16 md:w-20 md:h-auto rounded-xl overflow-hidden shrink-0 bg-gray-100">
+                        <Image src={item.image} alt={item.name} fill sizes="(min-width:768px) 80px, 64px" className="object-cover" />
                       </div>
 
-                      {/* Name, description, qty + delete */}
+                      {/* Name, price/description, qty + delete */}
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 text-sm leading-tight">{item.name}</p>
-                        <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{item.description}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <button
-                            aria-label="Decrease quantity"
-                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
-                          >-</button>
-                          <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">{item.quantity}</span>
-                          <button
-                            aria-label="Increase quantity"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
-                          >+</button>
+                        {/* Mobile: description — Desktop: fixed unit price */}
+                        <p className="text-gray-400 text-xs mt-0.5 line-clamp-2 md:hidden">{item.description}</p>
+                        <p className="text-gray-400 text-xs mt-0.5 hidden md:block">Ksh {item.unitPrice}</p>
+                        {/* Counter row — mobile: all inline; desktop: justify-between pushes delete to far right */}
+                        <div className="flex items-center justify-between mt-2">
+                          <div className="flex items-center gap-2">
+                            <button
+                              aria-label="Decrease quantity"
+                              onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                              className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
+                            >-</button>
+                            <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">{item.quantity}</span>
+                            <button
+                              aria-label="Increase quantity"
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
+                            >+</button>
+                            {/* Delete — mobile only: inline after plus */}
+                            <button
+                              aria-label="Remove item"
+                              onClick={() => removeFromCart(item.id)}
+                              className="md:hidden w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                            >
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                              </svg>
+                            </button>
+                          </div>
+                          {/* Delete — desktop only: far right via justify-between */}
                           <button
                             aria-label="Remove item"
                             onClick={() => removeFromCart(item.id)}
-                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                            className="hidden md:flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
                           >
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
