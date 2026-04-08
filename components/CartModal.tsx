@@ -102,36 +102,24 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         {/* Mobile: description — Desktop: fixed unit price */}
                         <p className="text-gray-400 text-xs mt-0.5 line-clamp-2 md:hidden">{item.description}</p>
                         <p className="text-gray-400 text-xs mt-0.5 hidden md:block">Ksh {item.unitPrice}</p>
-                        {/* Counter row — mobile: all inline; desktop: justify-between pushes delete to far right */}
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-2">
-                            <button
-                              aria-label="Decrease quantity"
-                              onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                              className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
-                            >-</button>
-                            <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">{item.quantity}</span>
-                            <button
-                              aria-label="Increase quantity"
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
-                            >+</button>
-                            {/* Delete — mobile only: inline after plus */}
-                            <button
-                              aria-label="Remove item"
-                              onClick={() => removeFromCart(item.id)}
-                              className="md:hidden w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
-                            >
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                              </svg>
-                            </button>
-                          </div>
-                          {/* Delete — desktop only: far right via justify-between */}
+                        {/* Counter row — minus, count, plus only; delete inline on mobile only */}
+                        <div className="flex items-center gap-2 mt-2">
+                          <button
+                            aria-label="Decrease quantity"
+                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
+                          >-</button>
+                          <span className="text-sm font-semibold text-gray-800 min-w-[20px] text-center">{item.quantity}</span>
+                          <button
+                            aria-label="Increase quantity"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
+                          >+</button>
+                          {/* Mobile only: delete inline after plus */}
                           <button
                             aria-label="Remove item"
                             onClick={() => removeFromCart(item.id)}
-                            className="hidden md:flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                            className="md:hidden w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
                           >
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
@@ -140,9 +128,19 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         </div>
                       </div>
 
-                      {/* Item total */}
-                      <div className="shrink-0 text-right">
+                      {/* Item total + desktop delete stacked in right column */}
+                      <div className="shrink-0 flex flex-col items-end gap-2">
                         <span className="font-bold text-gray-900 text-sm">Ksh {item.totalPrice.toFixed(2)}</span>
+                        {/* Desktop only: delete below price */}
+                        <button
+                          aria-label="Remove item"
+                          onClick={() => removeFromCart(item.id)}
+                          className="hidden md:flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                        >
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                        </button>
                       </div>
                     </div>
                     <div className="border-b border-gray-100" />
