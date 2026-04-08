@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useCart } from '../context/CartContext';
+import CartModal from './CartModal';
 
 const NAV_ITEMS = [
   { label: 'Products',  href: '#products',   section: 'products'   },
@@ -24,6 +25,7 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartPulse,      setCartPulse]      = useState(false);
+  const [cartOpen,       setCartOpen]       = useState(false);
   const [cartHighlight,  setCartHighlight]  = useState(false);
   const { totalItems } = useCart();
   const prevCartCount = useRef(totalItems);
@@ -143,7 +145,7 @@ export default function Navbar() {
         {/* Right — Cart | | TikTok | Instagram | Phone */}
         <div className="flex items-center gap-3 pr-2">
           {/* Cart */}
-          <a href="#portfolio" onClick={() => setActiveSection('portfolio')} aria-label="Cart"
+          <button onClick={() => setCartOpen(true)} aria-label="Cart"
             className="relative text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
             <motion.span
               animate={{ scale: cartPulse ? [1, 1.3, 1] : 1 }}
@@ -160,7 +162,7 @@ export default function Navbar() {
                 {totalItems}
               </span>
             )}
-          </a>
+          </button>
 
           {/* Separator */}
           <span className="text-gray-300 select-none font-light text-lg leading-none">|</span>
@@ -206,7 +208,7 @@ export default function Navbar() {
 
           {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
-            <a href="#portfolio" aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors"
+            <button onClick={() => setCartOpen(true)} aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors"
               style={cartHighlight ? { filter: 'drop-shadow(0 0 8px rgba(1,74,173,0.95))' } : undefined}
             >
               <motion.span
@@ -230,7 +232,7 @@ export default function Navbar() {
                   {totalItems}
                 </span>
               )}
-            </a>
+            </button>
             <button
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
@@ -298,6 +300,7 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </div>
+      <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </motion.nav>
   );
 }

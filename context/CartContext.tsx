@@ -5,9 +5,10 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
 type CartItem = {
-  id: string;        // slugified name+size — dedup key
+  id: string;
   name: string;
   size: string;
+  image: string;
   unitPrice: number;
   quantity: number;
   totalPrice: number;
@@ -17,8 +18,9 @@ type CartContextType = {
   items: CartItem[];
   totalItems: number;
   totalAmount: number;
-  addToCart: (item: { name: string; size: string; price: string }, qty: number) => void;
+  addToCart: (item: { name: string; size: string; price: string; image: string }, qty: number) => void;
   removeFromCart: (id: string) => void;
+  updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
 };
 
@@ -30,6 +32,7 @@ const CartContext = createContext<CartContextType>({
   totalAmount: 0,
   addToCart: () => {},
   removeFromCart: () => {},
+  updateQuantity: () => {},
   clearCart: () => {},
 });
 
@@ -41,7 +44,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalItems  = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalAmount = items.reduce((sum, i) => sum + i.totalPrice, 0);
 
-  function addToCart(item: { name: string; size: string; price: string }, qty: number) {
+  function addToCart(item: { name: string; size: string; price: string; image: string }, qty: number) {
     const unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''), 10) || 0;
     const id = item.name.toLowerCase().replace(/ +/g, '-') + '-' + item.size.toLowerCase().replace(/ +/g, '-');
     setItems((prev) => {
@@ -53,8 +56,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
             : i
         );
       }
-      return [...prev, { id, name: item.name, size: item.size, unitPrice, quantity: qty, totalPrice: unitPrice * qty }];
+      return [...prev, { id, name: item.name, size: item.size, image: item.image, unitPrice, quantity: qty, totalPrice: unitPrice * qty }];
     });
+  }
+
+  function updateQuantity(id: string, qty: number) {
+    setItems((prev) =>
+      prev.map((i) =>
+        i.id === id ? { ...i, quantity: qty, totalPrice: qty * i.unitPrice } : i
+      )
+    );
   }
 
   function removeFromCart(id: string) {
@@ -66,7 +77,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <CartContext.Provider value={{ items, totalItems, totalAmount, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ items, totalItems, totalAmount, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );
