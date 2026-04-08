@@ -89,7 +89,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                 {items.map((item) => (
                   <div key={item.id} className="px-6">
                     {/* md:items-stretch lets the thumbnail grow to match the content column height */}
-                    <div className="flex items-start md:items-stretch gap-4 py-4">
+                    <div className="flex items-stretch gap-4 py-4">
 
                       {/* Thumbnail — fixed square on mobile, stretches to content height on desktop */}
                       <div className="relative w-16 h-16 md:w-20 md:h-auto rounded-xl overflow-hidden shrink-0 bg-gray-100">
@@ -115,16 +115,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             className="w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white text-sm font-bold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none leading-none"
                           >+</button>
-                          {/* Mobile only: delete inline after plus */}
-                          <button
-                            aria-label="Remove item"
-                            onClick={() => removeFromCart(item.id)}
-                            className="md:hidden w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
-                          >
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                            </svg>
-                          </button>
+
                         </div>
                       </div>
 
@@ -135,7 +126,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         <button
                           aria-label="Remove item"
                           onClick={() => removeFromCart(item.id)}
-                          className="hidden md:flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                          className="flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
                         >
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
