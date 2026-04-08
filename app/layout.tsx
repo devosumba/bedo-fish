@@ -15,6 +15,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preload" href="/images/bedo-loader.gif" as="image" fetchPriority="high" />
+      </head>
       <body style={{ background: '#FFF', minHeight: '100vh', margin: 0 }}>
         <CartProvider>
           <PageLoader />
