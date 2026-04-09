@@ -83,8 +83,8 @@ export default function CheckoutPage() {
   const total = totalAmount + deliveryFee;
   const visibleItems = expandedItems ? items : items.slice(0, 3);
   return (
-    <div className="min-h-screen" style={{ background: "#000" }}>
-      <div className="w-full max-w-6xl lg:max-w-[74vw] mx-auto px-4 pt-10 pb-10 md:pt-14 md:pb-16">
+    <div className="relative z-0 min-h-screen" style={{ background: "#000" }}>
+      <div className="max-w-6xl lg:max-w-[74vw] mx-auto px-4 pt-10 pb-10 md:pt-14 md:pb-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
           <div className="w-full md:w-[55%] flex flex-col gap-6">
             <h1 className="text-2xl md:text-3xl font-bold">
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
               {touched.address && errors.address && <p className="text-red-400 text-xs">{errors.address}</p>}
             </div>
           </div>
-          <div className="w-full md:w-[45%] md:sticky md:top-24">
+          <div className="w-full md:w-[45%] md:sticky md:top-24 z-[1]">
             <div className="rounded-2xl p-6 flex flex-col gap-5" style={{ background: "#014aad" }}>
               <div className="flex items-center gap-2">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
