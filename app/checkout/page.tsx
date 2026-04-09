@@ -49,6 +49,14 @@ export default function CheckoutPage() {
   const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => { setForm(prev => ({ ...prev, [k]: e.target.value })); setTouched(prev => ({ ...prev, [k]: true })); };
   useEffect(() => { try { const stored = localStorage.getItem(ADDR_KEY); if (stored) setSavedAddresses(JSON.parse(stored)); } catch {} }, []);
   const saveAddress = (addr: SavedAddress) => { setSavedAddresses(prev => { const next = prev.find(a => a.id === addr.id) ? prev : [addr, ...prev]; try { localStorage.setItem(ADDR_KEY, JSON.stringify(next)); } catch {} return next; }); };
+  const deleteAddress = (id: string) => {
+    setSavedAddresses(prev => {
+      const next = prev.filter(a => a.id !== id);
+      try { localStorage.setItem(ADDR_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+    if (selectedAddr?.id === id) { setSelectedAddr(null); setAddrSearch(''); }
+  };
   const onAddrSearchChange = useCallback((val: string) => {
     setAddrSearch(val);
     setShowSuggestions(true);
@@ -58,26 +66,16 @@ export default function CheckoutPage() {
     debounceRef.current = setTimeout(async () => {
       try {
         const params = new URLSearchParams({ q: val, format: 'json', addressdetails: '1', countrycodes: 'ke', limit: '5' });
-        const res = await fetch(NOMINATIM_URL + '?' + params.toString(), {
-          headers: { 'User-Agent': 'BedoFish/1.0 (info@bedofish.com)' }
-        });
+        const res = await fetch(NOMINATIM_URL + '?' + params.toString(), { headers: { 'User-Agent': 'BedoFish/1.0 (info@bedofish.com)' } });
         const data: NominatimResult[] = await res.json();
         setSuggestions(data);
-      } catch {
-        setSuggestions([]);
-      } finally {
-        setIsLoadingAddr(false);
-      }
+      } catch { setSuggestions([]); } finally { setIsLoadingAddr(false); }
     }, 400);
   }, []);
   const pickSuggestion = (result: NominatimResult) => {
     const addr: SavedAddress = { id: String(result.place_id), label: result.display_name, lat: result.lat, lon: result.lon };
-    setSelectedAddr(addr);
-    saveAddress(addr);
-    setAddrSearch(result.display_name);
-    setSuggestions([]);
-    setShowSuggestions(false);
-    setTouched(prev => ({ ...prev, address: true }));
+    setSelectedAddr(addr); saveAddress(addr); setAddrSearch(result.display_name);
+    setSuggestions([]); setShowSuggestions(false); setTouched(prev => ({ ...prev, address: true }));
   };
   const errors = validate(form, selectedAddr);
   const hasAddress = !!selectedAddr;
@@ -86,7 +84,7 @@ export default function CheckoutPage() {
   const visibleItems = expandedItems ? items : items.slice(0, 3);
   return (
     <div className="min-h-screen" style={{ background: "#000" }}>
-      <div className="max-w-6xl mx-auto px-4 pt-8 pb-10 md:pt-12 md:pb-16">
+      <div className="w-full max-w-6xl lg:max-w-[74vw] mx-auto px-4 pt-10 pb-10 md:pt-14 md:pb-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
           <div className="w-full md:w-[55%] flex flex-col gap-6">
             <h1 className="text-2xl md:text-3xl font-bold">
@@ -143,9 +141,16 @@ export default function CheckoutPage() {
               {savedAddresses.length > 0 && (
                 <div className="flex flex-col gap-2">
                   {savedAddresses.map(addr => (
-                    <button key={addr.id} onClick={() => { setSelectedAddr(addr); setAddrSearch(addr.label); setTouched(p => ({ ...p, address: true })); }} className={'w-full text-left px-4 py-3 rounded-xl border text-sm transition-colors ' + (selectedAddr?.id === addr.id ? 'border-[#014aad] bg-[#014aad]/20 text-white' : 'border-white/20 bg-white/5 text-white/70 hover:border-white/40')}>
-                      <span className="mr-2">&#128205;</span>{addr.label}
-                    </button>
+                    <div key={addr.id} className={'flex items-center rounded-xl overflow-hidden transition-colors ' + (selectedAddr?.id === addr.id ? 'border border-[#014aad]' : 'border border-transparent')} style={{ background: selectedAddr?.id === addr.id ? 'rgba(1,74,173,0.2)' : 'rgba(1,74,173,0.1)' }}>
+                      <button onClick={() => { setSelectedAddr(addr); setAddrSearch(addr.label); setTouched(p => ({ ...p, address: true })); }} className="flex-1 text-left px-4 py-3 text-sm text-white/80 hover:text-white transition-colors">
+                        {addr.label}
+                      </button>
+                      <button aria-label="Delete address" onClick={() => deleteAddress(addr.id)} className="shrink-0 w-7 h-7 flex items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 mr-2 focus:outline-none">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
+                      </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -223,7 +228,7 @@ export default function CheckoutPage() {
                 style={hasAddress ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
                 className={'w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all duration-300 ease-in-out ' + (hasAddress ? 'bg-white text-[#014aad]' : 'bg-white/30 text-white/70')}
               >
-                <img src="/images/mpesa-logo.jpg" alt="M-Pesa" style={{ height: "22px", width: "auto", objectFit: "contain" }} />
+                <img src="/images/mpesa-logo.jpg" alt="M-Pesa" style={{ height: "22px", width: "auto", objectFit: "contain", mixBlendMode: "multiply" }} />
                 Pay With M-Pesa
               </button>
             </div>
