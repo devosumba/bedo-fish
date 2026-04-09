@@ -38,6 +38,14 @@ export default function CheckoutPage() {
   const [isLoadingAddr, setIsLoadingAddr] = useState(false);
   const [expandedItems, setExpandedItems] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Set body background to black on checkout page, restore on unmount
+  useEffect(() => {
+    const prev = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = '#000';
+    return () => { document.body.style.backgroundColor = prev; };
+  }, []);
+
   const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => { setForm(prev => ({ ...prev, [k]: e.target.value })); setTouched(prev => ({ ...prev, [k]: true })); };
   useEffect(() => { try { const stored = localStorage.getItem(ADDR_KEY); if (stored) setSavedAddresses(JSON.parse(stored)); } catch {} }, []);
   const saveAddress = (addr: SavedAddress) => { setSavedAddresses(prev => { const next = prev.find(a => a.id === addr.id) ? prev : [addr, ...prev]; try { localStorage.setItem(ADDR_KEY, JSON.stringify(next)); } catch {} return next; }); };
@@ -72,13 +80,13 @@ export default function CheckoutPage() {
     setTouched(prev => ({ ...prev, address: true }));
   };
   const errors = validate(form, selectedAddr);
-  const isValid = Object.keys(errors).length === 0;
+  const hasAddress = !!selectedAddr;
   const deliveryFee = 0;
   const total = totalAmount + deliveryFee;
   const visibleItems = expandedItems ? items : items.slice(0, 3);
   return (
     <div className="min-h-screen" style={{ background: "#000" }}>
-      <div className="max-w-6xl mx-auto px-4 py-10 md:py-16">
+      <div className="max-w-6xl mx-auto px-4 pt-8 pb-10 md:pt-12 md:pb-16">
         <div className="flex flex-col md:flex-row gap-8 md:gap-10 items-start">
           <div className="w-full md:w-[55%] flex flex-col gap-6">
             <h1 className="text-2xl md:text-3xl font-bold">
@@ -210,9 +218,13 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-sm"><span className="text-white/70">Delivery Fee</span><span className="text-white/70">Ksh 0.00</span></div>
                 <div style={{ borderTop: "1px solid rgba(255,255,255,0.3)" }} className="pt-2 flex justify-between"><span className="text-white font-bold">Total</span><span className="text-white font-bold">Ksh {total.toFixed(2)}</span></div>
               </div>
-              <button disabled={!isValid} onClick={() => { if (!isValid) setTouched({ firstName: true, lastName: true, email: true, phone: true, address: true }); }} className={'w-full flex items-center justify-center gap-3 py-4 rounded-full font-bold text-sm transition-all ' + (isValid ? 'bg-white text-[#014aad] hover:opacity-90 cursor-pointer' : 'bg-white/30 text-white/70 cursor-not-allowed')}>
-                Pay With
-                <img src="/images/mpesa-logo.svg" alt="M-Pesa" style={{ height: "22px", width: "auto" }} />
+              <button
+                onClick={() => { if (!hasAddress) setTouched(p => ({ ...p, address: true })); }}
+                style={hasAddress ? { pointerEvents: "auto" } : { pointerEvents: "none" }}
+                className={'w-full flex items-center justify-center gap-2 py-4 rounded-full font-bold text-sm transition-all duration-300 ease-in-out ' + (hasAddress ? 'bg-white text-[#014aad]' : 'bg-white/30 text-white/70')}
+              >
+                <img src="/images/mpesa-logo.jpg" alt="M-Pesa" style={{ height: "22px", width: "auto", objectFit: "contain" }} />
+                Pay With M-Pesa
               </button>
             </div>
           </div>
