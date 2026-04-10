@@ -3,12 +3,13 @@
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { items, totalAmount, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const deliveryFee = 0;
   const total = totalAmount + deliveryFee;
   const scrollYRef = useRef(0);
@@ -125,7 +126,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                         {/* Desktop only: delete below price */}
                         <button
                           aria-label="Remove item"
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => setPendingDeleteId(item.id)}
                           className="flex w-7 h-7 items-center justify-center rounded bg-[#014aad] text-white hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
                         >
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -162,6 +163,42 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
             )}
 
           </motion.div>
+
+          {/* Delete confirmation dialog */}
+          {pendingDeleteId && (
+            <div
+              className="absolute inset-0 flex items-center justify-center z-10 px-6"
+              style={{ background: 'rgba(0,0,0,0.5)' }}
+              onClick={() => setPendingDeleteId(null)}
+            >
+              <div
+                className="bg-white rounded-2xl p-8 w-full max-w-sm flex flex-col items-center gap-4"
+                style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-12 h-12 flex items-center justify-center rounded-full" style={{ background: 'rgba(1,74,173,0.10)' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#014aad" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg text-center">Remove Item?</h3>
+                <p className="text-gray-400 text-sm text-center leading-relaxed">Are you sure you want to remove this item from your cart? This action cannot be undone.</p>
+                <div className="flex gap-3 w-full pt-1">
+                  <button
+                    onClick={() => setPendingDeleteId(null)}
+                    className="flex-1 py-3 rounded-full text-sm font-semibold transition-colors focus:outline-none"
+                    style={{ border: '1.5px solid #014aad', color: '#014aad', background: 'white' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(1,74,173,0.05)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'white'; }}
+                  >No, Keep It</button>
+                  <button
+                    onClick={() => { removeFromCart(pendingDeleteId); setPendingDeleteId(null); }}
+                    className="flex-1 py-3 rounded-full bg-[#014aad] text-white text-sm font-semibold hover:[filter:brightness(0.85)] transition-all duration-150 focus:outline-none"
+                  >Yes, Remove</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </AnimatePresence>

@@ -28,7 +28,7 @@ import { motion } from 'framer-motion';
 
 // ─── Typewriter hook ──────────────────────────────────────────────────────────
 
-const WORDS     = ['Smoked', 'Roasted'] as const;
+const WORDS     = ['Roasted'] as const;
 const TYPE_MS   =  80;   // ms per character typed
 const DELETE_MS =  50;   // ms per character deleted
 const PAUSE_MS  = 800;   // ms pause at full word before deleting
