@@ -42,27 +42,31 @@ const CartContext = createContext<CartContextType>({
 // ─── Provider ──────────────────────────────────────────────────────────────────
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    // localStorage is not available during SSR
-    if (typeof window === 'undefined') return [];
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? (JSON.parse(stored) as CartItem[]) : [];
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
-      return [];
-    }
-  });
+  // Always start with empty array — server and client first render must match
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const totalItems  = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalAmount = items.reduce((sum, i) => sum + i.totalPrice, 0);
 
-  // Sync cart state to localStorage on every change
+  // Hydrate cart from localStorage after mount (client only)
   useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) setItems(JSON.parse(stored) as CartItem[]);
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Sync to localStorage on change — only after hydration to avoid overwriting stored cart with []
+  useEffect(() => {
+    if (!isHydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     } catch {}
-  }, [items]);
+  }, [items, isHydrated]);
 
   function addToCart(item: { name: string; size: string; price: string; image: string; description: string }, qty: number) {
     const unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''), 10) || 0;

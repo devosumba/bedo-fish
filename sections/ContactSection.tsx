@@ -264,7 +264,7 @@ export default function ContactSection() {
         </motion.div>
 
         {/* Copyright */}
-        <p className="text-xs text-center" style={{ color: '#9ca3af' }}>
+        <p suppressHydrationWarning className="text-xs text-center" style={{ color: '#9ca3af' }}>
           &copy; {new Date().getFullYear()} Bedo Fish. All rights reserved | Developed by{' '}
           <a
             href="https://www.linkedin.com/in/john-austine-osumba-689327207/"

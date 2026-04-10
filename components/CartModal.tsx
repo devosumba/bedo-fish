@@ -4,9 +4,11 @@ import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { items, totalAmount, updateQuantity, removeFromCart } = useCart();
+  const router = useRouter();
   const deliveryFee = 0;
   const total = totalAmount + deliveryFee;
   const scrollYRef = useRef(0);
@@ -153,7 +155,7 @@ export default function CartModal({ isOpen, onClose }: { isOpen: boolean; onClos
                   <span className="font-bold text-[#014aad] text-base">Total</span>
                   <span className="font-bold text-[#014aad] text-base">Ksh {total.toFixed(2)}</span>
                 </div>
-                <button className="w-full bg-[#014aad] text-white font-semibold py-3.5 rounded-full text-sm hover:bg-[#0157cc] transition-colors">
+                <button onClick={() => { onClose(); router.push('/checkout'); }} className="w-full bg-[#014aad] text-white font-semibold py-3.5 rounded-full text-sm hover:bg-[#0157cc] transition-colors">
                   Proceed to Checkout
                 </button>
               </div>
