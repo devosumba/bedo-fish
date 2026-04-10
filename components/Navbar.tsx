@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useCart } from '../context/CartContext';
@@ -28,6 +29,8 @@ export default function Navbar() {
   const [cartOpen,       setCartOpen]       = useState(false);
   const [cartHighlight,  setCartHighlight]  = useState(false);
   const { totalItems } = useCart();
+  const pathname = usePathname();
+  const isHome = pathname === '/';
   const prevCartCount = useRef(totalItems);
 
   useEffect(() => {
@@ -51,6 +54,7 @@ export default function Navbar() {
    * visible in the viewport wins, so tall sections (our-story ~400vh) hold
    * the active state for their entire scroll duration. */
   useEffect(() => {
+    if (!isHome) return;
     const SECTION_IDS = ['hero', 'products', 'our-story', 'impact', 'team', 'contact'];
     const visible = new Set<string>();
     const observers: IntersectionObserver[] = [];
@@ -89,7 +93,7 @@ export default function Navbar() {
     });
 
     return () => observers.forEach((o) => o.disconnect());
-  }, []);
+  }, [isHome]);
 
   const isActive = (section: string) => section !== '' && activeSection === section;
 
@@ -119,8 +123,8 @@ export default function Navbar() {
       >
         {/* Left — Logo */}
         <a
-          href="#hero"
-          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveSection('hero'); }}
+          href={isHome ? '#hero' : '/'}
+          onClick={(e) => { if (isHome) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveSection('hero'); } }}
           className="flex items-center pl-2"
         >
           <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={120} height={40} className="object-contain" priority />
@@ -131,8 +135,8 @@ export default function Navbar() {
           {NAV_ITEMS.map((item) => (
             <li key={item.label}>
               <a
-                href={item.href}
-                onClick={() => item.section && setActiveSection(item.section)}
+                href={isHome ? item.href : '/' + item.href}
+                onClick={() => isHome && item.section && setActiveSection(item.section)}
                 className={linkCls(item.section)}
                 aria-current={isActive(item.section) ? 'page' : undefined}
               >
@@ -202,7 +206,7 @@ export default function Navbar() {
           style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)', border: '1px solid #e5e7eb' }}
         >
           {/* Logo */}
-          <a href="#hero" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="pl-2">
+          <a href={isHome ? '#hero' : '/'} onClick={(e) => { if (isHome) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }} className="pl-2">
             <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={90} height={30} className="object-contain" priority />
           </a>
 
@@ -265,8 +269,8 @@ export default function Navbar() {
               {NAV_ITEMS.map((item) => (
                 <a
                   key={item.label}
-                  href={item.href}
-                  onClick={() => { item.section && setActiveSection(item.section); setMobileOpen(false); }}
+                  href={isHome ? item.href : '/' + item.href}
+                  onClick={() => { isHome && item.section && setActiveSection(item.section); setMobileOpen(false); }}
                   className={`flex items-center px-5 py-3.5 text-base transition-colors duration-200 ${
                     isActive(item.section)
                       ? 'bg-[#014aad] text-white font-semibold'
