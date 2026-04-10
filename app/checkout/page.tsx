@@ -17,7 +17,7 @@ function validate(f: FormState, addr: SavedAddress | null, delType: 'pickup' | '
   if (!f.firstName.trim()) errs.firstName = 'First name is required';
   if (!f.lastName.trim()) errs.lastName = 'Last name is required';
   if (!f.email.trim()) errs.email = 'Email is required';
-  else if (!/^[^s@]+@[^s@]+.[^s@]+$/.test(f.email)) errs.email = 'Invalid email address';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errs.email = 'Invalid email address';
   if (!f.phone.trim()) errs.phone = 'Phone number is required';
   if (!delType) errs.deliveryType = 'Please select a delivery type';
   if (delType === 'delivery' && !addr) errs.address = 'Please select a delivery address';
@@ -46,7 +46,7 @@ export default function CheckoutPage() {
 
   const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm(prev => ({ ...prev, [k]: e.target.value }));
-    setTouched(prev => ({ ...prev, [k]: true }));
+    setTouched(prev => ({ ...prev, [k]: false }));
   };
 
   useEffect(() => {
