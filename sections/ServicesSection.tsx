@@ -177,7 +177,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 
 // ─── Product card ─────────────────────────────────────────────────────────────
 
-function ProductCard({ product, index, onOpenQuickView }: { product: Product; index: number; onOpenQuickView: (p: Product) => void }) {
+function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQuickView: (p: Product) => void }) {
   const [qty,      setQty]      = useState(1);
   const [liked,    setLiked]    = useState(false);
   const [atcPhase, setAtcPhase] = useState<'idle' | 'flip' | 'push' | 'added'>('idle');
@@ -542,7 +542,7 @@ const ServicesSection = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             {TABS[activeTab].products.map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} onOpenQuickView={setQuickViewProduct} />
+              <ProductCard key={product.id} product={product} onOpenQuickView={setQuickViewProduct} />
             ))}
           </motion.div>
         </AnimatePresence>

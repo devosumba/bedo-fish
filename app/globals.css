@@ -7,7 +7,6 @@
  * Styling       : Tailwind CSS v4  —  @import "tailwindcss" (no tailwind.config.js)
  *                 PostCSS plugin   : @tailwindcss/postcss  (postcss.config.mjs)
  *                 CSS custom props : :root { --accent, --background, --foreground }
- *                 Token file       : lib/design-tokens.ts  (COLORS, SHADOWS, etc.)
  * Animation     : Framer Motion v12
  * Fonts         : Urbanist (Google Fonts), Lufga (self-hosted, optional)
  * Layout        : app/layout.tsx  →  <Navbar> + {children}
@@ -23,7 +22,7 @@
  * ─── COMPONENT HIERARCHY ─────────────────────────────────────────────────────
  * layout.tsx → <PageLoader> <Navbar>
  * page.tsx   → <HeroSection> <ServicesSection> <ExperienceSection>
- *               <PortfolioSection> <ContactSection> <ScrollToTop>
+ *               <ImpactSection> <PortfolioSection> <ContactSection> <ScrollToTop>
  * ─────────────────────────────────────────────────────────────────────────────
  */
 :root {
@@ -32,8 +31,6 @@
   --accent: #014aad;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -49,50 +46,7 @@ body {
   font-family: 'Urbanist', sans-serif;
 }
 
-/*
-  Navbar font "Lufga"
-  --------------------
-  To fully load Lufga, add font files to `public/fonts/` (e.g. Lufga-Regular.woff2)
-  Then add an @font-face rule like:
 
-  @font-face {
-    font-family: 'Lufga';
-    src: url('/fonts/Lufga-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  Repeat for other weights if available (500,600...).
-
-  The class below applies the Lufga family only where used (e.g. the navbar).
-*/
-
-.font-lufga {
-  font-family: 'Lufga', 'Urbanist', sans-serif;
-}
-
-/* Hero image clipping: crop bottom portion so image bottom lines up with semicircle while allowing top overflow */
-.hero-image-clip {
-  /* Inner wrapper: no clipping. Cropping is applied directly to the image
-     so the image's top position and alignment remain unchanged. */
-  clip-path: none;
-}
-
-/* Crop applied to the image element itself so only the bottom overhang is removed.
-   Percentages calculated from inner wrapper height vs semicircle height so the
-   image bottom aligns exactly with the semicircle base without moving the image. */
-.hero-image-crop {
-  /* Mobile: object-cover fills the container fully — no bottom crop needed */
-  clip-path: none;
-}
-
-@media (min-width: 768px) {
-  .hero-image-crop {
-    /* Desktop: object-contain leaves blank space at bottom — crop it */
-    clip-path: inset(0 0 8.1268% 0);
-  }
-}
 
 /* Typewriter cursor */
 .typewriter-cursor {
@@ -181,94 +135,6 @@ body {
   }
 }
 
-/* ─── Card mockup looping animations ────────────────────────────────────── */
-
-@keyframes barDance {
-  0%, 100% { transform: scaleX(0.65); }
-  50%       { transform: scaleX(1); }
-}
-
-@keyframes barDanceY {
-  0%, 100% { transform: scaleY(0.6); }
-  50%       { transform: scaleY(1); }
-}
-
-@keyframes floatShape {
-  0%, 100% { transform: translateY(0px)   rotate(0deg); }
-  50%       { transform: translateY(-8px) rotate(5deg); }
-}
-
-@keyframes pulseMockup {
-  0%, 100% { transform: scale(1);    opacity: 0.9; }
-  50%       { transform: scale(1.03); opacity: 1;   }
-}
-
-@keyframes glowFlicker {
-  0%, 100% { opacity: 0.6; }
   50%       { opacity: 1;   }
-}
-
-/* ─── Portfolio card hover effects ──────────────────────────────────────── */
-
-/* Registers --angle as an animatable CSS custom property (required for
-   conic-gradient animation to work in supporting browsers).              */
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes rotateBorder {
-  from { --angle: 0deg; }
-  to   { --angle: 360deg; }
-}
-
-.portfolio-card {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Rotating orange shine that lives just outside the card border.
-   No z-index: -1 — the inner white card div (position: relative)
-   paints after this pseudo-element in document order, covering
-   the gradient in the card interior and leaving only the 2px ring. */
-.portfolio-card::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--angle),
-    transparent 70%,
-    #014aad    80%,
-    #2a6fd4    90%,
-    #014aad   100%
-  );
-  animation: rotateBorder 2s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.portfolio-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.30);
-}
-
-.portfolio-card:hover::before {
-  opacity: 1;
-}
-
-/* Product cards — border+shadow on desktop hover only; no transform, no ring */
-.product-card {
-  border: 2px solid transparent;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-  transition: border 200ms ease, box-shadow 200ms ease;
-}
-
-@media (min-width: 768px) {
-  .product-card:hover {
-    border-color: #014aad;
-    box-shadow: 0 4px 12px rgba(1, 74, 173, 0.15);
-  }
 }
 

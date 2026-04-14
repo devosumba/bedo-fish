@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="preload" href="/images/bedo-loader.gif" as="image" fetchPriority="high" />
+        <link rel="preload" href="/images/hero-bg.jpg" as="image" fetchPriority="high" />
       </head>
       <body suppressHydrationWarning style={{ background: '#FFF', minHeight: '100vh', margin: 0 }}>
         <CartProvider>

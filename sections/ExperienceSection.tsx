@@ -214,6 +214,7 @@ const ExperienceSection = () => {
                 <img
                   src={slot.src}
                   alt=""
+                  loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                   draggable={false}
                 />
