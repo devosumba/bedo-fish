@@ -21,17 +21,17 @@ const TABS: Array<{ label: string; products: Product[] }> = [
   {
     label: 'Customer Favorites',
     products: [
-      { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/roasted-fish.jpg', size: 'Small', badge: 'Best Seller' },
+      { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small', badge: 'Best Seller' },
       { id: 2, name: 'Omena',            description: 'Crunchy deep fried omena',            price: 'Ksh 300', image: '/images/omena-prod.jpg',      size: '500ml', badge: 'Popular'     },
-      { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/roasted-fish.jpg', size: 'Large', badge: 'Value'       },
+      { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Large', badge: 'Value'       },
     ],
   },
   {
     label: 'Roasted Tilapia',
     products: [
-      { id: 4, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/roasted-fish.jpg', size: 'Small', badge: 'Best Seller' },
-      { id: 5, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/roasted-fish.jpg', size: 'Medium'                      },
-      { id: 6, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/roasted-fish.jpg', size: 'Large'                       },
+      { id: 4, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small', badge: 'Best Seller' },
+      { id: 5, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/bedo-fish-roasted.jpeg', size: 'Medium'                      },
+      { id: 6, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Large'                       },
     ],
   },
   {

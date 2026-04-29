@@ -11,7 +11,7 @@ const STAT_CARDS = [
   {
     heading: 'Climate Action',
     description: '40% Reduction in carbon emissions through modern energy-efficient roasting ovens.',
-    src: '/images/impact-images/2.jpg',
+    src: '/images/impact-images/fish-on-grill.jpeg',
   },
   {
     heading: 'Responsible Production',
