@@ -452,7 +452,7 @@ const ServicesSection = () => {
     <section
       ref={sectionRef}
       id="products"
-      className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px] -mt-[57px] md:-mt-6"
+      className="relative z-[3] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px] -mt-[57px] md:-mt-6"
       style={{ borderTopLeftRadius: '32px', borderTopRightRadius: '32px', borderBottomLeftRadius: '32px', borderBottomRightRadius: '32px' }}
     >
       {/* Decorative blobs */}

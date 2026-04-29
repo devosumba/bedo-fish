@@ -168,7 +168,7 @@ const ExperienceSection = () => {
     <section
       id="our-story"
       ref={sectionRef}
-      className="relative z-[2] bg-white w-full pt-10 md:pt-14 pb-0"
+      className="relative z-[2] bg-white w-full pt-10 md:pt-14 pb-0 -mt-8"
     >
 
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
