@@ -80,7 +80,7 @@ export default function ContactSection() {
       : "Message sent! We will be in touch soon.";
 
   return (
-    <section id="contact" className="bg-white w-full py-20 md:py-28">
+    <section id="contact" className="relative z-[2] bg-white w-full py-20 md:py-28 -mt-8">
       <div className="max-w-2xl mx-auto px-4 md:px-8 flex flex-col items-center gap-10">
 
         {/* Heading */}
