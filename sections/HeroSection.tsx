@@ -77,6 +77,13 @@ const HeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
     const section = sectionRef.current;
     const video = videoRef.current;
     if (!section || !video) return;
@@ -110,7 +117,7 @@ const HeroSection = () => {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         aria-hidden="true"
         style={{
           position: 'absolute',

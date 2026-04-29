@@ -109,6 +109,7 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.35, ease: 'easeOut', delay: 0.05 }}
       className="relative w-full flex justify-center pt-0 pb-2 px-4 z-[1000]"
+      style={{ marginTop: '12px' }}
       aria-label="Main Navigation"
     >
       {/* ── Desktop pill ─────────────────────────────────────────────── */}
