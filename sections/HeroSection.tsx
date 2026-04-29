@@ -150,8 +150,8 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
             aria-hidden="true"
+            className="-mt-11 md:-mt-[52px]"
             style={{
-              marginTop: '-44px',
               background: 'rgba(255, 255, 255, 0.15)',
               backdropFilter: 'blur(10px)',
               WebkitBackdropFilter: 'blur(10px)',
