@@ -98,10 +98,10 @@ export default function Navbar() {
   const isActive = (section: string) => section !== '' && activeSection === section;
 
   const linkCls = (section: string) =>
-    'px-4 py-2 text-sm rounded-full transition-colors duration-200 focus:outline-none whitespace-nowrap ' +
+    'px-[14px] py-[6px] text-sm rounded-full border transition-colors duration-200 focus:outline-none whitespace-nowrap ' +
     (isActive(section)
-      ? 'bg-[#014aad] text-white font-semibold'
-      : 'text-[#014aad] font-medium hover:bg-[#014aad]/10');
+      ? 'bg-[#014aad] text-white font-bold border-transparent [filter:brightness(0.85)]'
+      : 'bg-[#014aad] text-white font-medium border-transparent hover:bg-white hover:text-[#014aad] hover:border-[#014aad]');
 
   return (
     <motion.nav
@@ -109,7 +109,7 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.35, ease: 'easeOut', delay: 0.05 }}
       className="relative w-full flex justify-center pt-0 pb-2 px-4 z-[1000]"
-      style={{ marginTop: '12px' }}
+      style={{ marginTop: '24px' }}
       aria-label="Main Navigation"
     >
       {/* ── Desktop pill ─────────────────────────────────────────────── */}
