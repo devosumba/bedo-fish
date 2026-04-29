@@ -73,27 +73,57 @@ function useTypewriter(words: readonly string[]) {
 
 const HeroSection = () => {
   const typed = useTypewriter(WORDS);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const video = videoRef.current;
+    if (!section || !video) return;
+
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (entry.isIntersecting) {
+          try { await video.play(); } catch (e) { console.log('Autoplay blocked', e); }
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
-      className="relative w-full flex flex-col items-center justify-center min-h-[95vh] lg:h-screen"
+      className="relative overflow-hidden w-full flex flex-col items-center justify-center min-h-[95vh] lg:h-screen"
       style={{ marginTop: '-87px', zIndex: 1 }}
     >
-      {/* Animated background image — slow zoom-in on load */}
-      <motion.div
-        className="absolute inset-0"
-        initial={{ scale: 1.05 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.8, ease: 'easeOut' }}
-        style={{
-          backgroundImage: "url('/images/hero-bg.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
+      {/* Background video */}
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
         aria-hidden="true"
-      />
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          zIndex: 0,
+        }}
+      >
+        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+      </video>
 
       {/* Dark overlay for readability */}
       <div className="absolute inset-0 bg-black/50" aria-hidden="true" />
