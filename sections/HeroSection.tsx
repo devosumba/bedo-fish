@@ -107,8 +107,8 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative overflow-hidden w-full flex flex-col items-center justify-center min-h-[95vh] lg:h-screen"
-      style={{ marginTop: '-87px', zIndex: 1 }}
+      className="relative overflow-hidden w-full flex flex-col items-center justify-center min-h-[95vh] lg:h-screen -mt-[87px] md:-mt-[131px]"
+      style={{ zIndex: 1 }}
     >
       {/* Background video */}
       <video
