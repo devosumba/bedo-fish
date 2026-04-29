@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const PortfolioSection = () => {
   return (
-    <section id="team" className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px]" style={{ borderTopLeftRadius: '32px', borderTopRightRadius: '32px', borderBottomLeftRadius: '32px', borderBottomRightRadius: '32px' }}>
+    <section id="team" className="relative z-[2] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px] -mt-8" style={{ borderTopLeftRadius: '32px', borderTopRightRadius: '32px', borderBottomLeftRadius: '32px', borderBottomRightRadius: '32px' }}>
 
       {/* Decorative blobs */}
       <div className="absolute -top-24 right-[20%] w-96 h-96 bg-[#014aad] opacity-[0.07] rounded-full blur-[80px] pointer-events-none" />
