@@ -23,7 +23,6 @@ const NAV_ITEMS = [
 ];
 
 export default function Navbar() {
-  const [activeSection, setActiveSection] = useState('hero');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartPulse,      setCartPulse]      = useState(false);
   const [cartOpen,       setCartOpen]       = useState(false);
@@ -48,60 +47,8 @@ export default function Navbar() {
     prevCartCount.current = totalItems;
   }, [totalItems]);
 
-  /* Active section tracking — viewport-coverage picker.
-   * Each observer fires at threshold:0.1. All currently-visible sections
-   * are tracked in a Set. On every change the section with the most pixels
-   * visible in the viewport wins, so tall sections (our-story ~400vh) hold
-   * the active state for their entire scroll duration. */
-  useEffect(() => {
-    if (!isHome) return;
-    const SECTION_IDS = ['hero', 'products', 'our-story', 'impact', 'team', 'contact'];
-    const visible = new Set<string>();
-    const observers: IntersectionObserver[] = [];
-
-    const pickActive = () => {
-      let best = '';
-      let bestCoverage = 0;
-      visible.forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const coverage = Math.max(0, Math.min(window.innerHeight, r.bottom) - Math.max(0, r.top));
-        if (coverage > bestCoverage) { bestCoverage = coverage; best = id; }
-      });
-      if (best) setActiveSection(best);
-    };
-
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      // our-story + impact: threshold:0 so the active state fires the instant any
-      // part of the section enters the viewport.
-      // All other sections use 0.1 (10% visible) for a natural mid-scroll transition.
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          entry.isIntersecting ? visible.add(id) : visible.delete(id);
-          pickActive();
-        },
-        {
-          threshold: (id === 'our-story' || id === 'impact' || id === 'team' || id === 'contact') ? 0 : 0.1,
-          rootMargin: '0px 0px 0px 0px',
-        }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-
-    return () => observers.forEach((o) => o.disconnect());
-  }, [isHome]);
-
-  const isActive = (section: string) => section !== '' && activeSection === section;
-
-  const linkCls = (section: string) =>
-    'px-[14px] py-[6px] text-sm rounded-full border transition-colors duration-200 focus:outline-none whitespace-nowrap ' +
-    (isActive(section)
-      ? 'bg-[#014aad] text-white font-bold border-[#014aad]'
-      : 'bg-white text-[#014aad] font-medium border-[#014aad] hover:bg-[#014aad] hover:text-white');
+  const linkCls = () =>
+    'px-[14px] py-[6px] text-sm rounded-full border border-[#014aad] bg-white text-[#014aad] font-medium transition-colors duration-200 focus:outline-none whitespace-nowrap hover:bg-[#014aad] hover:text-white';
 
   return (
     <motion.nav
@@ -124,7 +71,7 @@ export default function Navbar() {
         {/* Left — Logo */}
         <a
           href={isHome ? '#hero' : '/'}
-          onClick={(e) => { if (isHome) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setActiveSection('hero'); } }}
+          onClick={(e) => { if (isHome) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
           className="flex items-center pl-2"
         >
           <Image src="/assets/bedo-nav-logo.png" alt="Bedo Fish" width={120} height={40} className="object-contain" priority />
@@ -136,9 +83,7 @@ export default function Navbar() {
             <li key={item.label}>
               <a
                 href={isHome ? item.href : '/' + item.href}
-                onClick={() => isHome && item.section && setActiveSection(item.section)}
-                className={linkCls(item.section)}
-                aria-current={isActive(item.section) ? 'page' : undefined}
+                className={linkCls()}
               >
                 {item.label}
               </a>
@@ -256,12 +201,8 @@ export default function Navbar() {
                 <a
                   key={item.label}
                   href={isHome ? item.href : '/' + item.href}
-                  onClick={() => { isHome && item.section && setActiveSection(item.section); setMobileOpen(false); }}
-                  className={`flex items-center px-5 py-3.5 text-base transition-colors duration-200 ${
-                    isActive(item.section)
-                      ? 'bg-[#014aad] text-white font-semibold'
-                      : 'text-[#014aad] font-normal hover:bg-[#014aad]/10'
-                  }`}
+                  onClick={() => { setMobileOpen(false); }}
+                  className="flex items-center px-5 py-3.5 text-base transition-colors duration-200 text-[#014aad] font-normal hover:bg-[#014aad]/10"
                 >
                   {item.label}
                 </a>

@@ -509,7 +509,7 @@ const ServicesSection = () => {
           </div>
 
           {/* Mobile: static first paragraph only */}
-          <p className="md:hidden text-gray-400 text-[15px] leading-relaxed">
+          <p className="md:hidden text-gray-400 text-[15px] leading-relaxed text-center mx-auto">
             {PARAGRAPHS[0]}
           </p>
         </div>
