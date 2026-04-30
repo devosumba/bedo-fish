@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ['@whiskeysockets/baileys', 'pino', 'pino-pretty', 'qrcode-terminal', 'nodemailer'],
   images: {
     // quality 90 is used throughout the project (ServicesSection, ImpactSection, QuickViewModal)
     // Next.js 16 defaults to [75] only — unlisted qualities return HTTP 400 in production

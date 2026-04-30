@@ -9,14 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
     "framer-motion": "^12.34.1",
     "next": "16.1.6",
+    "nodemailer": "^8.0.7",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.0",
+    "@types/qrcode-terminal": "^0.12.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4.1.18",
