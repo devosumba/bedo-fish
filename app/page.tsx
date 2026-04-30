@@ -2,7 +2,7 @@ import HeroSection from '../sections/HeroSection';
 import ServicesSection from '../sections/ServicesSection';
 import ExperienceSection from '../sections/ExperienceSection';
 import ImpactSection from '../sections/ImpactSection';
-import PortfolioSection from '../sections/PortfolioSection';
+import OurTeam from '../sections/OurTeam';
 import ContactSection from '../sections/ContactSection';
 import ScrollToTop from '../components/ScrollToTop';
 
@@ -13,7 +13,7 @@ export default function Home() {
       <ServicesSection />
       <ExperienceSection />
       <ImpactSection />
-      <PortfolioSection />
+      <OurTeam />
       <ContactSection />
       <ScrollToTop />
     </main>

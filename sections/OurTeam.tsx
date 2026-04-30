@@ -8,11 +8,11 @@ const TEAM_MEMBERS = [
   { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg',        objectPosition: 'center top'  },
   { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        objectPosition: 'center top'  },
   { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', objectPosition: 'center top'  },
-  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/jim-kiche.jpeg',    objectPosition: 'center 20%'  },
-  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/violet.jpeg',       objectPosition: 'center 20%'  },
+  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/jim-kiche.jpeg',    objectPosition: 'center -20%' },
+  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/violet.jpeg',       objectPosition: 'center -20%' },
 ];
 
-const PortfolioSection = () => {
+const OurTeam = () => {
   return (
     <section id="team" className="relative z-[3] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px] -mt-8" style={{ borderTopLeftRadius: '32px', borderTopRightRadius: '32px', borderBottomLeftRadius: '32px', borderBottomRightRadius: '32px' }}>
 
@@ -91,4 +91,4 @@ const PortfolioSection = () => {
   );
 };
 
-export default PortfolioSection;
+export default OurTeam;
