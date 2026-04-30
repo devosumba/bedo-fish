@@ -8,8 +8,8 @@ const TEAM_MEMBERS = [
   { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg',        objectPosition: 'center top'  },
   { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        objectPosition: 'center top'  },
   { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', objectPosition: 'center top'  },
-  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/jim-kiche.jpeg',    objectPosition: 'center -20%' },
-  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/violet.jpeg',       objectPosition: 'center -20%' },
+  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/jim-kiche.jpeg',    objectPosition: 'center top'  },
+  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/violet.jpeg',       objectPosition: 'center top'  },
 ];
 
 const OurTeam = () => {
