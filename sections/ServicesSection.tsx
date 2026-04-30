@@ -54,8 +54,9 @@ const PARAGRAPHS = [
 // ─── Quick view modal ──────────────────────────────────────────────────────────────
 
 function QuickViewModal({ product, onClose }: { product: Product; onClose: () => void }) {
-  const [popupQty, setPopupQty] = useState(1);
-  const [liked, setLiked] = useState(false);
+  const [popupQty,    setPopupQty]    = useState(1);
+  const [liked,       setLiked]       = useState(false);
+  const [popupFlavor, setPopupFlavor] = useState<'Normal' | 'Marinated'>('Normal');
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 
   function handleAddToCart() {
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description }, popupQty);
+    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description, ...(product.name === 'Roasted Tilapia' ? { flavor: popupFlavor } : {}) }, popupQty);
     onClose();
   }
 
@@ -128,6 +129,27 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 
           <p className="text-gray-500 text-sm leading-relaxed">{product.description}</p>
 
+          {/* iPhone-style flavor toggle — Roasted Tilapia only */}
+          {product.name === 'Roasted Tilapia' && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm" style={{ color: popupFlavor === 'Normal' ? '#014aad' : '#9ca3af', fontWeight: popupFlavor === 'Normal' ? 700 : 400 }}>Normal</span>
+              <button
+                role="switch"
+                aria-checked={popupFlavor === 'Marinated'}
+                aria-label="Toggle flavor"
+                onClick={() => setPopupFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal')}
+                className="relative rounded-full transition-colors duration-200 shrink-0"
+                style={{ width: '44px', height: '24px', background: popupFlavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+              >
+                <span
+                  className="absolute rounded-full bg-white transition-transform duration-200"
+                  style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: popupFlavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                />
+              </button>
+              <span className="text-sm" style={{ color: popupFlavor === 'Marinated' ? '#014aad' : '#9ca3af', fontWeight: popupFlavor === 'Marinated' ? 700 : 400 }}>Marinated</span>
+            </div>
+          )}
+
           <div className="flex flex-row items-center gap-3">
             <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-3 py-2 max-w-[160px] flex-1">
               <button
@@ -178,9 +200,10 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
 // ─── Product card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQuickView: (p: Product) => void }) {
-  const [qty,      setQty]      = useState(1);
-  const [liked,    setLiked]    = useState(false);
-  const [atcPhase, setAtcPhase] = useState<'idle' | 'flip' | 'push' | 'added'>('idle');
+  const [qty,        setQty]        = useState(1);
+  const [liked,      setLiked]      = useState(false);
+  const [atcPhase,   setAtcPhase]   = useState<'idle' | 'flip' | 'push' | 'added'>('idle');
+  const [flavor,     setFlavor]     = useState<'Normal' | 'Marinated'>('Normal');
   const { addToCart } = useCart();
 
   function handleLike(e: React.MouseEvent) {
@@ -192,7 +215,7 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
     e.stopPropagation();
     if (atcPhase !== 'idle') return;
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description }, qty);
+    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description, ...(product.name === 'Roasted Tilapia' ? { flavor } : {}) }, qty);
     setQty(1);
     setAtcPhase('flip');
     setTimeout(() => setAtcPhase('push'), 150);
@@ -259,21 +282,59 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
           {/* Description — own line below name/price row */}
           <p className="text-gray-400 text-xs truncate -mt-1">{product.description}</p>
 
-          {/* Quantity counter — w-full, matches Add to Cart width */}
-          <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
-            <button
-              aria-label="Decrease quantity"
-              disabled={qty === 1}
-              onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
-            >−</button>
-            <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
-            <button
-              aria-label="Increase quantity"
-              onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-              className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
-            >+</button>
-          </div>
+          {/* Counter row — full width for Omena; half-width + iPhone toggle for Roasted Tilapia */}
+          {product.name === 'Roasted Tilapia' ? (
+            <div className="flex items-center gap-2">
+              <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1 w-1/2">
+                <button
+                  aria-label="Decrease quantity"
+                  disabled={qty === 1}
+                  onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
+                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
+                >−</button>
+                <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
+                <button
+                  aria-label="Increase quantity"
+                  onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
+                >+</button>
+              </div>
+              <div className="flex-1 flex flex-col items-center gap-[3px]">
+                <button
+                  role="switch"
+                  aria-checked={flavor === 'Marinated'}
+                  aria-label="Toggle flavor"
+                  onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
+                  className="relative rounded-full transition-colors duration-200 pointer-events-auto"
+                  style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+                >
+                  <span
+                    className="absolute rounded-full bg-white transition-transform duration-200"
+                    style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                  />
+                </button>
+                <div className="flex w-full justify-between">
+                  <span className="text-[9px] leading-none" style={{ color: flavor === 'Normal' ? '#014aad' : '#9ca3af', fontWeight: flavor === 'Normal' ? 700 : 400 }}>Normal</span>
+                  <span className="text-[9px] leading-none" style={{ color: flavor === 'Marinated' ? '#014aad' : '#9ca3af', fontWeight: flavor === 'Marinated' ? 700 : 400 }}>Marinated</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
+              <button
+                aria-label="Decrease quantity"
+                disabled={qty === 1}
+                onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
+              >−</button>
+              <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
+              <button
+                aria-label="Increase quantity"
+                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
+              >+</button>
+            </div>
+          )}
 
           {/* Add to Cart — w-full, same width as counter */}
           <button

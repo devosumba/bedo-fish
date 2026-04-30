@@ -10,6 +10,7 @@ type CartItem = {
   id: string;
   name: string;
   size: string;
+  flavor?: string;
   image: string;
   description: string;
   unitPrice: number;
@@ -21,7 +22,7 @@ type CartContextType = {
   items: CartItem[];
   totalItems: number;
   totalAmount: number;
-  addToCart: (item: { name: string; size: string; price: string; image: string; description: string }, qty: number) => void;
+  addToCart: (item: { name: string; size: string; price: string; image: string; description: string; flavor?: string }, qty: number) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
@@ -68,9 +69,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [items, isHydrated]);
 
-  function addToCart(item: { name: string; size: string; price: string; image: string; description: string }, qty: number) {
+  function addToCart(item: { name: string; size: string; price: string; image: string; description: string; flavor?: string }, qty: number) {
     const unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''), 10) || 0;
-    const id = item.name.toLowerCase().replace(/ +/g, '-') + '-' + item.size.toLowerCase().replace(/ +/g, '-');
+    const id = item.name.toLowerCase().replace(/ +/g, '-') + '-' + item.size.toLowerCase().replace(/ +/g, '-') + (item.flavor ? '-' + item.flavor.toLowerCase() : '');
     setItems((prev) => {
       const existing = prev.find((i) => i.id === id);
       if (existing) {
@@ -80,7 +81,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             : i
         );
       }
-      return [...prev, { id, name: item.name, size: item.size, image: item.image, description: item.description, unitPrice, quantity: qty, totalPrice: unitPrice * qty }];
+      return [...prev, { id, name: item.name, size: item.size, flavor: item.flavor, image: item.image, description: item.description, unitPrice, quantity: qty, totalPrice: unitPrice * qty }];
     });
   }
 

@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                   {visibleItems.map(item => (
                     <div key={item.id} className="flex items-center gap-3">
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 bg-white/20"><Image src={item.image} alt={item.name} fill sizes="48px" className="object-cover" /></div>
-                      <div className="flex-1 min-w-0"><p className="text-white font-semibold text-sm truncate">{item.name}</p><p className="text-white/60 text-xs">Ksh {item.unitPrice}</p></div>
+                      <div className="flex-1 min-w-0"><p className="text-white font-semibold text-sm truncate">{item.name}</p><p className="text-white/60 text-xs">{item.flavor && `${item.flavor} · `}Ksh {item.unitPrice}</p></div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button aria-label="Decrease" onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="w-6 h-6 flex items-center justify-center rounded border border-white/40 text-white text-xs font-bold hover:bg-white/20 transition-colors">-</button>
                         <span className="text-white text-xs font-semibold min-w-[18px] text-center">{item.quantity}</span>

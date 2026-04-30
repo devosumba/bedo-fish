@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const TEAM_MEMBERS = [
-  { name: 'Sue Lazaro',    title: 'Chief Executive Officer', image: '/images/team/sue-lazaro.jpeg',  imageStyle: { objectPosition: 'center top' } },
+  { name: 'Susan Lazaro',    title: 'Chief Executive Officer', image: '/images/team/sue-lazaro.jpeg',  imageStyle: { objectPosition: 'center top' } },
   { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg',        imageStyle: { objectPosition: 'center top' } },
   { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        imageStyle: { objectPosition: 'center top' } },
   { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', imageStyle: { objectPosition: 'center top' } },
