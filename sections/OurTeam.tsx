@@ -4,12 +4,12 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const TEAM_MEMBERS = [
-  { name: 'Sue Lazaro',    title: 'Chief Executive Officer', image: '/images/team/sue-lazaro.jpeg',  objectPosition: 'center top'  },
-  { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg',        objectPosition: 'center top'  },
-  { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        objectPosition: 'center top'  },
-  { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', objectPosition: 'center top'  },
-  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.38.16.jpeg', objectPosition: 'center top' },
-  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.29.34.jpeg', objectPosition: 'center -60%' },
+  { name: 'Sue Lazaro',    title: 'Chief Executive Officer', image: '/images/team/sue-lazaro.jpeg',  imageStyle: { objectPosition: 'center top' } },
+  { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg',        imageStyle: { objectPosition: 'center top' } },
+  { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        imageStyle: { objectPosition: 'center top' } },
+  { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', imageStyle: { objectPosition: 'center top' } },
+  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.38.16.jpeg', imageStyle: { objectPosition: 'center top', transform: 'scale(1.2)' } },
+  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.29.34.jpeg', imageStyle: { objectPosition: 'center center' } },
 ];
 
 const OurTeam = () => {
@@ -65,7 +65,7 @@ const OurTeam = () => {
                 quality={100}
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover"
-                style={{ objectPosition: member.objectPosition }}
+                style={member.imageStyle}
               />
 
               {/* Gradient overlay */}
