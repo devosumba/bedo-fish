@@ -1,11 +1,15 @@
 "use client";
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const TEAM_MEMBERS = [
-  { name: 'Team Member', title: 'Role' },
-  { name: 'Team Member', title: 'Role' },
-  { name: 'Team Member', title: 'Role' },
+  { name: 'Sue Lazaro',    title: 'Chief Executive Officer', image: '/images/team/sue-lazaro.jpeg'  },
+  { name: 'Richard Osaga', title: 'Director',                image: '/images/team/osaga.jpeg'        },
+  { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg'        },
+  { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg' },
+  { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/jim-kiche.jpeg'    },
+  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/violet.jpeg'       },
 ];
 
 const PortfolioSection = () => {
@@ -36,14 +40,14 @@ const PortfolioSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="md:flex-1 md:max-w-[60%] text-white text-[15px] leading-relaxed"
+            className="md:flex-1 md:max-w-[60%] text-white text-[15px] leading-relaxed text-center md:text-left mx-auto md:mx-0"
           >
             The team that knows the fish, knows the communities, and exactly what it takes to turn a local resource into a global product.
           </motion.p>
         </div>
 
-        {/* ── Team cards ────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* ── Team cards — 3 columns desktop, 1 column mobile ───────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {TEAM_MEMBERS.map((member, i) => (
             <motion.div
               key={i}
@@ -53,6 +57,16 @@ const PortfolioSection = () => {
               transition={{ delay: 0.05 + i * 0.08 }}
               className="relative aspect-square bg-[#2d2d2d] rounded-3xl overflow-hidden"
             >
+              {/* Team photo */}
+              <Image
+                src={member.image}
+                alt={member.name}
+                fill
+                quality={100}
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover object-top"
+              />
+
               {/* Gradient overlay */}
               <div
                 className="absolute inset-x-0 bottom-0 z-10"

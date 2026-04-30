@@ -22,7 +22,7 @@ const TABS: Array<{ label: string; products: Product[] }> = [
     label: 'Customer Favorites',
     products: [
       { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small', badge: 'Best Seller' },
-      { id: 2, name: 'Omena',            description: 'Crunchy deep fried omena',            price: 'Ksh 300', image: '/images/omena-prod.jpg',      size: '500ml', badge: 'Popular'     },
+      { id: 2, name: 'Omena',            description: 'Crunchy deep fried omena',            price: 'Ksh 300', image: '/images/omenaa.jpeg',      size: '500ml', badge: 'Popular'     },
       { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Large', badge: 'Value'       },
     ],
   },
@@ -37,9 +37,9 @@ const TABS: Array<{ label: string; products: Product[] }> = [
   {
     label: 'Omena',
     products: [
-      { id: 7, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 180', image: '/images/omena-prod.jpg', size: '250ml' },
-      { id: 8, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 300', image: '/images/omena-prod.jpg', size: '500ml' },
-      { id: 9, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 580', image: '/images/omena-prod.jpg', size: '1000ml' },
+      { id: 7, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 180', image: '/images/omenaa.jpeg', size: '250ml' },
+      { id: 8, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 300', image: '/images/omenaa.jpeg', size: '500ml' },
+      { id: 9, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 580', image: '/images/omenaa.jpeg', size: '1000ml' },
     ],
   },
 ];

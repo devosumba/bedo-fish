@@ -82,9 +82,9 @@ const IMG_SLOTS = [
 // Real image paths from public/images/
 const PORTRAIT_IMGS = [
   '/images/portrait-scroll/1.jpg',
-  '/images/portrait-scroll/2.jpg',
+  '/images/portrait-scroll/our-story-scroll-portraits.jpg',
   '/images/portrait-scroll/3.jpg',
-  '/images/portrait-scroll/4.jpg',
+  '/images/portrait-scroll/omena-portraits.jpg',
   '/images/portrait-scroll/5.jpg',
   '/images/portrait-scroll/6.jpg',
 ];
