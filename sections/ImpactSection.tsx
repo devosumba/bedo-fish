@@ -99,12 +99,12 @@ export default function ImpactSection() {
               </div>
 
               {/* Heading */}
-              <p className="text-2xl md:text-3xl font-extrabold text-[#014aad] leading-tight mt-1">
+              <p className="text-2xl md:text-3xl font-extrabold text-[#014aad] leading-tight mt-1 text-center md:text-left">
                 {heading}
               </p>
 
               {/* Description */}
-              <p className="text-sm text-[#555555] leading-relaxed">
+              <p className="text-sm text-[#555555] leading-relaxed text-center md:text-left">
                 {description}
               </p>
 

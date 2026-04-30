@@ -93,7 +93,7 @@ const LANDSCAPE_IMGS = [
   '/images/landscape-scroll/2.jpg',
   '/images/landscape-scroll/3.jpg',
   '/images/landscape-scroll/4.jpg',
-  '/images/landscape-scroll/5.jpg',
+  '/images/landscape-scroll/landscape-scroll.jpg',
   '/images/landscape-scroll/6.jpg',
 ];
 
@@ -174,7 +174,7 @@ const ExperienceSection = () => {
       {/* ── Paragraph — font matches Our Offerings heading (text-4xl md:text-5xl font-extrabold) */}
       <div className="max-w-5xl mx-auto px-4 md:px-8 mb-0 mt-[24px] md:mt-[36px]">
         <p
-          className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-left max-w-3xl mx-auto"
+          className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight text-center md:text-left max-w-3xl mx-auto"
         >
           {TOKENS.map((token, i) => (
             <Word

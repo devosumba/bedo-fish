@@ -2,6 +2,12 @@
 
 import { motion } from 'framer-motion';
 
+const TEAM_MEMBERS = [
+  { name: 'Team Member', title: 'Role' },
+  { name: 'Team Member', title: 'Role' },
+  { name: 'Team Member', title: 'Role' },
+];
+
 const PortfolioSection = () => {
   return (
     <section id="team" className="relative z-[3] bg-[#0e0e0e] w-full py-16 md:py-24 overflow-hidden rounded-[32px] -mt-8" style={{ borderTopLeftRadius: '32px', borderTopRightRadius: '32px', borderBottomLeftRadius: '32px', borderBottomRightRadius: '32px' }}>
@@ -20,7 +26,7 @@ const PortfolioSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight"
+            className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight text-center md:text-left"
           >
             Our <span className="text-[#014aad]">Team</span>
           </motion.h2>
@@ -36,17 +42,32 @@ const PortfolioSection = () => {
           </motion.p>
         </div>
 
-        {/* ── Three square placeholder cards ────────────────────────────── */}
+        {/* ── Team cards ────────────────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[0, 1, 2].map((i) => (
+          {TEAM_MEMBERS.map((member, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.05 + i * 0.08 }}
-              className="aspect-square bg-[#2d2d2d] rounded-3xl"
-            />
+              className="relative aspect-square bg-[#2d2d2d] rounded-3xl overflow-hidden"
+            >
+              {/* Gradient overlay */}
+              <div
+                className="absolute inset-x-0 bottom-0 z-10"
+                style={{
+                  height: '50%',
+                  background: 'linear-gradient(to top, rgba(1, 74, 173, 0.85) 0%, transparent 100%)',
+                }}
+              />
+
+              {/* Name and title over gradient */}
+              <div className="absolute bottom-0 left-0 z-20 p-4 pb-5">
+                <p className="text-white font-bold text-base leading-tight">{member.name}</p>
+                <p className="text-[#a8c8f8] text-sm mt-0.5">{member.title}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
 

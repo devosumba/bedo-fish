@@ -211,8 +211,9 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
             src={product.image}
             alt={product.name}
             fill
-            quality={90}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            quality={100}
+            unoptimized={false}
+            sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover"
           />
 
