@@ -299,25 +299,25 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
                   className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
                 >+</button>
               </div>
-              <div className="flex-1 flex flex-col items-center gap-[3px]">
-                <button
-                  role="switch"
-                  aria-checked={flavor === 'Marinated'}
-                  aria-label="Toggle flavor"
-                  onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
-                  className="relative rounded-full transition-colors duration-200 pointer-events-auto"
-                  style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
-                >
-                  <span
-                    className="absolute rounded-full bg-white transition-transform duration-200"
-                    style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
-                  />
-                </button>
-                <div className="flex w-full justify-between">
-                  <span className="text-[9px] leading-none" style={{ color: flavor === 'Normal' ? '#014aad' : '#9ca3af', fontWeight: flavor === 'Normal' ? 700 : 400 }}>Normal</span>
-                  <span className="text-[9px] leading-none" style={{ color: flavor === 'Marinated' ? '#014aad' : '#9ca3af', fontWeight: flavor === 'Marinated' ? 700 : 400 }}>Marinated</span>
-                </div>
-              </div>
+              <button
+                role="switch"
+                aria-checked={flavor === 'Marinated'}
+                aria-label="Toggle flavor"
+                onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
+                className="relative rounded-full transition-colors duration-200 pointer-events-auto shrink-0"
+                style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+              >
+                <span
+                  className="absolute rounded-full bg-white transition-transform duration-200"
+                  style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                />
+              </button>
+              <span
+                className="text-[9px] leading-none shrink-0"
+                style={{ color: flavor === 'Marinated' ? '#014aad' : '#9ca3af', fontWeight: flavor === 'Marinated' ? 700 : 400 }}
+              >
+                {flavor === 'Marinated' ? 'Marinated' : 'Toggle to Marinate'}
+              </span>
             </div>
           ) : (
             <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
