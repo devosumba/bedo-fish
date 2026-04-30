@@ -9,7 +9,7 @@ const TEAM_MEMBERS = [
   { name: 'Allan Oluoch',  title: 'Director',                image: '/images/team/allan.jpeg',        objectPosition: 'center top'  },
   { name: 'Emily Mugure',  title: 'Social Media Manager',    image: '/images/team/emily-mugure.jpeg', objectPosition: 'center top'  },
   { name: 'Jim Kiche',     title: 'Head of Operations',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.38.16.jpeg', objectPosition: 'center top' },
-  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.29.34.jpeg', objectPosition: 'center top' },
+  { name: 'Violet',        title: 'Production Manager',      image: '/images/team/WhatsApp%20Image%202026-04-30%20at%2004.29.34.jpeg', objectPosition: 'center -60%' },
 ];
 
 const OurTeam = () => {
