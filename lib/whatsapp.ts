@@ -1,6 +1,13 @@
 // SETUP: On first run scan the QR code printed in the terminal with the WhatsApp account that will
 // send order notifications. The session is saved to .whatsapp-session/ and persists across restarts.
 // The QR code will only appear once unless the session is deleted or the WhatsApp account logs out.
+//
+// VERCEL / SERVERLESS NOTE: Baileys requires a persistent server environment (Railway, Render, VPS)
+// because it maintains a long-lived WebSocket connection and writes session credentials to the
+// filesystem. Vercel's serverless functions have an ephemeral filesystem — the session cannot
+// survive between invocations, and the QR scan would be required on every cold start.
+// On Vercel the sendWhatsAppMessage call will silently fail and the Nodemailer email fallback
+// (lib/email.ts) will handle order notifications until a persistent backend is deployed.
 
 import makeWASocket, {
   useMultiFileAuthState,
@@ -21,7 +28,7 @@ const noopLogger = {
   debug: () => {},
   trace: () => {},
   child: () => noopLogger,
-} as unknown as ReturnType<typeof import('pino').default>;
+} as unknown as import('pino').Logger;
 
 // Persist the socket across hot-reloads in dev via global
 declare global {
