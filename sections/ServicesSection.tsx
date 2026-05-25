@@ -299,24 +299,26 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
                   className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
                 >+</button>
               </div>
-              <AnimatePresence mode="wait">
-                {flavor === 'Marinated' ? (
-                  <motion.span
-                    key="marinated"
-                    initial={{ x: 0 }}
-                    animate={{ x: [0, 7, 0, 7, 0] }}
-                    transition={{ duration: 0.35 }}
-                    className="text-xs font-bold shrink-0"
-                    style={{ color: '#014aad' }}
-                  >
-                    Marinated
-                  </motion.span>
-                ) : (
-                  <span key="normal" className="text-xs text-gray-400 shrink-0">
-                    Toggle to Marinate
-                  </span>
-                )}
-              </AnimatePresence>
+              <div className="flex-1 min-w-0">
+                <AnimatePresence mode="wait">
+                  {flavor === 'Marinated' ? (
+                    <motion.span
+                      key="marinated"
+                      initial={{ x: 0 }}
+                      animate={{ x: [0, 7, 0, 7, 0] }}
+                      transition={{ duration: 0.35 }}
+                      className="text-xs font-bold block"
+                      style={{ color: '#014aad' }}
+                    >
+                      Marinated
+                    </motion.span>
+                  ) : (
+                    <span key="normal" className="text-xs text-gray-400 block">
+                      Toggle to Marinate
+                    </span>
+                  )}
+                </AnimatePresence>
+              </div>
               <button
                 role="switch"
                 aria-checked={flavor === 'Marinated'}
