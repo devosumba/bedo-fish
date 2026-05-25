@@ -282,10 +282,10 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
           {/* Description — own line below name/price row */}
           <p className="text-gray-400 text-xs truncate -mt-1">{product.description}</p>
 
-          {/* Counter row — full width for Omena; full-width counter + separate toggle row for Roasted Tilapia */}
+          {/* Counter row — full width for Omena; half-width + iPhone toggle for Roasted Tilapia */}
           {product.name === 'Roasted Tilapia' ? (
-            <>
-              <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
+            <div className="flex items-center gap-2">
+              <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1 w-1/2">
                 <button
                   aria-label="Decrease quantity"
                   disabled={qty === 1}
@@ -299,40 +299,38 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
                   className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
                 >+</button>
               </div>
-              <div className="w-full flex items-center justify-between">
-                <AnimatePresence mode="wait">
-                  {flavor === 'Marinated' ? (
-                    <motion.span
-                      key="marinated"
-                      initial={{ x: 0 }}
-                      animate={{ x: [0, 7, 0, 7, 0] }}
-                      transition={{ duration: 0.35 }}
-                      className="text-xs font-bold"
-                      style={{ color: '#014aad' }}
-                    >
-                      Marinated
-                    </motion.span>
-                  ) : (
-                    <span key="normal" className="text-xs text-gray-400">
-                      Toggle to Marinate
-                    </span>
-                  )}
-                </AnimatePresence>
-                <button
-                  role="switch"
-                  aria-checked={flavor === 'Marinated'}
-                  aria-label="Toggle flavor"
-                  onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
-                  className="relative rounded-full transition-colors duration-200 pointer-events-auto shrink-0"
-                  style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
-                >
-                  <span
-                    className="absolute rounded-full bg-white transition-transform duration-200"
-                    style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
-                  />
-                </button>
-              </div>
-            </>
+              <AnimatePresence mode="wait">
+                {flavor === 'Marinated' ? (
+                  <motion.span
+                    key="marinated"
+                    initial={{ x: 0 }}
+                    animate={{ x: [0, 7, 0, 7, 0] }}
+                    transition={{ duration: 0.35 }}
+                    className="text-xs font-bold shrink-0"
+                    style={{ color: '#014aad' }}
+                  >
+                    Marinated
+                  </motion.span>
+                ) : (
+                  <span key="normal" className="text-xs text-gray-400 shrink-0">
+                    Toggle to Marinate
+                  </span>
+                )}
+              </AnimatePresence>
+              <button
+                role="switch"
+                aria-checked={flavor === 'Marinated'}
+                aria-label="Toggle flavor"
+                onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
+                className="relative rounded-full transition-colors duration-200 pointer-events-auto shrink-0"
+                style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+              >
+                <span
+                  className="absolute rounded-full bg-white transition-transform duration-200"
+                  style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                />
+              </button>
+            </div>
           ) : (
             <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
               <button
