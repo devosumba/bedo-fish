@@ -29,9 +29,11 @@ const TABS: Array<{ label: string; products: Product[] }> = [
   {
     label: 'Roasted Tilapia',
     products: [
-      { id: 4, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small', badge: 'Best Seller' },
-      { id: 5, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/bedo-fish-roasted.jpeg', size: 'Medium'                      },
-      { id: 6, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Large'                       },
+      { id: 4,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 300', image: '/images/bedo-fish-roasted.jpeg', size: 'Small',        badge: 'Best Seller' },
+      { id: 5,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small-Medium'                       },
+      { id: 6,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 480', image: '/images/bedo-fish-roasted.jpeg', size: 'Medium'                              },
+      { id: 10, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/bedo-fish-roasted.jpeg', size: 'Large'                               },
+      { id: 11, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Extra Large'                         },
     ],
   },
   {
@@ -393,6 +395,7 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
 const ServicesSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab,   setActiveTab]   = useState(0);
+  const [activePage,  setActivePage]  = useState(0);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const sectionRef            = useRef<HTMLElement>(null);
@@ -409,6 +412,10 @@ const ServicesSection = () => {
   useEffect(() => {
     activeSlideRef.current = activeSlide;
   }, [activeSlide]);
+
+  useEffect(() => {
+    setActivePage(0);
+  }, [activeTab]);
 
   // ── Scroll-hijack effect (unchanged — drives the paragraph slider) ───────────
   useEffect(() => {
@@ -608,17 +615,44 @@ const ServicesSection = () => {
           ))}
         </div>
 
-        {/* ── Product grid — transitions on tab change ─────────────────────── */}
+        {/* ── Pagination dots — Roasted Tilapia tab only ───────────────────── */}
+        {activeTab === 1 && (
+          <div className="flex items-center justify-center mb-3" style={{ gap: '8px' }}>
+            {[0, 1].map((page) => (
+              <button
+                key={page}
+                onClick={() => setActivePage(page)}
+                aria-label={`Page ${page + 1}`}
+                style={{
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  background: activePage === page ? '#014aad' : 'rgba(1, 74, 173, 0.3)',
+                  cursor: 'pointer',
+                  border: 'none',
+                  padding: 0,
+                  flexShrink: 0,
+                  transition: 'background 200ms ease',
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* ── Product grid — transitions on tab and page change ────────────── */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={activeTab === 1 ? `tab1-page${activePage}` : `tab${activeTab}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            {TABS[activeTab].products.map((product, i) => (
+            {(activeTab === 1
+              ? TABS[activeTab].products.slice(activePage * 3, activePage * 3 + 3)
+              : TABS[activeTab].products
+            ).map((product) => (
               <ProductCard key={product.id} product={product} onOpenQuickView={setQuickViewProduct} />
             ))}
           </motion.div>

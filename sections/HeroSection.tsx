@@ -117,7 +117,7 @@ const HeroSection = () => {
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="auto"
         aria-hidden="true"
         style={{
           position: 'absolute',
