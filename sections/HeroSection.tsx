@@ -119,6 +119,7 @@ const HeroSection = () => {
         playsInline
         preload="auto"
         aria-hidden="true"
+        suppressHydrationWarning
         style={{
           position: 'absolute',
           top: 0,
