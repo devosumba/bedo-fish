@@ -411,6 +411,10 @@ const ServicesSection = () => {
   const lastDirRef     = useRef<'down' | 'up' | null>(null);
   const cooldownRef    = useRef(false);
 
+  const sectionVisibleRef       = useRef(false);
+  const activeTabRef            = useRef(0);
+  const paginationInteractedRef = useRef(false);
+
   useEffect(() => {
     activeSlideRef.current = activeSlide;
   }, [activeSlide]);
@@ -419,18 +423,39 @@ const ServicesSection = () => {
     setActivePage(0);
   }, [activeTab]);
 
+  useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
+  useEffect(() => { paginationInteractedRef.current = paginationInteracted; }, [paginationInteracted]);
+
+  // Start/stop animations when tab switches to/from Roasted Tilapia
   useEffect(() => {
-    if (activeTab === 1) {
-      setPaginationInteracted(false);
+    if (activeTab === 1 && sectionVisibleRef.current && !paginationInteracted) {
+      setBounceActive(true);
+    } else if (activeTab !== 1) {
       setBounceActive(false);
     }
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (activeTab !== 1 || paginationInteracted) return;
-    const t = setTimeout(() => setBounceActive(true), 3000);
-    return () => clearTimeout(t);
   }, [activeTab, paginationInteracted]);
+
+  // Drive pagination animations via section visibility
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          sectionVisibleRef.current = true;
+          if (activeTabRef.current === 1 && !paginationInteractedRef.current) {
+            setBounceActive(true);
+          }
+        } else {
+          sectionVisibleRef.current = false;
+          setBounceActive(false);
+        }
+      },
+      { threshold: 0.1 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   function handlePaginationClick(page: number) {
     setPaginationInteracted(true);
@@ -676,20 +701,20 @@ const ServicesSection = () => {
                     animate={
                       isActive
                         ? { scale: 1 }
-                        : paginationInteracted
+                        : (paginationInteracted || !bounceActive)
                           ? { scale: 1, y: 0, opacity: 1 }
-                          : bounceActive
-                            ? { y: [0, -6, 0, -3, 0] }
-                            : { scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }
+                          : { scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4], y: [0, -6, 0, -3, 0] }
                     }
                     transition={
                       isActive
                         ? { duration: 0.3, ease: 'easeOut' }
-                        : paginationInteracted
+                        : (paginationInteracted || !bounceActive)
                           ? { duration: 0 }
-                          : bounceActive
-                            ? { duration: 1.2, ease: 'easeInOut', repeat: Infinity }
-                            : { duration: 1.5, ease: 'easeInOut', repeat: Infinity }
+                          : {
+                              scale:   { duration: 1.5, ease: 'easeInOut', repeat: Infinity },
+                              opacity: { duration: 1.5, ease: 'easeInOut', repeat: Infinity },
+                              y:       { duration: 1.2, ease: 'easeInOut', repeat: Infinity },
+                            }
                     }
                   />
                 </motion.button>
