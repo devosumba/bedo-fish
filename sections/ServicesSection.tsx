@@ -395,7 +395,9 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
 const ServicesSection = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab,   setActiveTab]   = useState(0);
-  const [activePage,  setActivePage]  = useState(0);
+  const [activePage,            setActivePage]            = useState(0);
+  const [paginationInteracted, setPaginationInteracted]   = useState(false);
+  const [bounceActive,         setBounceActive]           = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const sectionRef            = useRef<HTMLElement>(null);
@@ -416,6 +418,25 @@ const ServicesSection = () => {
   useEffect(() => {
     setActivePage(0);
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 1) {
+      setPaginationInteracted(false);
+      setBounceActive(false);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 1 || paginationInteracted) return;
+    const t = setTimeout(() => setBounceActive(true), 3000);
+    return () => clearTimeout(t);
+  }, [activeTab, paginationInteracted]);
+
+  function handlePaginationClick(page: number) {
+    setPaginationInteracted(true);
+    setBounceActive(false);
+    setActivePage(page);
+  }
 
   // ── Scroll-hijack effect (unchanged — drives the paragraph slider) ───────────
   useEffect(() => {
@@ -617,24 +638,64 @@ const ServicesSection = () => {
 
         {/* ── Pagination — Roasted Tilapia tab only ────────────────────────── */}
         {activeTab === 1 && (
-          <div className="flex items-center justify-center gap-2 mb-5">
-            {[0, 1].map((page) => (
-              <button
-                key={page}
-                onClick={() => setActivePage(page)}
-                aria-label={`Page ${page + 1}`}
-                className={`rounded-full transition-all duration-300 focus:outline-none h-2 shrink-0 ${
-                  activePage === page ? 'w-6' : 'w-2'
-                }`}
-                style={{
-                  background: activePage === page ? '#014aad' : 'rgba(1, 74, 173, 0.3)',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                }}
-              />
-            ))}
-          </div>
+          <motion.div
+            className="flex items-center justify-center gap-2 mb-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            {[0, 1].map((page) => {
+              const isActive = activePage === page;
+              return (
+                <motion.button
+                  key={page}
+                  layout
+                  onClick={() => handlePaginationClick(page)}
+                  aria-label={`Page ${page + 1}`}
+                  className="focus:outline-none"
+                  style={{
+                    height: '8px',
+                    width: isActive ? '24px' : '8px',
+                    borderRadius: '9999px',
+                    background: 'transparent',
+                    border: 'none',
+                    padding: 0,
+                    cursor: 'pointer',
+                    flexShrink: 0,
+                  }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                >
+                  <motion.div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '9999px',
+                      background: isActive ? '#014aad' : 'rgba(1, 74, 173, 0.3)',
+                    }}
+                    initial={isActive ? { scale: 0.8 } : { opacity: 1 }}
+                    animate={
+                      isActive
+                        ? { scale: 1 }
+                        : paginationInteracted
+                          ? { scale: 1, y: 0, opacity: 1 }
+                          : bounceActive
+                            ? { y: [0, -6, 0, -3, 0] }
+                            : { scale: [1, 1.3, 1], opacity: [0.4, 0.8, 0.4] }
+                    }
+                    transition={
+                      isActive
+                        ? { duration: 0.3, ease: 'easeOut' }
+                        : paginationInteracted
+                          ? { duration: 0 }
+                          : bounceActive
+                            ? { duration: 1.2, ease: 'easeInOut', repeat: Infinity }
+                            : { duration: 1.5, ease: 'easeInOut', repeat: Infinity }
+                    }
+                  />
+                </motion.button>
+              );
+            })}
+          </motion.div>
         )}
 
         {/* ── Product grid — transitions on tab and page change ────────────── */}
