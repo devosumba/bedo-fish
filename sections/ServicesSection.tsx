@@ -44,6 +44,16 @@ const TABS: Array<{ label: string; products: Product[] }> = [
       { id: 9, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 580', image: '/images/omenaa.jpeg', size: '1000ml' },
     ],
   },
+  {
+    label: 'Deep-Fried Tilapia',
+    products: [
+      { id: 12, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 300', image: '/images/deep-fried-tilapia.jpg', size: 'Small',        badge: 'Best Seller' },
+      { id: 13, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/deep-fried-tilapia.jpg', size: 'Small-Medium'                       },
+      { id: 14, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 480', image: '/images/deep-fried-tilapia.jpg', size: 'Medium'                              },
+      { id: 15, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/deep-fried-tilapia.jpg', size: 'Large'                               },
+      { id: 16, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/deep-fried-tilapia.jpg', size: 'Extra Large'                         },
+    ],
+  },
 ];
 
 // ─── Slider paragraphs (2 items — third paragraph deleted per spec) ──────────
@@ -426,11 +436,11 @@ const ServicesSection = () => {
   useEffect(() => { activeTabRef.current = activeTab; }, [activeTab]);
   useEffect(() => { paginationInteractedRef.current = paginationInteracted; }, [paginationInteracted]);
 
-  // Start/stop animations when tab switches to/from Roasted Tilapia
+  // Start/stop animations when tab switches to/from a paginated tab
   useEffect(() => {
-    if (activeTab === 1 && sectionVisibleRef.current && !paginationInteracted) {
+    if ((activeTab === 1 || activeTab === 3) && sectionVisibleRef.current && !paginationInteracted) {
       setBounceActive(true);
-    } else if (activeTab !== 1) {
+    } else if (activeTab !== 1 && activeTab !== 3) {
       setBounceActive(false);
     }
   }, [activeTab, paginationInteracted]);
@@ -443,7 +453,7 @@ const ServicesSection = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           sectionVisibleRef.current = true;
-          if (activeTabRef.current === 1 && !paginationInteractedRef.current) {
+          if ((activeTabRef.current === 1 || activeTabRef.current === 3) && !paginationInteractedRef.current) {
             setBounceActive(true);
           }
         } else {
@@ -661,8 +671,8 @@ const ServicesSection = () => {
           ))}
         </div>
 
-        {/* ── Pagination — Roasted Tilapia tab only ────────────────────────── */}
-        {activeTab === 1 && (
+        {/* ── Pagination — Roasted Tilapia and Deep-Fried Tilapia tabs ──────── */}
+        {(activeTab === 1 || activeTab === 3) && (
           <motion.div
             className="flex items-center justify-center gap-2 mb-5"
             initial={{ opacity: 0 }}
@@ -726,14 +736,14 @@ const ServicesSection = () => {
         {/* ── Product grid — transitions on tab and page change ────────────── */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab === 1 ? `tab1-page${activePage}` : `tab${activeTab}`}
+            key={(activeTab === 1 || activeTab === 3) ? `tab${activeTab}-page${activePage}` : `tab${activeTab}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
           >
-            {(activeTab === 1
+            {((activeTab === 1 || activeTab === 3)
               ? TABS[activeTab].products.slice(activePage * 3, activePage * 3 + 3)
               : TABS[activeTab].products
             ).map((product) => (
