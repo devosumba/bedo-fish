@@ -308,7 +308,7 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
                       animate={{ x: [0, 7, 0, 7, 0] }}
                       transition={{ duration: 0.35 }}
                       className="text-xs font-bold block"
-                      style={{ color: '#014aad' }}
+                      style={{ color: '#014aad', textAlign: 'right' }}
                     >
                       Marinated
                     </motion.span>
