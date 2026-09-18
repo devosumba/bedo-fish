@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCart } from '../context/CartContext';
 
 type Step = 'email' | 'message' | 'sent';
 
@@ -19,14 +20,27 @@ const PencilIcon = () => (
   </svg>
 );
 
+const ArrowUpIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="12" y1="19" x2="12" y2="5" />
+    <polyline points="5,12 12,5 19,12" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 export default function ContactSection() {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
-  const [pillHovered, setPillHovered] = useState(false);
-  const [inputFocused, setInputFocused] = useState(false);
+  const { totalItems, openCart } = useCart();
+  const hasCartItems = totalItems > 0;
 
   const validateEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
@@ -177,17 +191,11 @@ export default function ContactSection() {
         >
           <div
             className="flex items-center gap-3 w-full rounded-full px-3 py-2"
-            onMouseEnter={() => setPillHovered(true)}
-            onMouseLeave={() => setPillHovered(false)}
             style={{
               background: '#fff',
-              border: `1.5px solid ${pillHovered || inputFocused ? '#014aad' : '#e5e7eb'}`,
-              boxShadow: inputFocused
-                ? '0 0 0 3px rgba(1,74,173,0.3), 0 6px 25px rgba(1,74,173,0.25)'
-                : pillHovered
-                ? '0 0 0 2px rgba(1,74,173,0.2), 0 4px 20px rgba(1,74,173,0.15)'
-                : '0 2px 12px rgba(0,0,0,0.06)',
-              transform: pillHovered || inputFocused ? 'translateY(-2px)' : 'translateY(0)',
+              border: '1.5px solid #014aad',
+              outline: 'none',
+              boxShadow: 'none',
               transition: 'all 0.3s ease',
             }}
           >
@@ -215,27 +223,31 @@ export default function ContactSection() {
               value={step === 'sent' ? '' : value}
               onChange={(e) => { setValue(e.target.value); if (error) setError(''); }}
               onKeyDown={(e) => { if (e.key === 'Enter' && !sending) handleSend(); }}
-              onFocus={() => setInputFocused(true)}
-              onBlur={() => setInputFocused(false)}
               placeholder={placeholder}
               disabled={step === 'sent' || sending}
               className="flex-1 bg-transparent outline-none text-sm min-w-0"
               style={{ color: '#1a1a2e' }}
             />
 
-            {/* Send button */}
+            {/* Send button — becomes a "View Cart" pill once an item has been added to the cart */}
             <button
-              onClick={handleSend}
-              disabled={step === 'sent' || sending}
-              className="flex-shrink-0 font-semibold text-sm px-5 py-2 rounded-full transition-colors focus:outline-none"
+              onClick={hasCartItems ? openCart : handleSend}
+              disabled={!hasCartItems && (step === 'sent' || sending)}
+              className="flex-shrink-0 font-semibold text-sm rounded-full flex items-center justify-center focus:outline-none overflow-hidden"
               style={{
                 background: '#014aad',
                 color: '#fff',
-                opacity: sending ? 0.7 : 1,
-                cursor: step === 'sent' || sending ? 'default' : 'pointer',
+                height: '36px',
+                width: hasCartItems ? 'auto' : '36px',
+                paddingLeft: hasCartItems ? '20px' : 0,
+                paddingRight: hasCartItems ? '20px' : 0,
+                whiteSpace: 'nowrap',
+                transition: 'all 300ms ease',
+                opacity: !hasCartItems && sending ? 0.7 : 1,
+                cursor: !hasCartItems && (step === 'sent' || sending) ? 'default' : 'pointer',
               }}
             >
-              {sending ? '...' : step === 'sent' ? '✓' : 'Send'}
+              {hasCartItems ? 'View Cart' : sending ? '...' : step === 'sent' ? <CheckIcon /> : <ArrowUpIcon />}
             </button>
           </div>
 

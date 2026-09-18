@@ -110,7 +110,7 @@ export default function CheckoutPage() {
   };
 
   const errors = validate(form, selectedAddr, deliveryType);
-  const hasAddress = deliveryType === 'pickup' || (deliveryType === 'delivery' && !!selectedAddr);
+  const isFormReady = Object.keys(errors).length === 0;
   const deliveryFee = 0;
   const total = totalAmount + deliveryFee;
   const visibleItems = expandedItems ? items : items.slice(0, 3);
@@ -349,8 +349,8 @@ export default function CheckoutPage() {
                 </div>
                 <button
                   onClick={handleSubmit}
-                  disabled={submitting}
-                  className={'w-full flex items-center justify-center py-4 rounded-full font-bold text-sm transition-all duration-300 ease-in-out ' + (hasAddress && !submitting ? 'bg-white text-[#014aad]' : 'bg-white/30 text-white/70')}
+                  disabled={!isFormReady || submitting}
+                  className={'w-full flex items-center justify-center py-4 rounded-full font-bold text-sm transition-all duration-300 ease-in-out ' + (isFormReady && !submitting ? 'bg-white text-[#014aad] cursor-pointer' : 'bg-white/30 text-white/70 cursor-not-allowed')}
                 >
                   {submitting ? 'Sending your order...' : 'Complete Your Order'}
                 </button>

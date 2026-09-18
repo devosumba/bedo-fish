@@ -26,6 +26,9 @@ type CartContextType = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 };
 
 // ─── Context ───────────────────────────────────────────────────────────────────
@@ -38,6 +41,9 @@ const CartContext = createContext<CartContextType>({
   removeFromCart: () => {},
   updateQuantity: () => {},
   clearCart: () => {},
+  isCartOpen: false,
+  openCart: () => {},
+  closeCart: () => {},
 });
 
 // ─── Provider ──────────────────────────────────────────────────────────────────
@@ -46,6 +52,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Always start with empty array — server and client first render must match
   const [items, setItems] = useState<CartItem[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
 
   const totalItems  = items.reduce((sum, i) => sum + i.quantity, 0);
   const totalAmount = items.reduce((sum, i) => sum + i.totalPrice, 0);
@@ -103,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <CartContext.Provider value={{ items, totalItems, totalAmount, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ items, totalItems, totalAmount, addToCart, removeFromCart, updateQuantity, clearCart, isCartOpen, openCart, closeCart }}>
       {children}
     </CartContext.Provider>
   );

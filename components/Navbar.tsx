@@ -25,9 +25,8 @@ const NAV_ITEMS = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cartPulse,      setCartPulse]      = useState(false);
-  const [cartOpen,       setCartOpen]       = useState(false);
   const [cartHighlight,  setCartHighlight]  = useState(false);
-  const { totalItems } = useCart();
+  const { totalItems, isCartOpen, openCart, closeCart } = useCart();
   const pathname = usePathname();
   const isHome = pathname === '/';
   const prevCartCount = useRef(totalItems);
@@ -94,7 +93,7 @@ export default function Navbar() {
         {/* Right — Cart | Call To Order */}
         <div className="flex items-center gap-3 pr-2">
           {/* Cart */}
-          <button onClick={() => setCartOpen(true)} aria-label="Cart"
+          <button onClick={openCart} aria-label="Cart"
             className="relative text-[#014aad] hover:text-[#0145a3] transition-colors duration-200 focus:outline-none">
             <motion.span
               animate={{ scale: cartPulse ? [1, 1.3, 1] : 1 }}
@@ -143,7 +142,7 @@ export default function Navbar() {
 
           {/* Right: Cart + hamburger */}
           <div className="flex items-center gap-3 pr-2">
-            <button onClick={() => setCartOpen(true)} aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors"
+            <button onClick={openCart} aria-label="Cart" className="relative text-[#014aad] hover:text-[#0145a3] transition-colors"
               style={cartHighlight ? { filter: 'drop-shadow(0 0 8px rgba(1,74,173,0.95))' } : undefined}
             >
               <motion.span
@@ -224,7 +223,7 @@ export default function Navbar() {
           )}
         </AnimatePresence>
       </div>
-      <CartModal isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartModal isOpen={isCartOpen} onClose={closeCart} />
     </motion.nav>
   );
 }
