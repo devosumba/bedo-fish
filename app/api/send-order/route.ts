@@ -42,6 +42,17 @@ function formatWhatsAppMessage(p: OrderPayload): string {
   ].join('\n');
 }
 
+// WhatsApp needs a persistent connection and doesn't work on Vercel's ephemeral
+// serverless filesystem (see lib/whatsapp.ts) — without a cap it can hang for up
+// to 60s trying to connect, blocking the whole order response. Cap it so a slow
+// or failing WhatsApp attempt never delays the customer-facing order confirmation.
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)),
+  ]);
+}
+
 function validateOrder(body: Partial<OrderPayload>): string | null {
   if (!body.firstName?.trim()) return 'First name is required';
   if (!body.lastName?.trim()) return 'Last name is required';
@@ -80,7 +91,7 @@ export async function POST(req: NextRequest) {
 
     await Promise.all([
       sendOrderEmails(payload),
-      sendWhatsAppMessage(recipient, formatWhatsAppMessage(payload)).catch((err) => {
+      withTimeout(sendWhatsAppMessage(recipient, formatWhatsAppMessage(payload)), 8000).catch((err) => {
         console.error('[send-order] WhatsApp failed', err);
       }),
     ]);
