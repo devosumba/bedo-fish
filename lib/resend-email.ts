@@ -189,23 +189,39 @@ export async function sendOrderEmails(payload: OrderPayload): Promise<void> {
 
   const resend = new Resend(apiKey);
 
-  try {
-    await Promise.all([
-      resend.emails.send({
-        from: FROM,
-        to: orderRecipient,
-        subject: 'New Order!',
-        html: buildOrderNotificationHtml(payload),
-      }),
-      resend.emails.send({
-        from: FROM,
-        to: payload.email,
-        subject: 'Order Confirmed - Bedo Fish',
-        html: buildCustomerConfirmationHtml(payload),
-      }),
-    ]);
-  } catch (error) {
-    console.error('Resend error:', error);
-    throw error;
+  // resend.emails.send() resolves with { data, error } — it does NOT reject/throw
+  // on API-level failures (invalid recipient, sandbox sender restrictions, etc).
+  // Each result must be checked explicitly or a failed send looks identical to success.
+  //
+  // NOTE: while FROM is the onboarding@resend.dev test sender, Resend only allows
+  // delivery to the email address the Resend account itself was signed up with —
+  // sending to any other address (i.e. real customers) will fail with
+  // "You can only send testing emails to your own email address". This is a Resend
+  // account restriction, not a bug — it only goes away once a real domain is
+  // verified at resend.com/domains and FROM is switched to use it.
+  const [orderResult, confirmationResult] = await Promise.all([
+    resend.emails.send({
+      from: FROM,
+      to: orderRecipient,
+      subject: 'New Order!',
+      html: buildOrderNotificationHtml(payload),
+    }),
+    resend.emails.send({
+      from: FROM,
+      to: payload.email,
+      subject: 'Order Confirmed - Bedo Fish',
+      html: buildCustomerConfirmationHtml(payload),
+    }),
+  ]);
+
+  // The order notification is how the business actually finds out about the order —
+  // treat it as required. The customer confirmation is a nice-to-have; log failures
+  // but don't fail the whole checkout over it (matches how WhatsApp is handled).
+  if (orderResult.error) {
+    console.error('Resend error (order notification):', orderResult.error);
+    throw new Error(`Order notification email failed: ${orderResult.error.message}`);
+  }
+  if (confirmationResult.error) {
+    console.error('Resend error (customer confirmation):', confirmationResult.error);
   }
 }
