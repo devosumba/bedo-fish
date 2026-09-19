@@ -1,57 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendWhatsAppMessage } from '../../../lib/whatsapp';
 import { sendOrderEmails, OrderPayload } from '../../../lib/resend-email';
 
 export const runtime = 'nodejs';
-
-function formatWhatsAppMessage(p: OrderPayload): string {
-  const itemLines = p.items
-    .map((item) => {
-      const lines = [`- ${item.name} (${item.size}) x${item.quantity}`];
-      if (item.flavor) lines.push(`  Flavor: ${item.flavor}`);
-      lines.push(`  Item Total: Ksh ${item.totalPrice}`);
-      return lines.join('\n');
-    })
-    .join('\n\n');
-
-  const shippingLines = [
-    `Name: ${p.firstName} ${p.lastName}`,
-    `Email: ${p.email}`,
-    `Phone: ${p.phone}`,
-    `Delivery Type: ${p.deliveryType === 'pickup' ? 'In-Store Pickup' : 'Deliver To My Address'}`,
-    ...(p.deliveryType === 'delivery' && p.deliveryLocation
-      ? [`Delivery Location: ${p.deliveryLocation}`]
-      : []),
-    ...(p.apartment ? [`Apartment: ${p.apartment}`] : []),
-  ];
-
-  return [
-    'NEW ORDER ALERT',
-    '',
-    'ORDER SUMMARY',
-    '─────────────────',
-    itemLines,
-    '',
-    `Subtotal: Ksh ${p.subtotal}`,
-    `Delivery Fee: Ksh ${p.deliveryFee}`,
-    `Total: Ksh ${p.total}`,
-    '',
-    'SHIPPING INFORMATION',
-    '─────────────────',
-    ...shippingLines,
-  ].join('\n');
-}
-
-// WhatsApp needs a persistent connection and doesn't work on Vercel's ephemeral
-// serverless filesystem (see lib/whatsapp.ts) — without a cap it can hang for up
-// to 60s trying to connect, blocking the whole order response. Cap it so a slow
-// or failing WhatsApp attempt never delays the customer-facing order confirmation.
-function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)),
-  ]);
-}
 
 function validateOrder(body: Partial<OrderPayload>): string | null {
   if (!body.firstName?.trim()) return 'First name is required';
@@ -83,15 +33,7 @@ export async function POST(req: NextRequest) {
   const payload = body as OrderPayload;
 
   try {
-    const recipient = process.env.WHATSAPP_RECIPIENT || '254704870276';
-
-    await Promise.all([
-      sendOrderEmails(payload),
-      withTimeout(sendWhatsAppMessage(recipient, formatWhatsAppMessage(payload)), 8000).catch((err) => {
-        console.error('[send-order] WhatsApp failed', err);
-      }),
-    ]);
-
+    await sendOrderEmails(payload);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[send-order]', err);

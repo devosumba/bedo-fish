@@ -4,57 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useCart } from '../context/CartContext';
-
-// ─── Product types and data ───────────────────────────────────────────────────
-
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-  image: string;
-  size: string;
-  badge?: string;
-};
-
-const TABS: Array<{ label: string; products: Product[] }> = [
-  {
-    label: 'Customer Favorites',
-    products: [
-      { id: 1, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 300', image: '/images/bedo-fish-roasted.jpeg', size: 'Small', badge: 'Best Seller' },
-      { id: 2, name: 'Omena',            description: 'Crunchy deep fried omena',            price: 'Ksh 300', image: '/images/omenaa.jpeg',      size: '500ml', badge: 'Popular'     },
-      { id: 3, name: 'Roasted Tilapia',  description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/bedo-fish-roasted.jpeg', size: 'Large', badge: 'Value'       },
-    ],
-  },
-  {
-    label: 'Roasted Tilapia',
-    products: [
-      { id: 4,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 300', image: '/images/bedo-fish-roasted.jpeg', size: 'Small',        badge: 'Best Seller' },
-      { id: 5,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/bedo-fish-roasted.jpeg', size: 'Small-Medium'                       },
-      { id: 6,  name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 480', image: '/images/bedo-fish-roasted.jpeg', size: 'Medium'                              },
-      { id: 10, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/bedo-fish-roasted.jpeg', size: 'Large'                               },
-      { id: 11, name: 'Roasted Tilapia', description: 'Roasted tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/bedo-fish-roasted.jpeg', size: 'Extra Large'                         },
-    ],
-  },
-  {
-    label: 'Omena',
-    products: [
-      { id: 7, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 180', image: '/images/omenaa.jpeg', size: '250ml' },
-      { id: 8, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 300', image: '/images/omenaa.jpeg', size: '500ml' },
-      { id: 9, name: 'Omena', description: 'Crunchy deep fried omena', price: 'Ksh 580', image: '/images/omenaa.jpeg', size: '1000ml' },
-    ],
-  },
-  {
-    label: 'Deep-Fried Tilapia',
-    products: [
-      { id: 12, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 300', image: '/images/deep-fried-tilapia.jpg', size: 'Small',        badge: 'Best Seller' },
-      { id: 13, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 380', image: '/images/deep-fried-tilapia.jpg', size: 'Small-Medium'                       },
-      { id: 14, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 480', image: '/images/deep-fried-tilapia.jpg', size: 'Medium'                              },
-      { id: 15, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 600', image: '/images/deep-fried-tilapia.jpg', size: 'Large'                               },
-      { id: 16, name: 'Deep-Fried Tilapia', description: 'Deep fried tilapia from Lake Victoria', price: 'Ksh 800', image: '/images/deep-fried-tilapia.jpg', size: 'Extra Large'                         },
-    ],
-  },
-];
+import { CATEGORIES, Product } from '../lib/products';
+import { useProducts } from '../lib/productStore';
 
 // ─── Slider paragraphs (2 items — third paragraph deleted per spec) ──────────
 
@@ -82,8 +33,9 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
   }, [onClose]);
 
   function handleAddToCart() {
+    if (product.isOutOfStock) return;
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description, ...(product.name === 'Roasted Tilapia' ? { flavor: popupFlavor } : {}) }, popupQty);
+    addToCart({ name: product.name, size: product.size, price: `Ksh ${product.price}`, image: product.image, description: product.description, isOutOfStock: product.isOutOfStock, ...(product.flavorToggle ? { flavor: popupFlavor } : {}) }, popupQty);
     onClose();
   }
 
@@ -127,6 +79,7 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
             quality={90}
             sizes="(max-width: 768px) 100vw, 45vw"
             className="object-cover"
+            unoptimized={product.image.startsWith('data:')}
           />
         </div>
 
@@ -135,14 +88,16 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
           <h2 className="font-bold text-xl text-gray-900 pr-8">{product.name}</h2>
 
           <div className="flex items-center gap-3">
-            <span className="font-bold text-[#014aad] text-lg">{product.price}</span>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#014aad] text-white">In Stock</span>
+            <span className="font-bold text-[#014aad] text-lg">Ksh {product.price}</span>
+            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full text-white ${product.isOutOfStock ? 'bg-orange-500' : 'bg-[#014aad]'}`}>
+              {product.isOutOfStock ? 'Out of Stock' : 'In Stock'}
+            </span>
           </div>
 
           <p className="text-gray-500 text-sm leading-relaxed">{product.description}</p>
 
-          {/* iPhone-style flavor toggle — Roasted Tilapia only */}
-          {product.name === 'Roasted Tilapia' && (
+          {/* iPhone-style flavor toggle — products with flavorToggle enabled only */}
+          {product.flavorToggle && (
             <div className="flex items-center gap-3">
               <span className="text-sm" style={{ color: popupFlavor === 'Normal' ? '#014aad' : '#9ca3af', fontWeight: popupFlavor === 'Normal' ? 700 : 400 }}>Normal</span>
               <button
@@ -191,16 +146,26 @@ function QuickViewModal({ product, onClose }: { product: Product; onClose: () =>
           </div>
 
           <div className="flex flex-row items-center gap-3">
-            <button
-              className="flex-1 bg-[#014aad] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-2"
-              onClick={handleAddToCart}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-              </svg>
-              Add to Cart
-            </button>
+            {product.isOutOfStock ? (
+              <button
+                disabled
+                className="flex-1 text-sm font-semibold py-3 rounded-full flex items-center justify-center gap-2"
+                style={{ background: '#e0e0e0', color: '#888888', cursor: 'not-allowed', pointerEvents: 'none' }}
+              >
+                Out of Stock
+              </button>
+            ) : (
+              <button
+                className="flex-1 bg-[#014aad] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#0157cc] transition-colors flex items-center justify-center gap-2"
+                onClick={handleAddToCart}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                Add to Cart
+              </button>
+            )}
             <div className="w-10 shrink-0" aria-hidden="true" />
           </div>
         </div>
@@ -216,18 +181,30 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
   const [liked,      setLiked]      = useState(false);
   const [atcPhase,   setAtcPhase]   = useState<'idle' | 'flip' | 'push' | 'added'>('idle');
   const [flavor,     setFlavor]     = useState<'Normal' | 'Marinated'>('Normal');
+  const [outOfStockNotice, setOutOfStockNotice] = useState(false);
   const { addToCart } = useCart();
+  const noticeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleLike(e: React.MouseEvent) {
     e.stopPropagation();
     setLiked((v) => !v);
   }
 
+  function showOutOfStockNotice(e: React.MouseEvent) {
+    e.stopPropagation();
+    setOutOfStockNotice(true);
+    if (noticeTimeoutRef.current) clearTimeout(noticeTimeoutRef.current);
+    noticeTimeoutRef.current = setTimeout(() => setOutOfStockNotice(false), 2500);
+  }
+
+  useEffect(() => () => { if (noticeTimeoutRef.current) clearTimeout(noticeTimeoutRef.current); }, []);
+
   function handleAddToCart(e: React.MouseEvent) {
     e.stopPropagation();
+    if (product.isOutOfStock) return;
     if (atcPhase !== 'idle') return;
     if (window.matchMedia('(pointer: coarse)').matches && navigator.vibrate) navigator.vibrate(50);
-    addToCart({ name: product.name, size: product.size, price: product.price, image: product.image, description: product.description, ...(product.name === 'Roasted Tilapia' ? { flavor } : {}) }, qty);
+    addToCart({ name: product.name, size: product.size, price: `Ksh ${product.price}`, image: product.image, description: product.description, isOutOfStock: product.isOutOfStock, ...(product.flavorToggle ? { flavor } : {}) }, qty);
     setQty(1);
     setAtcPhase('flip');
     setTimeout(() => setAtcPhase('push'), 150);
@@ -247,7 +224,7 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
             alt={product.name}
             fill
             quality={100}
-            unoptimized={false}
+            unoptimized={product.image.startsWith('data:')}
             sizes="(max-width: 768px) 100vw, 33vw"
             className="object-cover"
           />
@@ -280,6 +257,16 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
           </button>
+
+          {/* Out of stock overlay */}
+          {product.isOutOfStock && (
+            <div
+              className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
+              style={{ background: 'rgba(0, 0, 0, 0.35)' }}
+            >
+              <span className="text-white font-bold text-sm tracking-wide">Out of Stock</span>
+            </div>
+          )}
         </div>
 
         {/* Card content — natural height, ends after last element */}
@@ -288,110 +275,137 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
           {/* Name left, price right — same row */}
           <div className="flex flex-row items-center justify-between gap-2 min-w-0">
             <h3 className="font-semibold text-gray-900 text-sm leading-tight truncate">{product.name}</h3>
-            <span className="font-bold text-[#014aad] text-sm shrink-0">{product.price}</span>
+            <span className="font-bold text-[#014aad] text-sm shrink-0">Ksh {product.price}</span>
           </div>
 
           {/* Description — own line below name/price row */}
           <p className="text-gray-400 text-xs truncate -mt-1">{product.description}</p>
 
-          {/* Counter row — full width for Omena; half-width + iPhone toggle for Roasted Tilapia */}
-          {product.name === 'Roasted Tilapia' ? (
-            <div className="flex items-center gap-2">
-              <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1 w-1/2">
+          {/* Out of stock notice */}
+          {outOfStockNotice && (
+            <p className="text-xs text-red-400 -mt-1">
+              This item is currently out of stock. Please check our other available products.
+            </p>
+          )}
+
+          {/* Counter row — full width for Omena; half-width + iPhone toggle for products with flavor toggle */}
+          <div
+            className={product.isOutOfStock ? 'opacity-40' : undefined}
+            onClick={product.isOutOfStock ? showOutOfStockNotice : undefined}
+          >
+            {product.flavorToggle ? (
+              <div className="flex items-center gap-2">
+                <div className="flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1 w-1/2">
+                  <button
+                    aria-label="Decrease quantity"
+                    disabled={product.isOutOfStock || qty === 1}
+                    onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
+                    className={`w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none disabled:opacity-40 disabled:cursor-not-allowed ${product.isOutOfStock ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                  >−</button>
+                  <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
+                  <button
+                    aria-label="Increase quantity"
+                    disabled={product.isOutOfStock}
+                    onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
+                    className={`w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none ${product.isOutOfStock ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                  >+</button>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <AnimatePresence mode="wait">
+                    {flavor === 'Marinated' ? (
+                      <motion.span
+                        key="marinated"
+                        initial={{ x: 0 }}
+                        animate={{ x: [0, 7, 0, 7, 0] }}
+                        transition={{ duration: 0.35 }}
+                        className="text-xs font-bold block"
+                        style={{ color: '#014aad', textAlign: 'right' }}
+                      >
+                        Marinated
+                      </motion.span>
+                    ) : (
+                      <span key="normal" className="text-xs text-gray-400 block">
+                        Toggle to Marinate
+                      </span>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <button
+                  role="switch"
+                  aria-checked={flavor === 'Marinated'}
+                  aria-label="Toggle flavor"
+                  disabled={product.isOutOfStock}
+                  onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
+                  className={`relative rounded-full transition-colors duration-200 shrink-0 ${product.isOutOfStock ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                  style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+                >
+                  <span
+                    className="absolute rounded-full bg-white transition-transform duration-200"
+                    style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                  />
+                </button>
+              </div>
+            ) : (
+              <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
                 <button
                   aria-label="Decrease quantity"
-                  disabled={qty === 1}
+                  disabled={product.isOutOfStock || qty === 1}
                   onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
-                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
+                  className={`w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none disabled:opacity-40 disabled:cursor-not-allowed ${product.isOutOfStock ? 'pointer-events-none' : 'pointer-events-auto'}`}
                 >−</button>
                 <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
                 <button
                   aria-label="Increase quantity"
+                  disabled={product.isOutOfStock}
                   onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-                  className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
+                  className={`w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none ${product.isOutOfStock ? 'pointer-events-none' : 'pointer-events-auto'}`}
                 >+</button>
               </div>
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  {flavor === 'Marinated' ? (
-                    <motion.span
-                      key="marinated"
-                      initial={{ x: 0 }}
-                      animate={{ x: [0, 7, 0, 7, 0] }}
-                      transition={{ duration: 0.35 }}
-                      className="text-xs font-bold block"
-                      style={{ color: '#014aad', textAlign: 'right' }}
-                    >
-                      Marinated
-                    </motion.span>
-                  ) : (
-                    <span key="normal" className="text-xs text-gray-400 block">
-                      Toggle to Marinate
-                    </span>
-                  )}
-                </AnimatePresence>
-              </div>
+            )}
+          </div>
+
+          {/* Add to Cart — w-full, same width as counter */}
+          {product.isOutOfStock ? (
+            <div onClick={showOutOfStockNotice}>
               <button
-                role="switch"
-                aria-checked={flavor === 'Marinated'}
-                aria-label="Toggle flavor"
-                onClick={(e) => { e.stopPropagation(); setFlavor((f) => f === 'Normal' ? 'Marinated' : 'Normal'); }}
-                className="relative rounded-full transition-colors duration-200 pointer-events-auto shrink-0"
-                style={{ width: '44px', height: '24px', background: flavor === 'Marinated' ? '#014aad' : 'rgba(1,74,173,0.2)' }}
+                disabled
+                className="w-full text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
+                style={{ background: '#e0e0e0', color: '#888888', cursor: 'not-allowed', pointerEvents: 'none' }}
               >
-                <span
-                  className="absolute rounded-full bg-white transition-transform duration-200"
-                  style={{ top: '2px', left: '2px', width: '20px', height: '20px', transform: flavor === 'Marinated' ? 'translateX(20px)' : 'translateX(0px)', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
-                />
+                Out of Stock
               </button>
             </div>
           ) : (
-            <div className="relative w-full flex flex-row items-center justify-between bg-gray-100 rounded-full px-2 py-1">
-              <button
-                aria-label="Decrease quantity"
-                disabled={qty === 1}
-                onClick={(e) => { e.stopPropagation(); setQty((q) => Math.max(1, q - 1)); }}
-                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto disabled:opacity-40 disabled:cursor-not-allowed"
-              >−</button>
-              <span className="text-xs font-semibold text-gray-800 w-5 text-center leading-none">{qty}</span>
-              <button
-                aria-label="Increase quantity"
-                onClick={(e) => { e.stopPropagation(); setQty((q) => q + 1); }}
-                className="w-5 h-5 flex items-center justify-center rounded-full text-gray-600 text-xs font-bold leading-none pointer-events-auto"
-              >+</button>
-            </div>
+            <button
+              className="pointer-events-auto w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
+              style={atcPhase !== 'idle' ? { pointerEvents: 'none' } : undefined}
+              onClick={handleAddToCart}
+            >
+              {atcPhase === 'added' ? 'Added To Cart' : (
+                <>
+                  <motion.span
+                    className="flex"
+                    animate={
+                      atcPhase === 'flip' ? { scaleX: -1 } :
+                      atcPhase === 'push' ? { scaleX: -1, x: [0, 7, 0, 7, 0] } :
+                      { scaleX: 1, x: 0 }
+                    }
+                    transition={
+                      atcPhase === 'flip' ? { duration: 0.15 } :
+                      atcPhase === 'push' ? { duration: 0.35 } :
+                      { duration: 0 }
+                    }
+                  >
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                  </motion.span>
+                  Add to Cart
+                </>
+              )}
+            </button>
           )}
-
-          {/* Add to Cart — w-full, same width as counter */}
-          <button
-            className="pointer-events-auto w-full bg-[#014aad] text-white text-xs font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5"
-            style={atcPhase !== 'idle' ? { pointerEvents: 'none' } : undefined}
-            onClick={handleAddToCart}
-          >
-            {atcPhase === 'added' ? 'Added To Cart' : (
-              <>
-                <motion.span
-                  className="flex"
-                  animate={
-                    atcPhase === 'flip' ? { scaleX: -1 } :
-                    atcPhase === 'push' ? { scaleX: -1, x: [0, 7, 0, 7, 0] } :
-                    { scaleX: 1, x: 0 }
-                  }
-                  transition={
-                    atcPhase === 'flip' ? { duration: 0.15 } :
-                    atcPhase === 'push' ? { duration: 0.35 } :
-                    { duration: 0 }
-                  }
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                  </svg>
-                </motion.span>
-                Add to Cart
-              </>
-            )}
-          </button>
 
         </div>
 
@@ -403,12 +417,20 @@ function ProductCard({ product, onOpenQuickView }: { product: Product; onOpenQui
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 const ServicesSection = () => {
+  const { products } = useProducts();
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTab,   setActiveTab]   = useState(0);
   const [activePage,            setActivePage]            = useState(0);
   const [paginationInteracted, setPaginationInteracted]   = useState(false);
   const [bounceActive,         setBounceActive]           = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  // Hidden products (isLive false) never render on the public site.
+  const liveProducts = products.filter((p) => p.isLive);
+  const TABS = CATEGORIES.map((category) => ({
+    label: category,
+    products: liveProducts.filter((p) => p.category === category),
+  }));
 
   const sectionRef            = useRef<HTMLElement>(null);
   const paragraphContainerRef = useRef<HTMLDivElement>(null);

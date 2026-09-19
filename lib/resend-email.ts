@@ -216,7 +216,7 @@ export async function sendOrderEmails(payload: OrderPayload): Promise<void> {
 
   // The order notification is how the business actually finds out about the order —
   // treat it as required. The customer confirmation is a nice-to-have; log failures
-  // but don't fail the whole checkout over it (matches how WhatsApp is handled).
+  // but don't fail the whole checkout over it.
   if (orderResult.error) {
     console.error('Resend error (order notification):', orderResult.error);
     throw new Error(`Order notification email failed: ${orderResult.error.message}`);

@@ -22,7 +22,7 @@ type CartContextType = {
   items: CartItem[];
   totalItems: number;
   totalAmount: number;
-  addToCart: (item: { name: string; size: string; price: string; image: string; description: string; flavor?: string }, qty: number) => void;
+  addToCart: (item: { name: string; size: string; price: string; image: string; description: string; flavor?: string; isOutOfStock?: boolean }, qty: number) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
@@ -79,7 +79,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [items, isHydrated]);
 
-  function addToCart(item: { name: string; size: string; price: string; image: string; description: string; flavor?: string }, qty: number) {
+  function addToCart(item: { name: string; size: string; price: string; image: string; description: string; flavor?: string; isOutOfStock?: boolean }, qty: number) {
+    if (item.isOutOfStock) return;
     const unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''), 10) || 0;
     const id = item.name.toLowerCase().replace(/ +/g, '-') + '-' + item.size.toLowerCase().replace(/ +/g, '-') + (item.flavor ? '-' + item.flavor.toLowerCase() : '');
     setItems((prev) => {
