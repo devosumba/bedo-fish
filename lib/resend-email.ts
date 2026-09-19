@@ -1,5 +1,12 @@
 import { Resend } from 'resend';
 
+// Required env vars: RESEND_API_KEY, ORDER_RECIPIENT_EMAIL.
+// Local dev: set them in .env.local (gitignored, never committed).
+// Vercel: Project Settings > Environment Variables > add both, applied to
+// Production, Preview, and Development, then redeploy for the change to take effect.
+
+// Resend's test sender — works without domain verification. Once bedofish.co.ke
+// is verified in the Resend dashboard, switch this to 'Bedo Fish <orders@bedofish.co.ke>'.
 const FROM = 'Bedo Fish <onboarding@resend.dev>';
 
 export type OrderItem = {
@@ -170,22 +177,35 @@ function buildCustomerConfirmationHtml(p: OrderPayload): string {
 }
 
 export async function sendOrderEmails(payload: OrderPayload): Promise<void> {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      'RESEND_API_KEY is not configured. Set it in .env.local for local development, ' +
+      'and in the Vercel project\'s Environment Variables (Production, Preview, Development) for deployment.'
+    );
+  }
   const orderRecipient = process.env.ORDER_RECIPIENT_EMAIL;
   if (!orderRecipient) throw new Error('ORDER_RECIPIENT_EMAIL is not configured');
 
-  await Promise.all([
-    resend.emails.send({
-      from: FROM,
-      to: orderRecipient,
-      subject: 'New Order!',
-      html: buildOrderNotificationHtml(payload),
-    }),
-    resend.emails.send({
-      from: FROM,
-      to: payload.email,
-      subject: 'Order Confirmed - Bedo Fish',
-      html: buildCustomerConfirmationHtml(payload),
-    }),
-  ]);
+  const resend = new Resend(apiKey);
+
+  try {
+    await Promise.all([
+      resend.emails.send({
+        from: FROM,
+        to: orderRecipient,
+        subject: 'New Order!',
+        html: buildOrderNotificationHtml(payload),
+      }),
+      resend.emails.send({
+        from: FROM,
+        to: payload.email,
+        subject: 'Order Confirmed - Bedo Fish',
+        html: buildCustomerConfirmationHtml(payload),
+      }),
+    ]);
+  } catch (error) {
+    console.error('Resend error:', error);
+    throw error;
+  }
 }
