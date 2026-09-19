@@ -68,10 +68,6 @@ function validateOrder(body: Partial<OrderPayload>): string | null {
 }
 
 export async function POST(req: NextRequest) {
-  // TEMPORARY — remove after confirming RESEND_API_KEY is picked up in this environment.
-  console.log('RESEND_API_KEY present:', !!process.env.RESEND_API_KEY);
-  console.log('RESEND_API_KEY prefix:', process.env.RESEND_API_KEY?.substring(0, 8));
-
   let body: Partial<OrderPayload>;
   try {
     body = await req.json();
