@@ -32,8 +32,8 @@ export type OrderPayload = {
   apartment?: string;
 };
 
-function escapeHtml(value: string): string {
-  return value
+function escapeHtml(value: unknown): string {
+  return String(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -51,8 +51,8 @@ function itemRow(item: OrderItem): string {
       <td style="padding:12px;color:#333;font-size:14px;">${escapeHtml(item.name)}</td>
       <td style="padding:12px;color:#555;font-size:14px;text-align:center;">${escapeHtml(item.size)}</td>
       <td style="padding:12px;color:#555;font-size:14px;text-align:center;">${item.flavor ? escapeHtml(item.flavor) : '&mdash;'}</td>
-      <td style="padding:12px;color:#555;font-size:14px;text-align:center;">${item.quantity}</td>
-      <td style="padding:12px;color:#555;font-size:14px;text-align:right;">Ksh ${item.unitPrice}</td>
+      <td style="padding:12px;color:#555;font-size:14px;text-align:center;">${escapeHtml(item.quantity)}</td>
+      <td style="padding:12px;color:#555;font-size:14px;text-align:right;">Ksh ${escapeHtml(item.unitPrice)}</td>
       <td style="padding:12px;color:#014aad;font-weight:bold;font-size:14px;text-align:right;">Ksh ${escapeHtml(item.totalPrice)}</td>
     </tr>`;
 }
